@@ -35,6 +35,11 @@ public class Elevator {
         motor1.set(0);
         motor2.set(0);
     }
+
+    public void resetEncoders() {}
+
+    public void setSetpoint() {}
+
     // gonna need a trapezoidal pid
 
     // set points and goals and such

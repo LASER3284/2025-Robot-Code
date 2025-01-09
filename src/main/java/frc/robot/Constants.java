@@ -210,4 +210,9 @@ public class Constants {
         }
     }
     }
+
+    public static class ElevatorConstants {
+        public static final int E1_ID = 0;
+        public static final int E2_ID = 1;
+    }
 }
