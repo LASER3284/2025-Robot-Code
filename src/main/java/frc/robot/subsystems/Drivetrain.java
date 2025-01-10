@@ -44,7 +44,9 @@ public class Drivetrain extends TunerSwerveDrivetrain implements Subsystem {
     private final SwerveRequest.SysIdSwerveTranslation m_translationCharacterization = new SwerveRequest.SysIdSwerveTranslation();
     private final SwerveRequest.SysIdSwerveSteerGains m_steerCharacterization = new SwerveRequest.SysIdSwerveSteerGains();
     private final SwerveRequest.SysIdSwerveRotation m_rotationCharacterization = new SwerveRequest.SysIdSwerveRotation();
-private RobotConfig config;
+
+    private RobotConfig config;
+
     /* SysId routine for characterizing translation. This is used to find PID gains for the drive motors. */
     private final SysIdRoutine m_sysIdRoutineTranslation = new SysIdRoutine(
         new SysIdRoutine.Config(
@@ -126,6 +128,12 @@ private RobotConfig config;
             startSimThread();
         }
 
+        try{
+            config = RobotConfig.fromGUISettings();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
         configureAutoBuilder();
     }
 
@@ -150,6 +158,12 @@ private RobotConfig config;
         super(drivetrainConstants, odometryUpdateFrequency, modules);
         if (Utils.isSimulation()) {
             startSimThread();
+        }
+
+        try{
+            config = RobotConfig.fromGUISettings();
+        } catch (Exception e) {
+            e.printStackTrace();
         }
 
         configureAutoBuilder();
@@ -186,6 +200,12 @@ private RobotConfig config;
             startSimThread();
         }
 
+        try{
+            config = RobotConfig.fromGUISettings();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
         configureAutoBuilder();
     }
 
@@ -204,9 +224,9 @@ private RobotConfig config;
                 ),
                 new PPHolonomicDriveController(
                     // PID constants for translation
-                    new PIDConstants(10, 0, 0),
+                    new PIDConstants(5, 0, 0),
                     // PID constants for rotation
-                    new PIDConstants(7, 0, 0)
+                    new PIDConstants(5, 0, 0)
                 ),
                 config,
                 // Assume the path needs to be flipped for Red vs Blue, this is normally the case

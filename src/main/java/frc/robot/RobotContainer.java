@@ -45,10 +45,9 @@ public class RobotContainer {
 
     public RobotContainer() {
         autoChooser = AutoBuilder.buildAutoChooser("Tests");
-       // autoChooser.setDefaultOption("auto 1" , new PathPlannerAuto("New Auto"));
 
-        SmartDashboard.putData("Auto Mode",autoChooser);
-       // SmartDashboard.putData("field", field);
+        SmartDashboard.putData("Auto Mode", autoChooser);
+        SmartDashboard.putData("field", field);
 
         configureBindings();
     }
@@ -86,6 +85,6 @@ public class RobotContainer {
     }
 
     public Command getAutonomousCommand() {
-        return Commands.print("No autonomous command configured");
+        return autoChooser.getSelected();
     }
 }
