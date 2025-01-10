@@ -212,6 +212,16 @@ public class Constants {
     }
 
     public static class ElevatorConstants {
+        //pid
+        public static final double P = 0;
+        public static final double I = 0;
+        public static final double D = 0;
+
+        //trapezoid profile
+        public static final double maxVelocity = 0;
+        public static final double maxAcceleration = 0;
+
+        //can ids
         public static final int E1_ID = 0;
         public static final int E2_ID = 1;
     }
