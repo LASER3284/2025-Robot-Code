@@ -213,11 +213,21 @@ public class Constants {
 
     public static class ElevatorConstants {
         //trapezoid profile
-        public static final double maxVelocity = 0;
-        public static final double maxAcceleration = 0;
+    public static final double maxVelocity = 0;
+    public static final double maxAcceleration = 0;
 
-        //can ids
-        public static final int ER_ID = 0;
-        public static final int EL_ID = 1;
+    //can ids
+    public static final int ER_ID = 0;
+    public static final int EL_ID = 1;
+
+    //enum heights
+    public static final double HANDOFF_HEIGHT = 0;
+    public static final double FEED_HEIGHT = 0;
+    public static final double L2_HEIGHT = 0;
+    public static final double L3_HEIGHT = 0;
+    public static final double L4_HEIGHT = 0;
+
+    //tolerance
+    public static final double TOLERANCE = 0;
     }
 }
