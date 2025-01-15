@@ -17,6 +17,7 @@ import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.trajectory.TrapezoidProfile;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants.ElevatorConstants;
 
@@ -137,6 +138,14 @@ public class Elevator extends SubsystemBase {
         leftMotor.setPosition(0);
     }
 
+    public void toPositionL2() {
+        rightMotor.setVoltage(elevatorPID.calculate(getElevatorPosition() / 0.5, 2) + ff.calculate(0));
+        leftMotor.setVoltage(elevatorPID.calculate(getElevatorPosition() / 0.5, 2) + ff.calculate(0));
+        SmartDashboard.putNumber("right motor voltage", rightMotor.getMotorVoltage().getValueAsDouble());
+        SmartDashboard.putNumber("right motor voltage", leftMotor.getMotorVoltage().getValueAsDouble());
+        
+    }
+
     // COMMANDS \\
     public Command zero_command() {
         return this.runOnce(() -> zeroEncoders());
@@ -144,6 +153,10 @@ public class Elevator extends SubsystemBase {
 
     public Command stop_command() {
         return this.runOnce(() -> setPower(0));
+    }
+
+    public Command toPositionL2Command() {
+        return Commands.runOnce( ()-> toPositionL2());
     }
 
     //test
@@ -159,21 +172,14 @@ public class Elevator extends SubsystemBase {
             },
             () -> {
                 setPower(0);
-                System.out.println("mr jackson rocks");
                 current = new TrapezoidProfile(
                     getConstraints());
         
                 double pose = getElevatorPosition();
-                // testing
-                System.out.println("THIS IS POSE ONE LINE 41" + pose);
 
                 TrapezoidProfile.State next = current.calculate(0.02, getSetpoint(), getGoal());
-                // testing
-                System.out.println("THIS IS THE NEXT ONE LINE 47" + next);
 
                 double ff_power = ff.calculate(next.velocity) / 12;
-                // testing
-                System.out.println("FEED FORWARD POWER" + ff_power);
 
                 setSetpoint(next);
 
@@ -187,7 +193,7 @@ public class Elevator extends SubsystemBase {
 
                 double PIDFFpower = power + ff_power;
                 // testing
-                System.out.println("PIDFFpower" + PIDFFpower);
+                SmartDashboard.putNumber("PIDFFpower", PIDFFpower);
 
                 setPower(PIDFFpower);
             }
@@ -199,8 +205,14 @@ public class Elevator extends SubsystemBase {
         SmartDashboard.putNumber("right motor pose", rightMotor.getPosition().getValueAsDouble());
         SmartDashboard.putNumber("left motor pose", leftMotor.getPosition().getValueAsDouble());
         SmartDashboard.putNumber("elevator pose", getElevatorPosition());
+        SmartDashboard.putNumber("feed forward calc", ff.calculate(0));
+
+        //testing
+        SmartDashboard.putNumber("L2 goal", ElevatorConstants.L2_HEIGHT.magnitude());
+
 
         System.out.println(rightMotor.getPosition());
         System.out.println(leftMotor.getPosition());
     }
-}
+    }
+

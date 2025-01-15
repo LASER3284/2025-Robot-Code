@@ -70,13 +70,17 @@ public class ToL2 extends Command {
         elevator.setPower(PIDFFpower);
     }
 
+    public void end(boolean interrupted) {
+        elevator.setPower(0);
+    }
+
     public boolean isFinished() {
         // if (Math.abs(elevator.getElevatorPosition() - ElevatorConstants.L2_HEIGHT.baseUnitMagnitude()) < ElevatorConstants.TOLERANCE) {
         //     return true;
         // } else {
         // return false;
 
-        if (elevator.getElevatorPosition() < ElevatorConstants.L2_HEIGHT.baseUnitMagnitude()) {
+        if (elevator.getElevatorPosition() < ElevatorConstants.L2_HEIGHT.magnitude()) {
             return false;
         } else {
             return true;
