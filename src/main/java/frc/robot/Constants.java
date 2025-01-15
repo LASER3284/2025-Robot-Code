@@ -12,6 +12,7 @@ import com.ctre.phoenix6.swerve.SwerveModuleConstants.*;
 import edu.wpi.first.math.Matrix;
 import edu.wpi.first.math.numbers.N1;
 import edu.wpi.first.math.numbers.N3;
+import edu.wpi.first.units.Units;
 import edu.wpi.first.units.measure.*;
 
 import frc.robot.subsystems.Drivetrain;
@@ -212,22 +213,35 @@ public class Constants {
     }
 
     public static class ElevatorConstants {
-        //trapezoid profile
-    public static final double maxVelocity = 0;
-    public static final double maxAcceleration = 0;
+    //trapezoid profile
+    public static final double maxVelocity = 2;
+    public static final double maxAcceleration = 1;
 
     //can ids
     public static final int ER_ID = 0;
     public static final int EL_ID = 1;
 
     //enum heights
-    public static final double HANDOFF_HEIGHT = 0;
-    public static final double FEED_HEIGHT = 0;
-    public static final double L2_HEIGHT = 0;
-    public static final double L3_HEIGHT = 0;
-    public static final double L4_HEIGHT = 0;
+    public static final Distance HANDOFF_HEIGHT = Units.Inches.of(0);
+    public static final Distance L2_HEIGHT = Units.Inches.of(10);
+    public static final Distance L3_HEIGHT = Units.Inches.of(30);
+    public static final Distance L4_HEIGHT = Units.Inches.of(40);
 
-    //tolerance
-    public static final double TOLERANCE = 0;
+    //gearing
+    public static final double GEAR_RATIO = 1/ 6.67 ;
+    public static final double PULLEY = 1.88;
+    public static final double TOLERANCE = 0.1;
+    public static final double LINEAR_DISTANCE_CONST = PULLEY * Math.PI;
+
+    //pid
+    public static final double P = 0.4;
+    public static final double I = 0;
+    public static final double D = 0.0;
+
+    //ff
+    public static final double kS = 0.2234;
+    public static final double kG = 0.0456;
+    public static final double kV = 0.4567;
+    public static final double kA = 0.0128;
     }
 }
