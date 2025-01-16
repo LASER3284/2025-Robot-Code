@@ -213,19 +213,19 @@ public class Constants {
     }
 
     public static class ElevatorConstants {
-    //trapezoid profile
-    public static final double maxVelocity = 2;
-    public static final double maxAcceleration = 1;
+        //trapezoid profile
+        public static final double maxVelocity = 2;
+        public static final double maxAcceleration = 1;
 
-    //can ids
-    public static final int ER_ID = 0;
-    public static final int EL_ID = 1;
+        //can ids
+        public static final int ER_ID = 0;
+        public static final int EL_ID = 1;
 
-    //enum heights
-    public static final Distance HANDOFF_HEIGHT = Units.Inches.of(0);
-    public static final Distance L2_HEIGHT = Units.Inches.of(10);
-    public static final Distance L3_HEIGHT = Units.Inches.of(30);
-    public static final Distance L4_HEIGHT = Units.Inches.of(40);
+        //enum heights
+        public static final Distance HANDOFF_HEIGHT = Units.Inches.of(0);
+        public static final Distance L2_HEIGHT = Units.Inches.of(10);
+        public static final Distance L3_HEIGHT = Units.Inches.of(30);
+        public static final Distance L4_HEIGHT = Units.Inches.of(40);
 
     //gearing
     public static final double GEAR_RATIO = 1/ 6.67 ;
