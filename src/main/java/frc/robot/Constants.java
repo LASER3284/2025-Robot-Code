@@ -15,6 +15,8 @@ import edu.wpi.first.math.numbers.N3;
 import edu.wpi.first.units.measure.*;
 
 import frc.robot.subsystems.Drivetrain;
+import frc.robot.subsystems.pivotintake.Intake;
+import frc.robot.subsystems.pivotintake.Pivot;
 
 public class Constants {
     public static class SwerveConstants {
@@ -208,6 +210,16 @@ public class Constants {
                 odometryStandardDeviation, visionStandardDeviation, modules
             );
         }
+
+        public static Pivot PivotConstants;
+        // can_ID
+        public static final int Pivot_ID=1;
+        
+        public static Intake IntakeConstants;
+        // can_ID
+        public static final int Intake_ID=0;
+
+        
     }
     }
 }
