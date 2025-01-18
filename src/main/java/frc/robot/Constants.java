@@ -14,7 +14,7 @@ import edu.wpi.first.math.numbers.N1;
 import edu.wpi.first.math.numbers.N3;
 import edu.wpi.first.units.measure.*;
 
-import frc.robot.subsystems.Drivetrain;
+//port frc.robot.subsystems.Drivetrain;
 
 public class Constants {
     public static class SwerveConstants {
@@ -167,11 +167,11 @@ public class Constants {
             kBackRightXPos, kBackRightYPos, kInvertRightSide, kBackRightSteerMotorInverted, kBackRightEncoderInverted
         );
 
-    public static Drivetrain createDrivetrain() {
-        return new Drivetrain(
-            DrivetrainConstants, FrontLeft, FrontRight, BackLeft, BackRight
-        );
-    }
+    // public static Drivetrain createDrivetrain() {
+    //     return new Drivetrain(
+    //         DrivetrainConstants, FrontLeft, FrontRight, BackLeft, BackRight
+    //     );
+    // }
 
     public static class TunerSwerveDrivetrain extends SwerveDrivetrain<TalonFX, TalonFX, CANcoder> {
         public TunerSwerveDrivetrain(
