@@ -1,4 +1,4 @@
-package frc.robot.commands;
+package frc.robot.commands.elevator;
 
 import edu.wpi.first.math.controller.ElevatorFeedforward;
 import edu.wpi.first.math.controller.PIDController;
@@ -7,7 +7,7 @@ import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.Constants.ElevatorConstants;
 import frc.robot.subsystems.Elevator;
 
-public class ToL4 extends Command {
+public class ToHandoff extends Command{
     private final Elevator elevator;
     private TrapezoidProfile current;
     private ElevatorFeedforward ff;
@@ -20,7 +20,7 @@ public class ToL4 extends Command {
             new TrapezoidProfile.State(elevator.getElevatorPosition(), 0.0));
     }
 
-    public ToL4(Elevator elevator) {
+    public ToHandoff(Elevator elevator) {
         this.elevator = elevator;
         this.ff = new ElevatorFeedforward(
             ElevatorConstants.kS, 

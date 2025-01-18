@@ -213,35 +213,77 @@ public class Constants {
     }
 
     public static class ElevatorConstants {
+
         //trapezoid profile
         public static final double maxVelocity = 2;
         public static final double maxAcceleration = 1;
 
         //can ids
-        public static final int ER_ID = 0;
-        public static final int EL_ID = 1;
+        public static final int ER_ID = 2;
+        public static final int EL_ID = 3;
 
-        //enum heights
+        // heights
         public static final Distance HANDOFF_HEIGHT = Units.Inches.of(0);
         public static final Distance L2_HEIGHT = Units.Inches.of(10);
         public static final Distance L3_HEIGHT = Units.Inches.of(30);
         public static final Distance L4_HEIGHT = Units.Inches.of(40);
 
-    //gearing
-    public static final double GEAR_RATIO = 1/ 6.67 ;
-    public static final double PULLEY = 1.88;
-    public static final double TOLERANCE = 0.1;
-    public static final double LINEAR_DISTANCE_CONST = PULLEY * Math.PI;
+        //gearing
+        public static final double GEAR_RATIO = 1/ 6.67 ;
+        public static final double PULLEY = 1.88;
+        public static final double TOLERANCE = 0.1;
+        public static final double LINEAR_DISTANCE_CONST = PULLEY * Math.PI;
 
-    //pid
-    public static final double P = 0.4;
-    public static final double I = 0;
-    public static final double D = 0.0;
+        //pid
+        public static final double P = 0.4;
+        public static final double I = 0;
+        public static final double D = 0.0;
 
-    //ff
-    public static final double kS = 0.2234;
-    public static final double kG = 0.0456;
-    public static final double kV = 0.4567;
-    public static final double kA = 0.0128;
+        //ff
+        public static final double kS = 0.2234;
+        public static final double kG = 0.0456;
+        public static final double kV = 0.4567;
+        public static final double kA = 0.0128;
+    }
+
+    public static class AlgaeIntakeConstants {
+        // can ids
+        public static final int ARACK_ID = 1;
+        public static final int AROLLER_ID = 2;
+
+        // pid
+        public static final double P = 0;
+        public static final double I = 0;
+        public static final double D = 0;
+
+        // motor
+        public static final double maxVelocity = 0;
+        public static final double maxAcceleration = 0;
+
+        //ff
+        public static final double kS = 0;
+        public static final double kG = 0;
+        public static final double kV = 0;
+        public static final double kA = 0;
+
+        public static final double GEAR_RATIO = 0;
+
+        public static final Distance DEPLOYED = Inches.of(0);
+        public static final Distance ZERO = Inches.of(0);
+    }
+
+    public static class PivotIntakeConstants {
+        // can ids
+        public static final int CPIVOT_ID = 0;
+        public static final int CROLLER_ID = 0;
+
+        // pid
+        public static final double P = 0;
+        public static final double I = 0;
+        public static final double D = 0;
+
+        public static final double GEAR_RATIO = 0;
+        public static final double PULLEY = 1.88;
+        public static final double LINEAR_DISTANCE_CONST = PULLEY * Math.PI;
     }
 }

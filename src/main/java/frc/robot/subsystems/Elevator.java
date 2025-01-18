@@ -20,37 +20,12 @@ import frc.robot.Constants.ElevatorConstants;
 
 public class Elevator extends SubsystemBase {
 
-    public enum States {
-        HANDOFF("HANDOFF", ElevatorConstants.HANDOFF_HEIGHT),
-        L2("L2", ElevatorConstants.L2_HEIGHT),
-        L3("L3", ElevatorConstants.L3_HEIGHT),
-        L4("L4", ElevatorConstants.L4_HEIGHT);
-
-        private String state;
-        private Distance height;
-    
-        <Inches> States(String state, Distance height) {
-            this.state = state;
-            this.height = height;
-        }
-
-        public double getHeight() {
-            return height.magnitude();
-        }
-
-        public String getState() {
-            return state;
-        }
-    }
-
     DutyCycleOut pose;
 
     private TalonFX rightMotor;
     private TalonFX leftMotor;
 
     private TrapezoidProfile current;
-    private ElevatorFeedforward ff;
-    private PIDController elevatorPID;
 
     private final TrapezoidProfile.Constraints constraints;
     private TrapezoidProfile.State goal;
@@ -82,15 +57,6 @@ public class Elevator extends SubsystemBase {
         motionMagicConfigs.MotionMagicJerk = 1600;
     
         rightMotor.getConfigurator().apply(talonFXConfigs);
-
-        this.ff = new ElevatorFeedforward(
-            ElevatorConstants.kS, 
-            ElevatorConstants.kG, 
-            ElevatorConstants.kV);
-        this.elevatorPID = new PIDController(
-            ElevatorConstants.P, 
-            ElevatorConstants.I, 
-            ElevatorConstants.D);
     }
 
     public double getElevatorPosition() {
@@ -125,14 +91,6 @@ public class Elevator extends SubsystemBase {
 
     public TrapezoidProfile.Constraints getConstraints() {
         return constraints;
-    }
-
-    public PIDController getPID() {
-        return elevatorPID;
-    }
-
-    public ElevatorFeedforward getFF() {
-        return ff;
     }
 
     public TrapezoidProfile getCurrent() {
