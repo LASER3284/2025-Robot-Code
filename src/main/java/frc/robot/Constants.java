@@ -285,5 +285,11 @@ public class Constants {
         public static final double GEAR_RATIO = 0;
         public static final double PULLEY = 1.88;
         public static final double LINEAR_DISTANCE_CONST = PULLEY * Math.PI;
+
+        public static final Angle STOWED = Rotations.of(0);
+        public static final Angle DEPLOYED = Rotations.of(0.37);
+
+        public static final double maxVelocity = 0.0;
+        public static final double maxAcceleration = 0.0;
     }
 }

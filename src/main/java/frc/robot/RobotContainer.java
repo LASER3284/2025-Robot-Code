@@ -17,13 +17,13 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine.Direction;
-
-
+import frc.robot.Constants.ElevatorConstants;
 import frc.robot.Constants.SwerveConstants;
 import frc.robot.commands.elevator.ToHandoff;
 import frc.robot.commands.elevator.ToL2;
 import frc.robot.commands.elevator.ToL3;
 import frc.robot.commands.elevator.ToL4;
+import frc.robot.commands.elevator.ToPosition;
 import frc.robot.subsystems.Drivetrain;
 import frc.robot.subsystems.Elevator;
 
@@ -84,10 +84,10 @@ public class RobotContainer {
         // reset the field-centric heading on left bumper press
         joystick.leftBumper().onTrue(drivetrain.runOnce(() -> drivetrain.seedFieldCentric()));
 
-        joystick.povLeft().onTrue(new ToHandoff(elevator));
-        joystick.povDown().onTrue(new ToL2(elevator));
-        joystick.povRight().onTrue(new ToL3(elevator));
-        joystick.povUp().onTrue(new ToL4(elevator));
+        joystick.povLeft().onTrue(new ToPosition(elevator, ElevatorConstants.HANDOFF_HEIGHT));
+        joystick.povDown().onTrue(new ToPosition(elevator, ElevatorConstants.L2_HEIGHT));
+        joystick.povRight().onTrue(new ToPosition(elevator, ElevatorConstants.L3_HEIGHT));
+        joystick.povUp().onTrue(new ToPosition(elevator, ElevatorConstants.L4_HEIGHT));
 
         drivetrain.registerTelemetry(logger::telemeterize);
     }
