@@ -12,10 +12,15 @@ import com.ctre.phoenix6.swerve.SwerveRequest;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
+import edu.wpi.first.wpilibj2.command.ConditionalCommand;
+import edu.wpi.first.wpilibj2.command.WaitUntilCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine.Direction;
 
 import frc.robot.Constants.SwerveConstants;
+import frc.robot.commands.algae_intake.AlgaeDeploy;
+import frc.robot.commands.algae_intake.AlgaeIntakeCommand;
+import frc.robot.commands.algae_intake.AlgaeStow;
 //import frc.robot.subsystems.Drivetrain;
 import frc.robot.subsystems.AlgaeIntake;
 
@@ -71,9 +76,19 @@ public class RobotContainer {
 
        // drivetrain.registerTelemetry(logger::telemeterize);
 
-       joystick.x().onTrue(algaeintake.extend());
-       joystick.y().onTrue(algaeintake.retract());
        joystick.a().onTrue(algaeintake.stopmotor());
+       //joystick.b().onTrue(new AlgaeDeploy(algaeintake, Inches.of(7)));
+       joystick.x().onTrue(new AlgaeDeploy(algaeintake, Inches.of(4)));
+       joystick.y().onTrue(new AlgaeStow(algaeintake, Inches.of(-4)));
+
+        joystick.b().whileTrue(new AlgaeDeploy(algaeintake, Inches.of(7))
+            .andThen(algaeintake.rollerSpeed_Command(.5)));
+        joystick.b().whileFalse(new AlgaeStow(algaeintake, Inches.of(-4)));
+
+        
+    
+
+       joystick.povUp().onTrue(algaeintake.zero_command());
     }
 
     public Command getAutonomousCommand() {

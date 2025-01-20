@@ -17,6 +17,7 @@ import edu.wpi.first.math.controller.ElevatorFeedforward;
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.trajectory.TrapezoidProfile;
 import edu.wpi.first.math.trajectory.ExponentialProfile.Constraints;
+import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.Encoder;
 import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.XboxController.Axis;
@@ -28,28 +29,21 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 public class AlgaeIntake extends SubsystemBase {
     private SparkFlex rackmotor;
     private SparkMax rollermotor;
-    private Encoder encoder;
+    private DigitalInput limit;
+
     private TrapezoidProfile current;
     private PIDController AlgaePID;
     private ElevatorFeedforward Feed;
     private final TrapezoidProfile.Constraints constaints;
     private TrapezoidProfile.State goal;
     private TrapezoidProfile.State Setpoint;
-// Extend levels
-   enum state {extended,retracted,hardLimit}
    
     public AlgaeIntake() {
-
-        /*
-         * Change Values before deploy
-         * 
-         * 
-         * 
-         */
-
             rollermotor = new SparkMax(2, MotorType.kBrushless);
-            rackmotor = new SparkFlex(1, MotorType.kBrushless);          
-            constaints = new TrapezoidProfile.Constraints(0.2,0.2);
+            rackmotor = new SparkFlex(1, MotorType.kBrushless);
+            limit = new DigitalInput(9);
+            
+            constaints = new TrapezoidProfile.Constraints(4.5, 4.5);
             goal = new TrapezoidProfile.State();
             Setpoint = new TrapezoidProfile.State();
             this.Feed = new ElevatorFeedforward(
@@ -63,86 +57,64 @@ public class AlgaeIntake extends SubsystemBase {
                    // PID numbers
     }
     public double getAlgaePosition() {
-        double Algaepose = rackmotor.getExternalEncoder().getPosition();
-        Algaepose = (Algaepose * (36/15)) * Math.PI;
+        double algaepose = rackmotor.getEncoder().getPosition();
+        SmartDashboard.putNumber("og pose", algaepose);
+        algaepose = (algaepose * (36/15)) * Math.PI;
     // Motor Position
-        return Algaepose;
+        return algaepose;
     }
     public void encoders(double pose) {
         rackmotor.getEncoder();
     }
-    public void setMotorSpeed(double speed) {
+    public void setRackSpeed(double speed) {
         rackmotor.set(speed);
-        rollermotor.set(speed);
         //motor speed
     }
-    public void extend( double distance) {
-        setgoal(distance);
-        setsetpoint(
-        new TrapezoidProfile.State(getAlgaePosition(),0));
-        
-        //  encoder.setDistancePerPulse(distancePerPulse);
-       // double hi = encoder.getDistance();
-        System.out.println("Distance: " + distance);
-        setMotorSpeed(0);
-        current = new TrapezoidProfile(
-        getconstraints());
-        double pose = getAlgaePosition();
-        TrapezoidProfile.State next = current.calculate(0.02, getSetpoint(), getgoal());
-        double Feeds = Feed.calculate(next.velocity) / 12;
-        double Feed_power = AlgaePID.calculate(pose);
-        double Feed = Feeds + Feed_power;
-        setMotorSpeed(Feed);
-          //  {
-            //    encoder.reset();
-           // }
-        }
-        public void retract(int distance) {
-        double distancePerPulse = 0.01; 
-            //encoder.setDistancePerPulse(distancePerPulse);
-           // double he = encoder.getDistance();
-            System.out.println("Distance: " + distance);
 
-            //COMMANDS
-        }
-        public Command extend()
-        {
-            //set the distance constant before deploy
-            return this.runOnce(() -> extend(12));
-        }
-        public Command retract()
-        {
-            //set the distance constant before deploy
-            return this.runOnce(() -> retract(12));
-        }
-      //  public Command encoder()
-      //  {
-         //   return this.runOnce(() -> encoder());
-      //  }
-        public Command stopmotor()
-        {
-            return this.runOnce(() -> stopmotor());
-        }
+    public void zeroEncoder() {
+        rackmotor.getEncoder().setPosition(0);
+    }
 
-            //GETTERS
-        public TrapezoidProfile.State getSetpoint() {
-            return Setpoint;
-        }
-        public TrapezoidProfile.State getgoal() {
-            return goal;
-        }
-        public TrapezoidProfile.Constraints getconstraints() {
-            return constaints;
-        }
-        public PIDController getAlgaePID() {
-            return AlgaePID;
-        }
-        public ElevatorFeedforward getFeed() {
-            return Feed;
-        }
-        public TrapezoidProfile getcurrent() {
-            return current;
-        }
+    public void setRollerSpeed(double speed) {
+        rollermotor.set(speed);
+    }
+
+    public Command stopmotor()
+    {
+        return this.runOnce(() -> stopmotor());
+    }
+
+    public Command zero_command() {
+        return this.runOnce(() -> zeroEncoder());
+    }
+
+    public Command rollerSpeed_Command(double speed) {
+        return this.runOnce(() -> setRollerSpeed(speed));
+    }
+
+        //GETTERS
+    public TrapezoidProfile.State getSetpoint() {
+        return Setpoint;
+    }
+    public TrapezoidProfile.State getgoal() {
+        return goal;
+    }
+    public TrapezoidProfile.Constraints getconstraints() {
+        return constaints;
+    }
+    public PIDController getAlgaePID() {
+        return AlgaePID;
+    }
+    public ElevatorFeedforward getFeed() {
+        return Feed;
+    }
+    public TrapezoidProfile getcurrent() {
+        return current;
+    }
+
+    public boolean getlimit() {
+        return limit.get();
+    }
 
               //SETTERS
         public void setgoal(double goal_pose) {
@@ -151,13 +123,14 @@ public class AlgaeIntake extends SubsystemBase {
         public void setsetpoint(TrapezoidProfile.State setpoint) {
             this.Setpoint = setpoint;
         }
+
     public void stopMotor() {
         rollermotor.stopMotor();
         rackmotor.stopMotor();
     }
     public void periodic() {
         //SmartDashboard.putNumber("distance", encoder.getDistance());
-        SmartDashboard.putNumber("Distance", getAlgaePosition());
+        SmartDashboard.putNumber("getalgae pose", getAlgaePosition());
         SmartDashboard.putNumber("motor dist", rackmotor.getEncoder().getPosition());
     }   
 
