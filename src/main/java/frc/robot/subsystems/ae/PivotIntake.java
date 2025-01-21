@@ -7,6 +7,7 @@ import com.revrobotics.spark.SparkLowLevel.MotorType;
 
 import edu.wpi.first.math.trajectory.TrapezoidProfile;
 import edu.wpi.first.wpilibj.Encoder;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.Constants.PivotIntakeConstants;
 
 public class PivotIntake {
@@ -53,7 +54,7 @@ public class PivotIntake {
 
     public double getPivotPosition() {
         double pivotpose = pivot_motor.getPosition().getValueAsDouble();
-        pivotpose = (pivotpose * PivotIntakeConstants.GEAR_RATIO) * PivotIntakeConstants.LINEAR_DISTANCE_CONST;
+        pivotpose = (pivotpose * PivotIntakeConstants.GEAR_RATIO);
 
         return pivotpose;
     }
@@ -62,5 +63,13 @@ public class PivotIntake {
         return thru_bore.getDistance();
     }
 
+    public void setRollerSpeed(double speed) {
+        roller_motor.set(speed);
+    }
+
+    public void periodic() {
+        SmartDashboard.putNumber("pivot pose", getPivotPosition());
+        SmartDashboard.putNumber("encoder pose", getEncoder());
+    }
 
 }

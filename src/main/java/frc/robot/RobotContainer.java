@@ -19,13 +19,10 @@ import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine.Direction;
 import frc.robot.Constants.ElevatorConstants;
 import frc.robot.Constants.SwerveConstants;
-import frc.robot.commands.elevator.ToHandoff;
-import frc.robot.commands.elevator.ToL2;
-import frc.robot.commands.elevator.ToL3;
-import frc.robot.commands.elevator.ToL4;
 import frc.robot.commands.elevator.ToPosition;
 import frc.robot.subsystems.Drivetrain;
 import frc.robot.subsystems.Elevator;
+import frc.robot.subsystems.ae.AlgaeIntake;
 
 public class RobotContainer {
     private double MaxSpeed = SwerveConstants.kSpeedAt12Volts.in(MetersPerSecond); // kSpeedAt12Volts desired top speed
@@ -47,6 +44,7 @@ public class RobotContainer {
 
     public final Drivetrain drivetrain = SwerveConstants.createDrivetrain();
     public final Elevator elevator = new Elevator();
+    public final AlgaeIntake algaeintake = new AlgaeIntake();
 
     public RobotContainer() {
         autoChooser = AutoBuilder.buildAutoChooser("Tests");
@@ -60,14 +58,13 @@ public class RobotContainer {
     private void configureBindings() {
         // Note that X is defined as forward according to WPILib convention,
         // and Y is defined as to the left according to WPILib convention.
-        drivetrain.setDefaultCommand(
-            // Drivetrain will execute this command periodically
+        // drivetrain.setDefaultCommand(
+        // Drivetrain will execute this command periodically
             drivetrain.applyRequest(() ->
                 drive.withVelocityX(-joystick.getLeftY() * MaxSpeed) // Drive forward with negative Y (forward)
                     .withVelocityY(-joystick.getLeftX() * MaxSpeed) // Drive left with negative X (left)
                     .withRotationalRate(-joystick.getRightX() * MaxAngularRate) // Drive counterclockwise with negative X (left)
-            )
-        );
+            );
 
         joystick.a().whileTrue(drivetrain.applyRequest(() -> brake));
         joystick.b().whileTrue(drivetrain.applyRequest(() ->
@@ -89,10 +86,14 @@ public class RobotContainer {
         joystick.povRight().onTrue(new ToPosition(elevator, ElevatorConstants.L3_HEIGHT));
         joystick.povUp().onTrue(new ToPosition(elevator, ElevatorConstants.L4_HEIGHT));
 
-        drivetrain.registerTelemetry(logger::telemeterize);
+        joystick.a().onTrue(elevator.zero_command());
+
+        //joystick.a().onTrue(algaeintake.extend_command(4));
+
+        //drivetrain.registerTelemetry(logger::telemeterize);
     }
 
-    public Command getAutonomousCommand() {
-        return autoChooser.getSelected();
-    }
+    // public Command getAutonomousCommand() {
+    //     return autoChooser.getSelected();
+    // }
 }
