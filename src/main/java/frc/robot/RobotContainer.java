@@ -9,7 +9,9 @@ import static edu.wpi.first.units.Units.*;
 import com.ctre.phoenix6.swerve.SwerveModule.DriveRequestType;
 import com.ctre.phoenix6.swerve.SwerveRequest;
 import com.pathplanner.lib.auto.AutoBuilder;
+import com.pathplanner.lib.auto.NamedCommands;
 import com.pathplanner.lib.commands.PathPlannerAuto;
+
 
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.wpilibj.smartdashboard.Field2d;
@@ -22,11 +24,15 @@ import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine.Direction;
 
 import frc.robot.Constants.SwerveConstants;
 import frc.robot.subsystems.Drivetrain;
+import frc.robot.subsystems.pivot;
 
 public class RobotContainer {
     private double MaxSpeed = SwerveConstants.kSpeedAt12Volts.in(MetersPerSecond); // kSpeedAt12Volts desired top speed
     private double MaxAngularRate = RotationsPerSecond.of(0.75).in(RadiansPerSecond); // 3/4 of a rotation per second max angular velocity
 
+    public final pivot s_Pivot = new pivot();
+   
+    
     SendableChooser<Command> autoChooser;
     Field2d field = new Field2d();
 
@@ -44,15 +50,13 @@ public class RobotContainer {
     public final Drivetrain drivetrain = SwerveConstants.createDrivetrain();
 
     public RobotContainer() {
-        autoChooser = AutoBuilder.buildAutoChooser("Tests");
 
+        autoChooser = AutoBuilder.buildAutoChooser("Ipsum");
         SmartDashboard.putData("Auto Mode", autoChooser);
-        SmartDashboard.putData("field", field);
-
+        
         configureBindings();
+        
     }
-
-    
     
     private void configureBindings() {
         // Note that X is defined as forward according to WPILib convention,
@@ -85,6 +89,7 @@ public class RobotContainer {
     }
 
     public Command getAutonomousCommand() {
-        return autoChooser.getSelected();
+    return   autoChooser.getSelected();
     }
+  
 }

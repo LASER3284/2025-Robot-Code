@@ -40,6 +40,7 @@ public class Drivetrain extends TunerSwerveDrivetrain implements Subsystem {
     /* Keep track if we've ever applied the operator perspective before or not */
     private boolean m_hasAppliedOperatorPerspective = false;
 
+    
     /* Swerve requests to apply during SysId characterization */
     private final SwerveRequest.SysIdSwerveTranslation m_translationCharacterization = new SwerveRequest.SysIdSwerveTranslation();
     private final SwerveRequest.SysIdSwerveSteerGains m_steerCharacterization = new SwerveRequest.SysIdSwerveSteerGains();
@@ -167,6 +168,7 @@ public class Drivetrain extends TunerSwerveDrivetrain implements Subsystem {
         }
 
         configureAutoBuilder();
+        
     }
 
     /**
@@ -211,7 +213,7 @@ public class Drivetrain extends TunerSwerveDrivetrain implements Subsystem {
 
     private void configureAutoBuilder() {
         try {
-            var config = RobotConfig.fromGUISettings();
+
             AutoBuilder.configure(
                 () -> getState().Pose,   // Supplier of current robot pose
                 this::resetPose,         // Consumer for seeding pose against auto
@@ -224,9 +226,9 @@ public class Drivetrain extends TunerSwerveDrivetrain implements Subsystem {
                 ),
                 new PPHolonomicDriveController(
                     // PID constants for translation
-                    new PIDConstants(5, 0, 0),
+                    new PIDConstants(1, 0.001, 0.035),
                     // PID constants for rotation
-                    new PIDConstants(5, 0, 0)
+                    new PIDConstants(7, 0, 0)
                 ),
                 config,
                 // Assume the path needs to be flipped for Red vs Blue, this is normally the case

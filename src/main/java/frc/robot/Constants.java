@@ -59,7 +59,7 @@ public class Constants {
 
     private static final double kDriveGearRatio = 8.142857142857142;
     private static final double kSteerGearRatio = 12.8;
-    private static final Distance kWheelRadius = Inches.of(2);
+    private static final Distance kWheelRadius = Inches.of(2.0);
 
     private static final boolean kInvertLeftSide = false;
     private static final boolean kInvertRightSide = true;
@@ -209,5 +209,38 @@ public class Constants {
             );
         }
     }
+    }
+
+    public static class PivotConstants{
+
+        public static final double P = 0;
+        public static final double I = 0;
+        public static final double D = 0;
+        public static final double G = 0;
+        public static final double A = 0;
+        public static final double V = 0;
+        public static final double S = 0;
+
+        public static final double GEAR_RATIO = 1/53.33;
+
+        public static final double maxVelocity = 0;
+        public static final double maxAcceleration  = 0;
+
+        public static final int pivotMotorID = 0;
+    }
+
+    public static class ElevatorConstants {
+        //pid
+        public static final double P = 0;
+        public static final double I = 0;
+        public static final double D = 0;
+
+        //trapezoid profile
+        public static final double maxVelocity = 0;
+        public static final double maxAcceleration = 0;
+
+        //can ids
+        public static final int E1_ID = 0;
+        public static final int E2_ID = 1;
     }
 }
