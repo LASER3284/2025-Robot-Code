@@ -34,14 +34,13 @@ public class LimelightObjectDetection extends SubsystemBase {
     private double m_algaeConfidence = 0.0;
     private double m_coralConfidence = 0.0;
 
-    // Initializes a new Limelight object for gamepiece detection.
-    // "LimelightHelpers.getFirstParse()" may be deleted.
+    /* Initializes a new Limelight object for gamepiece detection. */
     public LimelightObjectDetection() {
         configureShuffleboard();
         // LimelightHelpers.getFirstParse();
     }
 
-    // Configures the Shuffleboard to receive Limelight streams. 
+    /* Configures the Shuffleboard to recieve Limelight feed. */ 
     private void configureShuffleboard() {
         ShuffleboardTab tab;
         tab = Shuffleboard.getTab(LimelightName);
@@ -69,7 +68,7 @@ public class LimelightObjectDetection extends SubsystemBase {
         // More may be added after this for Competition Shuffleboard, should it be deemed necessary.
     }
 
-    // Reads and stores values periodically.
+    /* Reads and stores values periodically. */
     public void periodic() {
         if (m_detectionOn) {
             // Note: Because parsing the JSON takes 2.5 milliseconds, only do it when needed. 
@@ -89,50 +88,49 @@ public class LimelightObjectDetection extends SubsystemBase {
         }
     }
 
-    // Turns object detection on.
+    /* Turns object detection on. */
     public void doDetection() {
         m_detectionOn = true;
     }
 
-    // Turns object detection off.
+    /* Turns object detection off. */
     public void stopDetection() {
         m_detectionOn = false;
     }
 
-    // Is the camera detecting an Algae gamepiece?
+    /* Is the camera detecting an Algae gamepiece? */
     public boolean hasAlgaeTarget() {
         return m_algaeTarget;
     }
 
-    // Locates and pinpoints the nearest Algae gamepiece.
+    /* Locates and pinpoints the nearest Algae gamepiece. */
     public Translation2d getNearestAlgaeTarget() {
         return m_algaePose2d;
     }
 
-    // Is the camera detecting a Coral gamepiece?
+    /* Is the camera detecting a Coral gamepiece? */
     public boolean hasCoralTarget() {
         return m_coralTarget;
     }
 
-    // Locates and pinpoints the nearest Coral gamepiece.
+    /* Locates and pinpoints the nearest Coral gamepiece. */ 
     public Translation2d getNearestCoralTarget() {
         return m_coralPose2d;
     }
-    
-    // Redefine or remove this method.
-    // private LimelightTarget_Detector[] fetchTargetDetector() {
 
-    // Processes the Limelight target results into Shuffleboard.
+    public LimelightTarget_Detector[] fetchTargetsDetector() {
+        return m_llResults.targets_Detector;
+    }
+    
+    /* Processes the Limelight target results into Shuffleboard. */
     private void processLlResults(LimelightResults m_llResults) {
-        // Redefine or remove this variable (see line 121.)
-        LimelightTarget_Detector[] detections = fetchTargetDetector();
+        LimelightTarget_Detector[] detections = fetchTargetsDetector();
         // Change variables to necessary values.
         double m_algaeHeight = 0;
         double m_coralHeight = 0;
 
         m_algaeTarget = m_coralTarget = false;
 
-        // Everything below this line may be modified or deleted.
         if (detections != null) {
             System.out.println(" Targets detected - " + detections.length);
             for (LimelightTarget_Detector detection : detections) {
