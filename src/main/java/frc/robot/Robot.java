@@ -4,6 +4,16 @@
 
 package frc.robot;
 
+import java.util.ArrayList;
+import java.util.List;
+import java.util.stream.Collectors;
+
+import com.pathplanner.lib.auto.AutoBuilder;
+import com.pathplanner.lib.commands.PathPlannerAuto;
+import com.pathplanner.lib.path.PathPlannerPath;
+
+import edu.wpi.first.math.geometry.Pose2d;
+import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
@@ -12,6 +22,8 @@ public class Robot extends TimedRobot {
   private Command m_autonomousCommand;
 
   private final RobotContainer m_robotContainer;
+
+  private String autoName, newAutoName;
 
   public Robot() {
     m_robotContainer = new RobotContainer();
@@ -24,7 +36,9 @@ public class Robot extends TimedRobot {
 
   public void disabledInit() {}
 
-  public void disabledPeriodic() {}
+  public void disabledPeriodic() {
+    
+  }
 
   public void disabledExit() {}
 

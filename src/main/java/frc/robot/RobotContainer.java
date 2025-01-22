@@ -19,9 +19,9 @@ import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine.Direction;
 import frc.robot.Constants.ElevatorConstants;
 import frc.robot.Constants.SwerveConstants;
-import frc.robot.commands.elevator.ToPosition;
+//import frc.robot.commands.elevator.ToPosition;
 import frc.robot.subsystems.Drivetrain;
-import frc.robot.subsystems.Elevator;
+//import frc.robot.subsystems.Elevator;
 import frc.robot.subsystems.ae.AlgaeIntake;
 
 public class RobotContainer {
@@ -43,7 +43,7 @@ public class RobotContainer {
     private final CommandXboxController joystick = new CommandXboxController(0);
 
     public final Drivetrain drivetrain = SwerveConstants.createDrivetrain();
-    public final Elevator elevator = new Elevator();
+    //public final Elevator elevator = new Elevator();
     public final AlgaeIntake algaeintake = new AlgaeIntake();
 
     public RobotContainer() {
@@ -81,19 +81,19 @@ public class RobotContainer {
         // reset the field-centric heading on left bumper press
         joystick.leftBumper().onTrue(drivetrain.runOnce(() -> drivetrain.seedFieldCentric()));
 
-        joystick.povLeft().onTrue(new ToPosition(elevator, ElevatorConstants.HANDOFF_HEIGHT));
-        joystick.povDown().onTrue(new ToPosition(elevator, ElevatorConstants.L2_HEIGHT));
-        joystick.povRight().onTrue(new ToPosition(elevator, ElevatorConstants.L3_HEIGHT));
-        joystick.povUp().onTrue(new ToPosition(elevator, ElevatorConstants.L4_HEIGHT));
+        // joystick.povLeft().onTrue(new ToPosition(elevator, ElevatorConstants.HANDOFF_HEIGHT));
+        // joystick.povDown().onTrue(new ToPosition(elevator, ElevatorConstants.L2_HEIGHT));
+        // joystick.povRight().onTrue(new ToPosition(elevator, ElevatorConstants.L3_HEIGHT));
+        // joystick.povUp().onTrue(new ToPosition(elevator, ElevatorConstants.L4_HEIGHT));
 
-        joystick.a().onTrue(elevator.zero_command());
+        // joystick.a().onTrue(elevator.zero_command());
 
-        //joystick.a().onTrue(algaeintake.extend_command(4));
+        joystick.a().onTrue(algaeintake.extend_command(4));
 
-        //drivetrain.registerTelemetry(logger::telemeterize);
+        drivetrain.registerTelemetry(logger::telemeterize);
     }
 
-    // public Command getAutonomousCommand() {
-    //     return autoChooser.getSelected();
-    // }
+    public Command getAutonomousCommand() {
+        return autoChooser.getSelected();
+    }
 }

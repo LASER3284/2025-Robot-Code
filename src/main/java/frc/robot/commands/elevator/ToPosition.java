@@ -45,6 +45,25 @@ public class ToPosition extends Command {
         TrapezoidProfile.State next = current.calculate(0.02, elevator.getSetpoint(), elevator.getGoal());
         double ff_power = ff.calculate(next.velocity) / 12;
         elevator.setSetpoint(next);
+
+        if (height == ElevatorConstants.HANDOFF_HEIGHT) {
+            elevatorPID.setP(0);
+            elevatorPID.setI(0);
+            elevatorPID.setD(0);
+        } else if (height == ElevatorConstants.L2_HEIGHT) {
+            elevatorPID.setP(0);
+            elevatorPID.setI(0);
+            elevatorPID.setD(0);
+        } else if (height == ElevatorConstants.L3_HEIGHT) {
+            elevatorPID.setP(0);
+            elevatorPID.setI(0);
+            elevatorPID.setD(0);
+        } else {
+            elevatorPID.setP(0);
+            elevatorPID.setI(0);
+            elevatorPID.setD(0);
+        }
+        
         elevatorPID.setSetpoint(next.position);
         double power = elevatorPID.calculate(pose);
         double PIDFFpower = power + ff_power;

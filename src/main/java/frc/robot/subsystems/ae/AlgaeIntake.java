@@ -1,5 +1,6 @@
 package frc.robot.subsystems.ae;
 
+import com.ctre.phoenix6.hardware.TalonFX;
 import com.revrobotics.spark.SparkFlex;
 import com.revrobotics.spark.SparkMax;
 import com.revrobotics.spark.SparkLowLevel.MotorType;
@@ -14,7 +15,7 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
 public class AlgaeIntake extends SubsystemBase {
     private SparkFlex rackmotor;
-    private SparkMax rollermotor;
+    private TalonFX rollermotor;
     private TrapezoidProfile current;
     private PIDController AlgaePID;
     private ElevatorFeedforward Feed;
@@ -26,7 +27,7 @@ public class AlgaeIntake extends SubsystemBase {
    enum state {extended,retracted,hardLimit}
    
     public AlgaeIntake() {
-            rollermotor = new SparkMax(2, MotorType.kBrushless);
+            rollermotor = new TalonFX(2);
             rackmotor = new SparkFlex(1, MotorType.kBrushless);          
             constaints = new TrapezoidProfile.Constraints(0.2,0.2);
             goal = new TrapezoidProfile.State();
@@ -104,7 +105,7 @@ public class AlgaeIntake extends SubsystemBase {
             return current;
         }
 
-              //SETTERS
+        //SETTERS
         public void setgoal(double goal_pose) {
             goal = new TrapezoidProfile.State(goal_pose,0);
         }
