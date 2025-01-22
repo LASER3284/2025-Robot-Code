@@ -40,6 +40,8 @@ public class RobotContainer {
 
     private final Telemetry logger = new Telemetry(MaxSpeed);
 
+    private final AlgaeIntake algaeintake = new AlgaeIntake();
+
     private final CommandXboxController joystick = new CommandXboxController(0);
 
     public final Drivetrain drivetrain = SwerveConstants.createDrivetrain();
@@ -58,7 +60,7 @@ public class RobotContainer {
     private void configureBindings() {
         // Note that X is defined as forward according to WPILib convention,
         // and Y is defined as to the left according to WPILib convention.
-        // drivetrain.setDefaultCommand(
+        drivetrain.setDefaultCommand(
         // Drivetrain will execute this command periodically
             drivetrain.applyRequest(() ->
                 drive.withVelocityX(-joystick.getLeftY() * MaxSpeed) // Drive forward with negative Y (forward)
@@ -66,27 +68,27 @@ public class RobotContainer {
                     .withRotationalRate(-joystick.getRightX() * MaxAngularRate) // Drive counterclockwise with negative X (left)
             );
 
-        joystick.a().whileTrue(drivetrain.applyRequest(() -> brake));
-        joystick.b().whileTrue(drivetrain.applyRequest(() ->
+       joystick.a().whileTrue(drivetrain.applyRequest(() -> brake));
+       joystick.b().whileTrue(drivetrain.applyRequest(() ->
             point.withModuleDirection(new Rotation2d(-joystick.getLeftY(), -joystick.getLeftX()))
-        ));
+       ));
 
         // Run SysId routines when holding back/start and X/Y.
         // Note that each routine should be run exactly once in a single log.
-        joystick.back().and(joystick.y()).whileTrue(drivetrain.sysIdDynamic(Direction.kForward));
-        joystick.back().and(joystick.x()).whileTrue(drivetrain.sysIdDynamic(Direction.kReverse));
-        joystick.start().and(joystick.y()).whileTrue(drivetrain.sysIdQuasistatic(Direction.kForward));
-        joystick.start().and(joystick.x()).whileTrue(drivetrain.sysIdQuasistatic(Direction.kReverse));
+       joystick.back().and(joystick.y()).whileTrue(drivetrain.sysIdDynamic(Direction.kForward));
+       joystick.back().and(joystick.x()).whileTrue(drivetrain.sysIdDynamic(Direction.kReverse));
+       joystick.start().and(joystick.y()).whileTrue(drivetrain.sysIdQuasistatic(Direction.kForward));
+       joystick.start().and(joystick.x()).whileTrue(drivetrain.sysIdQuasistatic(Direction.kReverse));
 
         // reset the field-centric heading on left bumper press
         joystick.leftBumper().onTrue(drivetrain.runOnce(() -> drivetrain.seedFieldCentric()));
 
-        // joystick.povLeft().onTrue(new ToPosition(elevator, ElevatorConstants.HANDOFF_HEIGHT));
-        // joystick.povDown().onTrue(new ToPosition(elevator, ElevatorConstants.L2_HEIGHT));
-        // joystick.povRight().onTrue(new ToPosition(elevator, ElevatorConstants.L3_HEIGHT));
-        // joystick.povUp().onTrue(new ToPosition(elevator, ElevatorConstants.L4_HEIGHT));
+        joystick.povLeft().onTrue(new ToPosition(elevator, ElevatorConstants.HANDOFF_HEIGHT));
+        joystick.povDown().onTrue(new ToPosition(elevator, ElevatorConstants.L2_HEIGHT));
+        joystick.povRight().onTrue(new ToPosition(elevator, ElevatorConstants.L3_HEIGHT));
+        joystick.povUp().onTrue(new ToPosition(elevator, ElevatorConstants.L4_HEIGHT));
 
-        // joystick.a().onTrue(elevator.zero_command());
+        joystick.a().onTrue(elevator.zero_command());
 
         joystick.a().onTrue(algaeintake.extend_command(4));
 
@@ -96,4 +98,5 @@ public class RobotContainer {
     public Command getAutonomousCommand() {
         return autoChooser.getSelected();
     }
+   
 }
