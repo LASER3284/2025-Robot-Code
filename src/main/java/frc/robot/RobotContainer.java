@@ -10,39 +10,37 @@ import com.ctre.phoenix6.swerve.SwerveModule.DriveRequestType;
 import com.ctre.phoenix6.swerve.SwerveRequest;
 import com.pathplanner.lib.auto.AutoBuilder;
 
-import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.wpilibj.smartdashboard.Field2d;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
+import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine.Direction;
-import frc.robot.Constants.ElevatorConstants;
+
 import frc.robot.Constants.SwerveConstants;
+import frc.robot.commands.algae_intake.AlgaeDeploy;
+import frc.robot.commands.algae_intake.AlgaeStow;
+import frc.robot.subsystems.AlgaeIntake;
 //import frc.robot.commands.elevator.ToPosition;
 import frc.robot.subsystems.Drivetrain;
-//import frc.robot.subsystems.Elevator;
-import frc.robot.subsystems.ae.AlgaeIntake;
 
 public class RobotContainer {
-    private double MaxSpeed = SwerveConstants.kSpeedAt12Volts.in(MetersPerSecond); // kSpeedAt12Volts desired top speed
-    private double MaxAngularRate = RotationsPerSecond.of(0.75).in(RadiansPerSecond); // 3/4 of a rotation per second max angular velocity
+    private double MaxSpeed = SwerveConstants.kSpeedAt12Volts.in(MetersPerSecond);
+    private double MaxAngularRate = RotationsPerSecond.of(0.75).in(RadiansPerSecond); 
 
     SendableChooser<Command> autoChooser;
     Field2d field = new Field2d();
 
-    /* Setting up bindings for necessary control of the swerve drive platform */
     private final SwerveRequest.FieldCentric drive = new SwerveRequest.FieldCentric()
-            .withDeadband(MaxSpeed * 0.1).withRotationalDeadband(MaxAngularRate * 0.1) // Add a 10% deadband
-            .withDriveRequestType(DriveRequestType.OpenLoopVoltage); // Use open-loop control for drive motors
+            .withDeadband(MaxSpeed * 0.1).withRotationalDeadband(MaxAngularRate * 0.1) 
+            .withDriveRequestType(DriveRequestType.OpenLoopVoltage); 
     private final SwerveRequest.SwerveDriveBrake brake = new SwerveRequest.SwerveDriveBrake();
     private final SwerveRequest.PointWheelsAt point = new SwerveRequest.PointWheelsAt();
 
     private final Telemetry logger = new Telemetry(MaxSpeed);
 
-    private final AlgaeIntake algaeintake = new AlgaeIntake();
-
-    private final CommandXboxController joystick = new CommandXboxController(0);
+    private final CommandXboxController driver = new CommandXboxController(0);
 
     public final Drivetrain drivetrain = SwerveConstants.createDrivetrain();
     //public final Elevator elevator = new Elevator();
@@ -52,45 +50,67 @@ public class RobotContainer {
         autoChooser = AutoBuilder.buildAutoChooser("Tests");
         SmartDashboard.putData("Auto Mode", autoChooser);
 
+        SmartDashboard.putData("field", Constants.SwerveConstants.field);
+
         configureBindings();
     }
 
     
     
     private void configureBindings() {
-        // Note that X is defined as forward according to WPILib convention,
-        // and Y is defined as to the left according to WPILib convention.
+
         drivetrain.setDefaultCommand(
-        // Drivetrain will execute this command periodically
             drivetrain.applyRequest(() ->
-                drive.withVelocityX(-joystick.getLeftY() * MaxSpeed) // Drive forward with negative Y (forward)
-                    .withVelocityY(-joystick.getLeftX() * MaxSpeed) // Drive left with negative X (left)
-                    .withRotationalRate(-joystick.getRightX() * MaxAngularRate) // Drive counterclockwise with negative X (left)
+                drive.withVelocityX(-driver.getLeftY() * MaxSpeed) 
+                    .withVelocityY(-driver.getLeftX() * MaxSpeed) 
+                    .withRotationalRate(-driver.getRightX() * MaxAngularRate)) 
             );
 
-       joystick.a().whileTrue(drivetrain.applyRequest(() -> brake));
-       joystick.b().whileTrue(drivetrain.applyRequest(() ->
-            point.withModuleDirection(new Rotation2d(-joystick.getLeftY(), -joystick.getLeftX()))
-       ));
+       driver.a().whileTrue(drivetrain.applyRequest(() -> brake));
+    //    driver.b().whileTrue(drivetrain.applyRequest(() ->
+    //         point.withModuleDirection(new Rotation2d(-driver.getLeftY(), -driver.getLeftX()))
+    //    ));
+
+        driver.leftTrigger().whileTrue(drivetrain.applyRequest(() ->
+                drive.withVelocityX(1)
+                .withVelocityY(1)
+                .withRotationalRate(1))
+                );
 
         // Run SysId routines when holding back/start and X/Y.
         // Note that each routine should be run exactly once in a single log.
-       joystick.back().and(joystick.y()).whileTrue(drivetrain.sysIdDynamic(Direction.kForward));
-       joystick.back().and(joystick.x()).whileTrue(drivetrain.sysIdDynamic(Direction.kReverse));
-       joystick.start().and(joystick.y()).whileTrue(drivetrain.sysIdQuasistatic(Direction.kForward));
-       joystick.start().and(joystick.x()).whileTrue(drivetrain.sysIdQuasistatic(Direction.kReverse));
+
+
+        driver.back().and(driver.y()).whileTrue(drivetrain.sysIdDynamic(Direction.kForward));
+        driver.back().and(driver.x()).whileTrue(drivetrain.sysIdDynamic(Direction.kReverse));
+        driver.start().and(driver.y()).whileTrue(drivetrain.sysIdQuasistatic(Direction.kForward));
+        driver.start().and(driver.x()).whileTrue(drivetrain.sysIdQuasistatic(Direction.kReverse));
 
         // reset the field-centric heading on left bumper press
-        joystick.leftBumper().onTrue(drivetrain.runOnce(() -> drivetrain.seedFieldCentric()));
+        driver.leftBumper().onTrue(drivetrain.runOnce(() -> drivetrain.seedFieldCentric()));
 
-        joystick.povLeft().onTrue(new ToPosition(elevator, ElevatorConstants.HANDOFF_HEIGHT));
-        joystick.povDown().onTrue(new ToPosition(elevator, ElevatorConstants.L2_HEIGHT));
-        joystick.povRight().onTrue(new ToPosition(elevator, ElevatorConstants.L3_HEIGHT));
-        joystick.povUp().onTrue(new ToPosition(elevator, ElevatorConstants.L4_HEIGHT));
 
-        joystick.a().onTrue(elevator.zero_command());
+        /* 
+        // driver.povLeft().onTrue(new ToPosition(elevator, ElevatorConstants.HANDOFF_HEIGHT));
+        // driver.povDown().onTrue(new ToPosition(elevator, ElevatorConstants.L2_HEIGHT));
+        // driver.povRight().onTrue(new ToPosition(elevator, ElevatorConstants.L3_HEIGHT));
+        // driver.povUp().onTrue(new ToPosition(elevator, ElevatorConstants.L4_HEIGHT));
 
-        joystick.a().onTrue(algaeintake.extend_command(4));
+        // driver.a().onTrue(algaeintake.stopmotor());
+        // driver.b().onTrue(new AlgaeDeploy(algaeintake, Inches.of(7)));
+        // driver.x().onTrue(new AlgaeDeploy(algaeintake, Inches.of(1)));
+        // driver.y().onTrue(new AlgaeStow(algaeintake, Inches.of(-4)));
+        // driver.start().onTrue(algaeintake.zero_command());
+*/
+        driver.b().whileTrue(new AlgaeDeploy(algaeintake, Inches.of(21))
+            .andThen(algaeintake.rollerSpeed_Command(.5)));
+        driver.b().whileFalse(new AlgaeStow(algaeintake, Inches.of(-4)));
+        
+
+        driver.a().and(driver.leftBumper()).whileTrue(algaeintake.sysIdQuasistatic(SysIdRoutine.Direction.kForward));
+        driver.b().and(driver.leftBumper()).whileTrue(algaeintake.sysIdQuasistatic(SysIdRoutine.Direction.kReverse));
+        driver.x().and(driver.leftBumper()).whileTrue(algaeintake.sysIdDynamic(SysIdRoutine.Direction.kForward));
+        driver.y().and(driver.leftBumper()).whileTrue(algaeintake.sysIdDynamic(SysIdRoutine.Direction.kReverse));
 
         drivetrain.registerTelemetry(logger::telemeterize);
     }

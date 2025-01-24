@@ -1,0 +1,144 @@
+package frc.robot.subsystems;
+
+import static edu.wpi.first.units.Units.*;
+
+import com.ctre.phoenix6.hardware.TalonFX;
+import com.revrobotics.RelativeEncoder;
+import com.revrobotics.spark.SparkFlex;
+import com.revrobotics.spark.SparkLowLevel.MotorType;
+
+import edu.wpi.first.math.controller.ElevatorFeedforward;
+import edu.wpi.first.math.controller.PIDController;
+import edu.wpi.first.math.trajectory.TrapezoidProfile;
+import edu.wpi.first.wpilibj.DigitalInput;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import frc.robot.Constants.AlgaeIntakeConstants;
+
+public class AlgaeIntake extends SubsystemBase {
+    private SparkFlex rackmotor;
+    private TalonFX rollermotor;
+    private DigitalInput limit;
+
+    private TrapezoidProfile current;
+    private PIDController algaePID;
+    private ElevatorFeedforward feed;
+    private final TrapezoidProfile.Constraints constraints;
+    private TrapezoidProfile.State goal;
+    private TrapezoidProfile.State setpoint;
+   
+    public AlgaeIntake() {
+        rackmotor = new SparkFlex(AlgaeIntakeConstants.ARACK_ID, MotorType.kBrushless);
+        rollermotor = new TalonFX(AlgaeIntakeConstants.AROLLER_ID);
+        limit = new DigitalInput(AlgaeIntakeConstants.DI_LIMIT_PORT);
+            
+        constraints = new TrapezoidProfile.Constraints(7.5, 7.5);
+        goal = new TrapezoidProfile.State();
+        setpoint = new TrapezoidProfile.State();
+        this.feed = new ElevatorFeedforward(
+            0.1,
+            0.2,
+            0.3);
+        this.algaePID = new PIDController(
+            0.1,
+            0, 
+            0.001);
+    }
+
+    // SYSID \\
+
+
+    public void getEncoder(double pose) {
+        rackmotor.getEncoder();
+    }
+
+    public void stopMotor() {
+        rollermotor.stopMotor();
+        rackmotor.stopMotor();
+    }
+
+    public void zeroEncoder() {
+        rackmotor.getEncoder().setPosition(0);
+    }
+
+    // COMMANDS \\
+
+    public Command stopmotor()
+    {
+        return this.runOnce(() -> stopmotor());
+    }
+
+    public Command zero_command() {
+        return this.runOnce(() -> zeroEncoder());
+    }
+
+    public Command rollerSpeed_Command(double speed) {
+        return this.runOnce(() -> setRollerSpeed(speed));
+    }
+
+    // GETTERS \\
+
+    public double getAlgaePosition() {
+        double algaepose = rackmotor.getEncoder().getPosition();
+        SmartDashboard.putNumber("og pose", algaepose);
+        algaepose = (algaepose * (36/15)) * Math.PI * 0.5;
+        return algaepose;
+    }
+
+    public TrapezoidProfile.State getSetpoint() {
+        return setpoint;
+    }
+
+    public TrapezoidProfile.State getgoal() {
+        return goal;
+    }
+
+    public TrapezoidProfile.Constraints getconstraints() {
+        return constraints;
+    }
+
+    public PIDController getAlgaePID() {
+        return algaePID;
+    }
+
+    public ElevatorFeedforward getFeed() {
+        return feed;
+    }
+
+    public TrapezoidProfile getcurrent() {
+        return current;
+    }
+
+    public boolean getlimit() {
+        return limit.get();
+    }
+
+    // SETTERS \\
+
+    public void setgoal(double goal_pose) {
+        goal = new TrapezoidProfile.State(goal_pose,0);
+    }
+    public void setsetpoint(TrapezoidProfile.State setpoint) {
+        this.setpoint = setpoint;
+    }
+
+    public void setRollerSpeed(double speed) {
+        rollermotor.set(speed);
+    }
+
+    public void setRackSpeed(double speed) {
+        rackmotor.set(speed);
+    }
+
+    // SYSID \\
+
+
+    public void periodic() {
+        //SmartDashboard.putNumber("distance", encoder.getDistance());
+        SmartDashboard.putNumber("getalgae pose", getAlgaePosition());
+        SmartDashboard.putNumber("motor dist", rackmotor.getEncoder().getPosition());
+    }   
+
+
+}

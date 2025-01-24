@@ -6,7 +6,7 @@ import edu.wpi.first.math.trajectory.TrapezoidProfile;
 import edu.wpi.first.units.measure.Distance;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
-import frc.robot.subsystems.ae.AlgaeIntake;
+import frc.robot.subsystems.AlgaeIntake;
 
 public class AlgaeStow extends Command {
     private final AlgaeIntake algaeintake;
@@ -26,9 +26,9 @@ public class AlgaeStow extends Command {
         this.algaeintake = algaeintake;
         this.extension_length = extension_length;
 
-        this.feedforward = new ElevatorFeedforward(0.123, 0.424, 0.2875);
+        this.feedforward = new ElevatorFeedforward(0.0123, 0.0424, 0.02875);
 
-        this.rackPID = new PIDController(.05, 0, 0.0);
+        this.rackPID = new PIDController(.2, 0, 0.0);
         addRequirements(algaeintake);
     }
 

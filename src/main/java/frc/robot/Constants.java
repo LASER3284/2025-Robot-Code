@@ -14,13 +14,8 @@ import edu.wpi.first.math.numbers.N1;
 import edu.wpi.first.math.numbers.N3;
 import edu.wpi.first.units.Units;
 import edu.wpi.first.units.measure.*;
-<<<<<<< HEAD
 import edu.wpi.first.wpilibj.smartdashboard.Field2d;
 import frc.robot.subsystems.Drivetrain;
-=======
-
-//port frc.robot.subsystems.Drivetrain;
->>>>>>> 37417e356809179165ad02d0e5459217fe6ff923
 
 public class Constants {
     public static class SwerveConstants {
@@ -63,7 +58,7 @@ public class Constants {
 
     private static final double kCoupleRatio = 3.5714285714285716;
 
-    private static final double kDriveGearRatio = 8.142857142857142;
+    private static final double kDriveGearRatio = 6.12;
     private static final double kSteerGearRatio = 12.8;
     private static final Distance kWheelRadius = Inches.of(2);
 
@@ -176,11 +171,11 @@ public class Constants {
             kBackRightXPos, kBackRightYPos, kInvertRightSide, kBackRightSteerMotorInverted, kBackRightEncoderInverted
         );
 
-    // public static Drivetrain createDrivetrain() {
-    //     return new Drivetrain(
-    //         DrivetrainConstants, FrontLeft, FrontRight, BackLeft, BackRight
-    //     );
-    // }
+    public static Drivetrain createDrivetrain() {
+        return new Drivetrain(
+            DrivetrainConstants, FrontLeft, FrontRight, BackLeft, BackRight
+        );
+    }
 
     public static class TunerSwerveDrivetrain extends SwerveDrivetrain<TalonFX, TalonFX, CANcoder> {
         public TunerSwerveDrivetrain(
@@ -256,8 +251,8 @@ public class Constants {
 
     public static class AlgaeIntakeConstants {
         // can ids
-        public static final int ARACK_ID = 1;
-        public static final int AROLLER_ID = 2;
+        public static final int ARACK_ID = 13;
+        public static final int AROLLER_ID = 14;
 
         // pid
         public static final double P = 0;
@@ -274,30 +269,12 @@ public class Constants {
         public static final double kV = 0;
         public static final double kA = 0;
 
+        // di
+        public static final int DI_LIMIT_PORT = 9;
+
         public static final double GEAR_RATIO = 0;
 
         public static final Distance DEPLOYED = Inches.of(0);
         public static final Distance ZERO = Inches.of(0);
-    }
-
-    public static class PivotIntakeConstants {
-        // can ids
-        public static final int CPIVOT_ID = 0;
-        public static final int CROLLER_ID = 0;
-
-        // pid
-        public static final double P = 0;
-        public static final double I = 0;
-        public static final double D = 0;
-
-        public static final double GEAR_RATIO = 0;
-        public static final double PULLEY = 1.88;
-        public static final double LINEAR_DISTANCE_CONST = PULLEY * Math.PI;
-
-        public static final Angle STOWED = Rotations.of(0);
-        public static final Angle DEPLOYED = Rotations.of(0.37);
-
-        public static final double maxVelocity = 0.0;
-        public static final double maxAcceleration = 0.0;
     }
 }
