@@ -105,12 +105,6 @@ public class RobotContainer {
         driver.b().whileTrue(new AlgaeDeploy(algaeintake, Inches.of(21))
             .andThen(algaeintake.rollerSpeed_Command(.5)));
         driver.b().whileFalse(new AlgaeStow(algaeintake, Inches.of(-4)));
-        
-
-        driver.a().and(driver.leftBumper()).whileTrue(algaeintake.sysIdQuasistatic(SysIdRoutine.Direction.kForward));
-        driver.b().and(driver.leftBumper()).whileTrue(algaeintake.sysIdQuasistatic(SysIdRoutine.Direction.kReverse));
-        driver.x().and(driver.leftBumper()).whileTrue(algaeintake.sysIdDynamic(SysIdRoutine.Direction.kForward));
-        driver.y().and(driver.leftBumper()).whileTrue(algaeintake.sysIdDynamic(SysIdRoutine.Direction.kReverse));
 
         drivetrain.registerTelemetry(logger::telemeterize);
     }

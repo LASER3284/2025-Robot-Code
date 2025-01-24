@@ -26,7 +26,10 @@ public class AlgaeDeploy extends Command {
         this.algaeintake = algaeintake;
         this.extension_length = extension_length;
 
-        this.feedforward = new ElevatorFeedforward(0.0123, 0.0424, 0.02875);
+        this.feedforward = new ElevatorFeedforward(0.001,
+        0.08,
+        4,
+        0.02);
 
         this.rackPID = new PIDController(.2, 0, 0.0);
         addRequirements(algaeintake);
