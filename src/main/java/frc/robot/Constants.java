@@ -14,7 +14,7 @@ import edu.wpi.first.math.numbers.N1;
 import edu.wpi.first.math.numbers.N3;
 import edu.wpi.first.units.measure.*;
 
-import frc.robot.subsystems.Drivetrain;
+//import frc.robot.subsystems.Drivetrain;
 import frc.robot.subsystems.pivotintake.Intake;
 import frc.robot.subsystems.pivotintake.Pivot;
 
@@ -169,47 +169,47 @@ public class Constants {
             kBackRightXPos, kBackRightYPos, kInvertRightSide, kBackRightSteerMotorInverted, kBackRightEncoderInverted
         );
 
-    public static Drivetrain createDrivetrain() {
-        return new Drivetrain(
-            DrivetrainConstants, FrontLeft, FrontRight, BackLeft, BackRight
-        );
-    }
+    //public static Drivetrain createDrivetrain() {
+      //  return new Drivetrain(
+        //    DrivetrainConstants, FrontLeft, FrontRight, BackLeft, BackRight
+       // );
+ //   }
 
-    public static class TunerSwerveDrivetrain extends SwerveDrivetrain<TalonFX, TalonFX, CANcoder> {
-        public TunerSwerveDrivetrain(
-            SwerveDrivetrainConstants drivetrainConstants,
-            SwerveModuleConstants<?, ?, ?>... modules
-        ) {
-            super(
-                TalonFX::new, TalonFX::new, CANcoder::new,
-                drivetrainConstants, modules
-            );
-        }
+  //  public static class TunerSwerveDrivetrain extends SwerveDrivetrain<TalonFX, TalonFX, CANcoder> {
+       // public TunerSwerveDrivetrain(
+         //   SwerveDrivetrainConstants drivetrainConstants,
+          //  SwerveModuleConstants<?, ?, ?>... modules
+       // ) {
+       //     super(
+        //        TalonFX::new, TalonFX::new, CANcoder::new,
+            //    drivetrainConstants, modules
+         //   );
+       // }
 
-        public TunerSwerveDrivetrain(
-            SwerveDrivetrainConstants drivetrainConstants,
-            double odometryUpdateFrequency,
-            SwerveModuleConstants<?, ?, ?>... modules
-        ) {
-            super(
-                TalonFX::new, TalonFX::new, CANcoder::new,
-                drivetrainConstants, odometryUpdateFrequency, modules
-            );
-        }
+       // public TunerSwerveDrivetrain(
+         //   SwerveDrivetrainConstants drivetrainConstants,
+       //     double odometryUpdateFrequency,
+          //  SwerveModuleConstants<?, ?, ?>... modules
+       // ) {
+           // super(
+            //    TalonFX::new, TalonFX::new, CANcoder::new,
+             //   drivetrainConstants, odometryUpdateFrequency, modules
+        //    );
+       // }
 
-        public TunerSwerveDrivetrain(
-            SwerveDrivetrainConstants drivetrainConstants,
-            double odometryUpdateFrequency,
-            Matrix<N3, N1> odometryStandardDeviation,
-            Matrix<N3, N1> visionStandardDeviation,
-            SwerveModuleConstants<?, ?, ?>... modules
-        ) {
-            super(
-                TalonFX::new, TalonFX::new, CANcoder::new,
-                drivetrainConstants, odometryUpdateFrequency,
-                odometryStandardDeviation, visionStandardDeviation, modules
-            );
-        }
+        //public TunerSwerveDrivetrain(
+          //  SwerveDrivetrainConstants drivetrainConstants,
+         //   double odometryUpdateFrequency,
+         //   Matrix<N3, N1> odometryStandardDeviation,
+         //   Matrix<N3, N1> visionStandardDeviation,
+         //   SwerveModuleConstants<?, ?, ?>... modules
+       // ) {
+        //     super(
+        //         TalonFX::new, TalonFX::new, CANcoder::new,
+        //         drivetrainConstants, odometryUpdateFrequency,
+        //         odometryStandardDeviation, visionStandardDeviation, modules
+        //     );
+        // }
 
         public static Pivot PivotConstants;
         // can_ID
@@ -222,4 +222,4 @@ public class Constants {
         
     }
     }
-}
+//}

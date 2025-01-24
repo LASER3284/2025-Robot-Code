@@ -11,6 +11,7 @@ import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.controller.SimpleMotorFeedforward;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.trajectory.TrapezoidProfile;
+import edu.wpi.first.units.measure.Angle;
 import edu.wpi.first.wpilibj.Encoder;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
@@ -32,12 +33,12 @@ public class Pivot extends SubsystemBase {
     private TrapezoidProfile.State goal;
     private TrapezoidProfile.State setpoint;
     
-
+    
     public Pivot(){
-        Pivotmotor = new TalonFX(1);
+        Pivotmotor = new TalonFX(2);
         encoder = new Encoder(0, 1);
 
-        constraints = new TrapezoidProfile.Constraints(0,1);
+        constraints = new TrapezoidProfile.Constraints(4.5,4.5);
         goal = new TrapezoidProfile.State();
         setpoint = new TrapezoidProfile.State();
 
@@ -45,21 +46,25 @@ public class Pivot extends SubsystemBase {
             1,2,3
         );
         this.pivotPID = new PIDController(
-            1,2,3
+            0,0,0
         );
    }
 
    public void setMotorSpeed(double speed){
         Pivotmotor.set(speed);
    }
-   
-   public void zeroPivot(){
-        Pivotmotor.setPosition(0.0);
+
+   public void stopMotor() {
+        Pivotmotor.stopMotor();
+   }
+
+    public void zeroPivot(){
+        Pivotmotor.setPosition(0);
     }
 
     public double getPivotPosition() {
         double pivotpose = (Pivotmotor.getPosition().getValueAsDouble());
-        pivotpose = (pivotpose * 0) * 0;
+        pivotpose = (pivotpose * 1) * 1;
 
         return pivotpose;
     }
@@ -71,23 +76,15 @@ public class Pivot extends SubsystemBase {
     public void setNeutralMode(NeutralModeValue mode){
         Pivotmotor.setNeutralMode(mode);
     }
-    
-    public void setTargetAngle(Rotation2d angle){
-        Rotation2d TargetAngle = angle;
-        if(!().getPivotAngle().geAsBoolean()){
-            setPivot(PositionRequest.withPosition(TargetAngle.getRotations()));
-        } else {
-            stop();
-        }
-    }
 
     public Rotation2d getPivotAngle(){
-        return Rotation2d.fromRotations(0);
+        return Rotation2d.fromRotations(2);
     }
 
     public Rotation2d getPivotError(){
         return Rotation2d.fromDegrees(Math.abs(TargetAngle.getDegrees()) - Math.abs(getPivotAngle().getDegrees()));
     }
+
 
     public DoubleSupplier getPivotAtTarget(){
         return () -> Math.abs(getPivotError().getDegrees());
@@ -118,7 +115,7 @@ public class Pivot extends SubsystemBase {
     }
 
     public Command stop_Command() {
-        return this.runOnce(() -> stopMotor(0));
+        return this.runOnce(() -> stopMotor());
     }
 
     // GETTERS \\
@@ -130,7 +127,7 @@ public class Pivot extends SubsystemBase {
         return goal;
     }
 
-    public TrapezoidProfile.Constraints geConstraints() {
+    public TrapezoidProfile.Constraints getConstraints() {
         return constraints;
     }
 
@@ -164,6 +161,8 @@ public class Pivot extends SubsystemBase {
         SmartDashboard.putNumber("Pivot motor pose", Pivotmotor.getPosition().getValueAsDouble());
     }
 }
+
+    
 
     
 
