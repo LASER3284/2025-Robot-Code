@@ -20,19 +20,19 @@ public class LimelightAprilTags extends SubsystemBase {
     private final String LimelightName = "limelight-apriltags";
     private final Pose2d empty_Pose2d = new Pose2d();
 
-    private HttpCamera m_llFeed;
-    private MjpegServer m_server;
+    private HttpCamera llFeed;
+    private MjpegServer server;
     
-    private LimelightHelpers.LimelightResults m_llResults;
-    private boolean m_hasPosition = false;
-    private Pose2d m_position = empty_Pose2d;
+    private LimelightHelpers.LimelightResults llResults;
+    private boolean hasPosition = false;
+    private Pose2d position = empty_Pose2d;
 
-    private NetworkTable m_table;
-    private NetworkTableEntry m_tv;
-    private NetworkTableEntry m_tx;
-    private NetworkTableEntry m_ty;
-    private NetworkTableEntry m_ta;
-    private NetworkTableEntry m_pipeline;
+    private NetworkTable table;
+    private NetworkTableEntry tv;
+    private NetworkTableEntry tx;
+    private NetworkTableEntry ty;
+    private NetworkTableEntry ta;
+    private NetworkTableEntry pipeline;
     
     private ScoringMode currentScoringMode = ScoringMode.Undefined;
 
@@ -45,23 +45,23 @@ public class LimelightAprilTags extends SubsystemBase {
     }
 
     private void configureNetworkTableEntries() {
-        m_table = NetworkTableInstance.getDefault().getTable(LimelightName);
-        m_tv = m_table.getEntry("tv");
-        m_tx = m_table.getEntry("tx");
-        m_ty = m_table.getEntry("ty");
-        m_ta = m_table.getEntry("ta");
-        m_pipeline = m_table.getEntry("pipeline");
+        table = NetworkTableInstance.getDefault().getTable(LimelightName);
+        tv = table.getEntry("tv");
+        tx = table.getEntry("tx");
+        ty = table.getEntry("ty");
+        ta = table.getEntry("ta");
+        pipeline = table.getEntry("pipeline");
     }
 
     private void configureShuffleboard() {
         ShuffleboardTab tab;
         tab = Shuffleboard.getTab(LimelightName);
         
-        m_llFeed = new HttpCamera(LimelightName, "http://10.32.84.11:5800/stream.mjpg");
-        m_server = CameraServer.addSwitchedCamera("Object Camera");
-        m_server.setSource(m_llFeed);
-        m_llFeed.setConnectionStrategy(ConnectionStrategy.kKeepOpen);
-        tab.add(m_server.getSource())
+        llFeed = new HttpCamera(LimelightName, "http://10.32.84.11:5800/stream.mjpg");
+        server = CameraServer.addSwitchedCamera("Object Camera");
+        server.setSource(llFeed);
+        llFeed.setConnectionStrategy(ConnectionStrategy.kKeepOpen);
+        tab.add(server.getSource())
             .withWidget(BuiltInWidgets.kCameraStream)
             .withPosition(5, 0)
             .withSize(5, 5)
@@ -74,19 +74,19 @@ public class LimelightAprilTags extends SubsystemBase {
     /* Reads and stores values periodically. */
     public void periodic() {
         if (currentScoringMode == ScoringMode.AprilTag) {
-            m_llResults = LimelightHelpers.getLatestResults(LimelightName);
+            llResults = LimelightHelpers.getLatestResults(LimelightName);
         }
     }
 
     public Pose2d getPose2d() {
-        return m_position;
+        return position;
     }
 
     public void setScoringMode(ScoringMode mode) {
         currentScoringMode = mode;
 
         if (currentScoringMode == ScoringMode.AprilTag) {
-            m_pipeline.setDouble(1);
+            pipeline.setDouble(1);
         }
     }
 
