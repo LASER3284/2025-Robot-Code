@@ -14,7 +14,7 @@ import edu.wpi.first.math.numbers.N1;
 import edu.wpi.first.math.numbers.N3;
 import edu.wpi.first.units.Units;
 import edu.wpi.first.units.measure.*;
-
+import edu.wpi.first.wpilibj.smartdashboard.Field2d;
 import frc.robot.subsystems.Drivetrain;
 
 public class Constants {
@@ -58,7 +58,7 @@ public class Constants {
 
     private static final double kCoupleRatio = 3.5714285714285716;
 
-    private static final double kDriveGearRatio = 8.142857142857142;
+    private static final double kDriveGearRatio = 6.12;
     private static final double kSteerGearRatio = 12.8;
     private static final Distance kWheelRadius = Inches.of(2);
 
@@ -103,48 +103,51 @@ public class Constants {
 
 
     // Front Left
-    private static final int kFrontLeftDriveMotorId = 26;
-    private static final int kFrontLeftSteerMotorId = 24;
-    private static final int kFrontLeftEncoderId = 10;
+    private static final int kFrontLeftDriveMotorId = 1;
+    private static final int kFrontLeftSteerMotorId = 2;
+    private static final int kFrontLeftEncoderId = 3;
     private static final Angle kFrontLeftEncoderOffset = Rotations.of(0.054443359375);
     private static final boolean kFrontLeftSteerMotorInverted = false;
     private static final boolean kFrontLeftEncoderInverted = false;
 
-    private static final Distance kFrontLeftXPos = Inches.of(11.25);
-    private static final Distance kFrontLeftYPos = Inches.of(11.25);
+    private static final Distance kFrontLeftXPos = Inches.of(13.25);
+    private static final Distance kFrontLeftYPos = Inches.of(13.25);
 
     // Front Right
-    private static final int kFrontRightDriveMotorId = 23;
-    private static final int kFrontRightSteerMotorId = 21;
-    private static final int kFrontRightEncoderId = 13;
+    private static final int kFrontRightDriveMotorId = 4;
+    private static final int kFrontRightSteerMotorId = 5;
+    private static final int kFrontRightEncoderId = 6;
     private static final Angle kFrontRightEncoderOffset = Rotations.of(-0.343994140625);
     private static final boolean kFrontRightSteerMotorInverted = false;
     private static final boolean kFrontRightEncoderInverted = false;
 
-    private static final Distance kFrontRightXPos = Inches.of(11.25);
-    private static final Distance kFrontRightYPos = Inches.of(-11.25);
+    private static final Distance kFrontRightXPos = Inches.of(13.25);
+    private static final Distance kFrontRightYPos = Inches.of(-13.25);
 
     // Back Left
-    private static final int kBackLeftDriveMotorId = 25;
-    private static final int kBackLeftSteerMotorId = 20;
-    private static final int kBackLeftEncoderId = 11;
+    private static final int kBackLeftDriveMotorId = 7;
+    private static final int kBackLeftSteerMotorId = 8;
+    private static final int kBackLeftEncoderId = 9;
     private static final Angle kBackLeftEncoderOffset = Rotations.of(0.449462890625);
     private static final boolean kBackLeftSteerMotorInverted = false;
     private static final boolean kBackLeftEncoderInverted = false;
 
-    private static final Distance kBackLeftXPos = Inches.of(-11.25);
-    private static final Distance kBackLeftYPos = Inches.of(11.25);
+    private static final Distance kBackLeftXPos = Inches.of(-13.25);
+    private static final Distance kBackLeftYPos = Inches.of(13.25);
 
     // Back Right
-    private static final int kBackRightDriveMotorId = 27;
-    private static final int kBackRightSteerMotorId = 22;
+    private static final int kBackRightDriveMotorId = 10;
+    private static final int kBackRightSteerMotorId = 11;
     private static final int kBackRightEncoderId = 12;
     private static final Angle kBackRightEncoderOffset = Rotations.of(-0.158203125);
     private static final boolean kBackRightSteerMotorInverted = false;
     private static final boolean kBackRightEncoderInverted = false;
 
-    private static final Distance kBackRightXPos = Inches.of(-11.25);
-    private static final Distance kBackRightYPos = Inches.of(-11.25);
+    private static final Distance kBackRightXPos = Inches.of(-13.25);
+    private static final Distance kBackRightYPos = Inches.of(-13.25);
+
+    // Field
+    public static final Field2d field = new Field2d();
 
 
     public static final SwerveModuleConstants<TalonFXConfiguration, TalonFXConfiguration, CANcoderConfiguration> FrontLeft =
@@ -210,5 +213,68 @@ public class Constants {
             );
         }
     }
+}
+
+    public static class ElevatorConstants {
+
+        //trapezoid profile
+        public static final double maxVelocity = 2;
+        public static final double maxAcceleration = 1;
+
+        //can ids
+        public static final int ER_ID = 2;
+        public static final int EL_ID = 3;
+
+        // heights
+        public static final Distance HANDOFF_HEIGHT = Units.Inches.of(4);
+        public static final Distance L2_HEIGHT = Units.Inches.of(7);
+        public static final Distance L3_HEIGHT = Units.Inches.of(12);
+        public static final Distance L4_HEIGHT = Units.Inches.of(15);
+
+        //gearing
+        public static final double GEAR_RATIO = 1/ 6.67 ;
+        public static final double PULLEY = 1.88;
+        public static final double TOLERANCE = 0.1;
+        public static final double LINEAR_DISTANCE_CONST = PULLEY * Math.PI;
+
+        //pid
+        public static final double P = 0.4;
+        public static final double I = 0;
+        public static final double D = 0.0;
+
+        //ff
+        public static final double kS = 0.2234;
+        public static final double kG = 0.0456;
+        public static final double kV = 0.4567;
+        public static final double kA = 0.0128;
+    }
+
+    public static class AlgaeIntakeConstants {
+        // can ids
+        public static final int ARACK_ID = 13;
+        public static final int AROLLER_ID = 14;
+
+        // pid
+        public static final double P = 0;
+        public static final double I = 0;
+        public static final double D = 0;
+
+        // motor
+        public static final double maxVelocity = 0;
+        public static final double maxAcceleration = 0;
+
+        //ff
+        public static final double kS = 0;
+        public static final double kG = 0;
+        public static final double kV = 0;
+        public static final double kA = 0;
+
+        // di
+        public static final int DI_LIMIT_PORT = 9;
+
+        public static final double GEAR_RATIO = 0;
+
+        public static final Distance DEPLOYED = Inches.of(0);
+        public static final Distance ZERO = Inches.of(0);
     }
 }
