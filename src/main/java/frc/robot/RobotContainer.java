@@ -10,6 +10,7 @@ import com.ctre.phoenix6.swerve.SwerveModule.DriveRequestType;
 import com.ctre.phoenix6.swerve.SwerveRequest;
 import com.pathplanner.lib.auto.AutoBuilder;
 
+import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.wpilibj.smartdashboard.Field2d;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
@@ -50,7 +51,7 @@ public class RobotContainer {
         autoChooser = AutoBuilder.buildAutoChooser("Tests");
         SmartDashboard.putData("Auto Mode", autoChooser);
 
-        SmartDashboard.putData("field", Constants.SwerveConstants.field);
+        //SmartDashboard.putData("field", Constants.SwerveConstants.field);
 
         configureBindings();
     }
@@ -67,9 +68,9 @@ public class RobotContainer {
             );
 
        driver.a().whileTrue(drivetrain.applyRequest(() -> brake));
-    //    driver.b().whileTrue(drivetrain.applyRequest(() ->
-    //         point.withModuleDirection(new Rotation2d(-driver.getLeftY(), -driver.getLeftX()))
-    //    ));
+       driver.b().whileTrue(drivetrain.applyRequest(() ->
+            point.withModuleDirection(new Rotation2d(-driver.getLeftY(), -driver.getLeftX()))
+       ));
 
         driver.leftTrigger().whileTrue(drivetrain.applyRequest(() ->
                 drive.withVelocityX(1)
@@ -102,9 +103,9 @@ public class RobotContainer {
         // driver.y().onTrue(new AlgaeStow(algaeintake, Inches.of(-4)));
         // driver.start().onTrue(algaeintake.zero_command());
 */
-        driver.b().whileTrue(new AlgaeDeploy(algaeintake, Inches.of(21))
-            .andThen(algaeintake.rollerSpeed_Command(.5)));
-        driver.b().whileFalse(new AlgaeStow(algaeintake, Inches.of(-4)));
+        // driver.b().whileTrue(new AlgaeDeploy(algaeintake, Inches.of(21))
+        //     .andThen(algaeintake.rollerSpeed_Command(.5)));
+        // driver.b().whileFalse(new AlgaeStow(algaeintake, Inches.of(-4)));
 
         drivetrain.registerTelemetry(logger::telemeterize);
     }
