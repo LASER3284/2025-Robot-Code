@@ -11,7 +11,6 @@ import com.ctre.phoenix6.swerve.SwerveRequest;
 import com.pathplanner.lib.auto.AutoBuilder;
 
 import edu.wpi.first.math.geometry.Rotation2d;
-import edu.wpi.first.wpilibj.smartdashboard.Field2d;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
@@ -31,13 +30,14 @@ public class RobotContainer {
     private double MaxAngularRate = RotationsPerSecond.of(0.75).in(RadiansPerSecond); 
 
     SendableChooser<Command> autoChooser;
-    Field2d field = new Field2d();
 
     private final SwerveRequest.FieldCentric drive = new SwerveRequest.FieldCentric()
             .withDeadband(MaxSpeed * 0.1).withRotationalDeadband(MaxAngularRate * 0.1) 
             .withDriveRequestType(DriveRequestType.OpenLoopVoltage); 
     private final SwerveRequest.SwerveDriveBrake brake = new SwerveRequest.SwerveDriveBrake();
     private final SwerveRequest.PointWheelsAt point = new SwerveRequest.PointWheelsAt();
+    private final SwerveRequest.RobotCentric forwardStraight = new SwerveRequest.RobotCentric()
+        .withDriveRequestType(DriveRequestType.OpenLoopVoltage);
 
     private final Telemetry logger = new Telemetry(MaxSpeed);
 
@@ -50,8 +50,6 @@ public class RobotContainer {
     public RobotContainer() {
         autoChooser = AutoBuilder.buildAutoChooser("Tests");
         SmartDashboard.putData("Auto Mode", autoChooser);
-
-        //SmartDashboard.putData("field", Constants.SwerveConstants.field);
 
         configureBindings();
     }
@@ -81,6 +79,12 @@ public class RobotContainer {
         // Run SysId routines when holding back/start and X/Y.
         // Note that each routine should be run exactly once in a single log.
 
+        driver.pov(0).whileTrue(drivetrain.applyRequest(() -> 
+            forwardStraight.withVelocityX(0.5).withVelocityY(0)));
+
+        driver.pov(180).whileTrue(drivetrain.applyRequest(() ->
+            forwardStraight.withVelocityX(-.05).withVelocityY(0)));
+
 
         driver.back().and(driver.y()).whileTrue(drivetrain.sysIdDynamic(Direction.kForward));
         driver.back().and(driver.x()).whileTrue(drivetrain.sysIdDynamic(Direction.kReverse));
@@ -90,19 +94,12 @@ public class RobotContainer {
         // reset the field-centric heading on left bumper press
         driver.leftBumper().onTrue(drivetrain.runOnce(() -> drivetrain.seedFieldCentric()));
 
-
-        /* 
-        // driver.povLeft().onTrue(new ToPosition(elevator, ElevatorConstants.HANDOFF_HEIGHT));
-        // driver.povDown().onTrue(new ToPosition(elevator, ElevatorConstants.L2_HEIGHT));
-        // driver.povRight().onTrue(new ToPosition(elevator, ElevatorConstants.L3_HEIGHT));
-        // driver.povUp().onTrue(new ToPosition(elevator, ElevatorConstants.L4_HEIGHT));
-
         // driver.a().onTrue(algaeintake.stopmotor());
         // driver.b().onTrue(new AlgaeDeploy(algaeintake, Inches.of(7)));
         // driver.x().onTrue(new AlgaeDeploy(algaeintake, Inches.of(1)));
         // driver.y().onTrue(new AlgaeStow(algaeintake, Inches.of(-4)));
         // driver.start().onTrue(algaeintake.zero_command());
-*/
+
         // driver.b().whileTrue(new AlgaeDeploy(algaeintake, Inches.of(21))
         //     .andThen(algaeintake.rollerSpeed_Command(.5)));
         // driver.b().whileFalse(new AlgaeStow(algaeintake, Inches.of(-4)));
@@ -112,6 +109,5 @@ public class RobotContainer {
 
     public Command getAutonomousCommand() {
         return autoChooser.getSelected();
-    }
-   
+    }   
 }

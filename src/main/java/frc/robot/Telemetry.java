@@ -2,6 +2,7 @@ package frc.robot;
 
 import com.ctre.phoenix6.SignalLogger;
 import com.ctre.phoenix6.swerve.SwerveDrivetrain.SwerveDriveState;
+import com.pathplanner.lib.util.PathPlannerLogging;
 
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
@@ -31,6 +32,18 @@ public class Telemetry {
     public Telemetry(double maxSpeed) {
         MaxSpeed = maxSpeed;
         SignalLogger.start();
+
+        PathPlannerLogging.setLogActivePathCallback((poses) -> {
+            double[] arr = new double[poses.size() * 3];
+            int ndx = 0;
+            for (Pose2d onepose : poses) {
+                arr[ndx + 0] = onepose.getX();
+                arr[ndx + 1] = onepose.getY();
+                arr[ndx + 2] = onepose.getRotation().getDegrees();
+                ndx += 3;
+            }
+            trajPub.set(arr);
+        });
     }
 
     /* What to publish over networktables for telemetry */
@@ -46,12 +59,12 @@ public class Telemetry {
     private final DoublePublisher driveTimestamp = driveStateTable.getDoubleTopic("Timestamp").publish();
     private final DoublePublisher driveOdometryFrequency = driveStateTable.getDoubleTopic("OdometryFrequency").publish();
 
+    private final DoubleArrayPublisher trajPub = driveStateTable.getDoubleArrayTopic("traj").publish();
+
     /* Robot pose for field positioning */
     private final NetworkTable table = inst.getTable("Pose");
     private final DoubleArrayPublisher fieldPub = table.getDoubleArrayTopic("robotPose").publish();
     private final StringPublisher fieldTypePub = table.getStringTopic(".type").publish();
-
-    
 
     /* Mechanisms to represent the swerve module states */
     private final Mechanism2d[] m_moduleMechanisms = new Mechanism2d[] {
@@ -86,7 +99,7 @@ public class Telemetry {
 
     /** Accept the swerve drive state and telemeterize it to SmartDashboard and SignalLogger. */
     public void telemeterize(SwerveDriveState state) {
-        /* Telemeterize the swerve drive state */
+
         drivePose.set(state.Pose);
         driveSpeeds.set(state.Speeds);
         driveModuleStates.set(state.ModuleStates);
