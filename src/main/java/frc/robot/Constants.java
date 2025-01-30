@@ -136,7 +136,7 @@ public class Constants {
     private static final int kFrontLeftDriveMotorId = 1;
     private static final int kFrontLeftSteerMotorId = 2;
     private static final int kFrontLeftEncoderId = 3;
-    private static final Angle kFrontLeftEncoderOffset = Rotations.of(0);
+    private static final Angle kFrontLeftEncoderOffset = Rotations.of(0.471923828125);
     private static final boolean kFrontLeftSteerMotorInverted = false;
     private static final boolean kFrontLeftEncoderInverted = false;
 
@@ -147,7 +147,7 @@ public class Constants {
     private static final int kFrontRightDriveMotorId = 4;
     private static final int kFrontRightSteerMotorId = 5;
     private static final int kFrontRightEncoderId = 6;
-    private static final Angle kFrontRightEncoderOffset = Rotations.of(0);
+    private static final Angle kFrontRightEncoderOffset = Rotations.of(-0.36181640625);
     private static final boolean kFrontRightSteerMotorInverted = false;
     private static final boolean kFrontRightEncoderInverted = false;
 
@@ -158,7 +158,7 @@ public class Constants {
     private static final int kBackLeftDriveMotorId = 7;
     private static final int kBackLeftSteerMotorId = 8;
     private static final int kBackLeftEncoderId = 9;
-    private static final Angle kBackLeftEncoderOffset = Rotations.of(0);
+    private static final Angle kBackLeftEncoderOffset = Rotations.of(0.257568359375);
     private static final boolean kBackLeftSteerMotorInverted = false;
     private static final boolean kBackLeftEncoderInverted = false;
 
@@ -169,7 +169,7 @@ public class Constants {
     private static final int kBackRightDriveMotorId = 10;
     private static final int kBackRightSteerMotorId = 11;
     private static final int kBackRightEncoderId = 12;
-    private static final Angle kBackRightEncoderOffset = Rotations.of(0);
+    private static final Angle kBackRightEncoderOffset = Rotations.of(-0.472900390625);
     private static final boolean kBackRightSteerMotorInverted = false;
     private static final boolean kBackRightEncoderInverted = false;
 
@@ -354,5 +354,12 @@ public class Constants {
 
         public static final Distance DEPLOYED = Inches.of(0);
         public static final Distance ZERO = Inches.of(0);
+    }
+
+    public static class ClimberConstants {
+        public static final int CLIMBER_ID = 22;
+
+        public static final double GEAR_RATIO = 24;
+        public static final double PULLEY_DIAMETER = 1.75;
     }
 }

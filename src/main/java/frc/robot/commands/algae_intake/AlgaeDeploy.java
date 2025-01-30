@@ -26,28 +26,28 @@ public class AlgaeDeploy extends Command {
         this.algaeintake = algaeintake;
         this.extension_length = extension_length;
 
-        this.feedforward = new ElevatorFeedforward(0.001,
-        0.08,
-        4,
-        0.02);
+        // this.feedforward = new ElevatorFeedforward(0.002,
+        // 0.05,
+        // 2.45,
+        // 0.02);
 
-        this.rackPID = new PIDController(.2, 0, 0.0);
+        this.rackPID = new PIDController(0.1, 0, 0.0025);
         addRequirements(algaeintake);
     }
 
     public void execute() {
-        algaeintake.setRollerSpeed(0.1);
+        algaeintake.setRollerSpeed(-0.5);
         current = new TrapezoidProfile(algaeintake.getconstraints());
         double position = algaeintake.getAlgaePosition();
         SmartDashboard.putNumber("goal", algaeintake.getgoal().position);
         TrapezoidProfile.State new_goal = current.calculate(0.02, algaeintake.getSetpoint(), algaeintake.getgoal());
         SmartDashboard.putNumber("new goal val", new_goal.position);
-        double feed_power = feedforward.calculate(new_goal.velocity) / 12;
+        //double feed_power = feedforward.calculate(new_goal.velocity) / 12;
         algaeintake.setsetpoint(new_goal);
         SmartDashboard.putNumber("setpoint", algaeintake.getSetpoint().position);
         rackPID.setSetpoint(new_goal.position);
         double power = rackPID.calculate(position);
-        double PIDFFpower = power + feed_power;
+        double PIDFFpower = power;
         SmartDashboard.putNumber("pidffpower", PIDFFpower);
         algaeintake.setRackSpeed(PIDFFpower);
     }
@@ -58,7 +58,7 @@ public class AlgaeDeploy extends Command {
     }
 
     public boolean isFinished() {
-        SmartDashboard.putBoolean("isFinished", Math.abs(algaeintake.getAlgaePosition() - extension_length.magnitude()) < 0.1);
+        SmartDashboard.putBoolean("isFinished", Math.abs(algaeintake.getAlgaePosition() - extension_length.magnitude()) < 0.5);
         SmartDashboard.putNumber("isFinished math", Math.abs(algaeintake.getAlgaePosition() - extension_length.magnitude()));
         return Math.abs(algaeintake.getAlgaePosition() - extension_length.magnitude()) < 0.1;
     }

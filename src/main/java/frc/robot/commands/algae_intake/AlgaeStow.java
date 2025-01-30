@@ -26,25 +26,25 @@ public class AlgaeStow extends Command {
         this.algaeintake = algaeintake;
         this.extension_length = extension_length;
 
-        this.feedforward = new ElevatorFeedforward(0.0123, 0.0424, 0.02875);
+        //this.feedforward = new ElevatorFeedforward(0.002, 0.05, 2.45, 0.02);
+        this.rackPID = new PIDController(0.1, 0, 0.0015);
 
-        this.rackPID = new PIDController(.2, 0, 0.0);
         addRequirements(algaeintake);
     }
 
     public void execute() {
-        algaeintake.setRollerSpeed(0.1);
+        algaeintake.setRollerSpeed(-0.1);
         current = new TrapezoidProfile(algaeintake.getconstraints());
         double position = algaeintake.getAlgaePosition();
         SmartDashboard.putNumber("goal", algaeintake.getgoal().position);
         TrapezoidProfile.State new_goal = current.calculate(0.02, algaeintake.getSetpoint(), algaeintake.getgoal());
         SmartDashboard.putNumber("new goal val", new_goal.position);
-        double feed_power = feedforward.calculate(new_goal.velocity) / 12;
+        //double feed_power = feedforward.calculate(new_goal.velocity) / 12;
         algaeintake.setsetpoint(new_goal);
         SmartDashboard.putNumber("setpoint", algaeintake.getSetpoint().position);
         rackPID.setSetpoint(new_goal.position);
         double power = rackPID.calculate(position);
-        double PIDFFpower = power + feed_power;
+        double PIDFFpower = power;
         SmartDashboard.putNumber("pidffpower", PIDFFpower);
         algaeintake.setRackSpeed(PIDFFpower);
     }

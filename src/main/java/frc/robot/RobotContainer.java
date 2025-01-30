@@ -66,9 +66,9 @@ public class RobotContainer {
             );
 
        driver.a().whileTrue(drivetrain.applyRequest(() -> brake));
-       driver.b().whileTrue(drivetrain.applyRequest(() ->
-            point.withModuleDirection(new Rotation2d(-driver.getLeftY(), -driver.getLeftX()))
-       ));
+    //    driver.b().whileTrue(drivetrain.applyRequest(() ->
+    //         point.withModuleDirection(new Rotation2d(-driver.getLeftY(), -driver.getLeftX()))
+    //    ));
 
         driver.leftTrigger().whileTrue(drivetrain.applyRequest(() ->
                 drive.withVelocityX(1)
@@ -98,11 +98,11 @@ public class RobotContainer {
         // driver.b().onTrue(new AlgaeDeploy(algaeintake, Inches.of(7)));
         // driver.x().onTrue(new AlgaeDeploy(algaeintake, Inches.of(1)));
         // driver.y().onTrue(new AlgaeStow(algaeintake, Inches.of(-4)));
-        // driver.start().onTrue(algaeintake.zero_command());
+         driver.start().onTrue(algaeintake.zero_command());
 
-        // driver.b().whileTrue(new AlgaeDeploy(algaeintake, Inches.of(21))
-        //     .andThen(algaeintake.rollerSpeed_Command(.5)));
-        // driver.b().whileFalse(new AlgaeStow(algaeintake, Inches.of(-4)));
+        driver.b().whileTrue(new AlgaeDeploy(algaeintake, Inches.of(31))
+            .andThen(algaeintake.rollerSpeed_Command(-.5)));
+        driver.b().whileFalse(new AlgaeStow(algaeintake, Inches.of(0)));
 
         drivetrain.registerTelemetry(logger::telemeterize);
     }
