@@ -9,12 +9,15 @@ import com.ctre.phoenix6.signals.*;
 import com.ctre.phoenix6.swerve.*;
 import com.ctre.phoenix6.swerve.SwerveModuleConstants.*;
 
+
 import edu.wpi.first.math.Matrix;
 import edu.wpi.first.math.numbers.N1;
 import edu.wpi.first.math.numbers.N3;
+import edu.wpi.first.units.Units;
 import edu.wpi.first.units.measure.*;
+import edu.wpi.first.wpilibj.smartdashboard.*;
 
-import frc.robot.subsystems.Drivetrain;
+ //import frc.robot.subsystems.Drivetrain;
 
 public class Constants {
     public static class SwerveConstants {
@@ -59,7 +62,7 @@ public class Constants {
 
     private static final double kDriveGearRatio = 8.142857142857142;
     private static final double kSteerGearRatio = 12.8;
-    private static final Distance kWheelRadius = Inches.of(2.0);
+    private static final Distance kWheelRadius = Inches.of(1.9422);
 
     private static final boolean kInvertLeftSide = false;
     private static final boolean kInvertRightSide = true;
@@ -145,6 +148,9 @@ public class Constants {
     private static final Distance kBackRightXPos = Inches.of(-11.25);
     private static final Distance kBackRightYPos = Inches.of(-11.25);
 
+    //field
+        public static final Field2d field = new Field2d();
+
 
     public static final SwerveModuleConstants<TalonFXConfiguration, TalonFXConfiguration, CANcoderConfiguration> FrontLeft =
         ConstantCreator.createModuleConstants(
@@ -167,11 +173,11 @@ public class Constants {
             kBackRightXPos, kBackRightYPos, kInvertRightSide, kBackRightSteerMotorInverted, kBackRightEncoderInverted
         );
 
-    public static Drivetrain createDrivetrain() {
-        return new Drivetrain(
-            DrivetrainConstants, FrontLeft, FrontRight, BackLeft, BackRight
-        );
-    }
+    // public static Drivetrain createDrivetrain() {
+    //     return new Drivetrain(
+    //         DrivetrainConstants, FrontLeft, FrontRight, BackLeft, BackRight
+    //     );
+    // }
 
     public static class TunerSwerveDrivetrain extends SwerveDrivetrain<TalonFX, TalonFX, CANcoder> {
         public TunerSwerveDrivetrain(
@@ -213,20 +219,25 @@ public class Constants {
 
     public static class PivotConstants{
 
-        public static final double P = 0;
-        public static final double I = 0;
-        public static final double D = 0;
-        public static final double G = 0;
-        public static final double A = 0;
-        public static final double V = 0;
-        public static final double S = 0;
+        public static final double P = 3;//0.01
+        public static final double I = 0.00;
+        public static final double D = 0.002;
+        public static final double G = 0.005;
+        public static final double A = 0.01;
+        public static final double V = 0.001;
+        public static final double S = 0.01;
+
+        public static final Angle L1_ANGLE = Units.Degrees.of(90);
+        public static final Angle L2_ANGLE = Units.Degrees.of(75);
+        public static final Angle L3_ANGLE = Units.Degrees.of(50);
+        public static final Angle L4_ANGLE = Units.Degrees.of(25);
 
         public static final double GEAR_RATIO = 1/53.33;
 
-        public static final double maxVelocity = 0;
-        public static final double maxAcceleration  = 0;
+        public static final double maxVelocity = 1;
+        public static final double maxAcceleration  = 1;
 
-        public static final int pivotMotorID = 0;
+        public static final int pivotMotorID = 3;
     }
 
     public static class ElevatorConstants {

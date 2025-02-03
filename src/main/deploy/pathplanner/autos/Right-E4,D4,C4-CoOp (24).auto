@@ -44,6 +44,6 @@
     }
   },
   "resetOdom": true,
-  "folder": "Three L4-CoOp",
+  "folder": null,
   "choreoAuto": false
 }

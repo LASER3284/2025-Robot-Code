@@ -33,6 +33,18 @@
           "data": {
             "pathName": "Amet"
           }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "Consectetur"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "Adipisxing"
+          }
         }
       ]
     }
