@@ -1,6 +1,10 @@
 package frc.robot.subsystems;
 
+<<<<<<< HEAD
 import com.ctre.phoenix6.hardware.TalonFX;
+=======
+/*import java.lang.ModuleLayer.Controller;
+>>>>>>> 36848abd953d918091c05edd2ec64f88856272bb
 
 import com.revrobotics.spark.SparkFlex;
 import com.revrobotics.spark.SparkLowLevel.MotorType;
@@ -65,10 +69,10 @@ public class AlgaeIntake extends SubsystemBase {
     public Command zero_command() {
         return this.runOnce(() -> zeroEncoder());
     }
-
-    public Command rollerSpeed_Command(double speed) {
+public Command rollerSpeed_Command(double speed) {
         return this.runOnce(() -> setRollerSpeed(speed));
     }
+    
 
     // GETTERS \\
 
@@ -134,4 +138,10 @@ public class AlgaeIntake extends SubsystemBase {
     }   
 
 
+<<<<<<< HEAD
 }
+=======
+}/* */
+    
+
+>>>>>>> 36848abd953d918091c05edd2ec64f88856272bb
