@@ -8,16 +8,9 @@ import com.ctre.phoenix6.hardware.*;
 import com.ctre.phoenix6.signals.*;
 import com.ctre.phoenix6.swerve.*;
 import com.ctre.phoenix6.swerve.SwerveModuleConstants.*;
-import com.pathplanner.lib.path.PathConstraints;
 
 import edu.wpi.first.math.Matrix;
-import edu.wpi.first.math.VecBuilder;
-import edu.wpi.first.math.geometry.Pose2d;
-import edu.wpi.first.math.geometry.Rotation2d;
-import edu.wpi.first.math.geometry.Translation2d;
-import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
-import edu.wpi.first.math.kinematics.SwerveDriveOdometry;
-import edu.wpi.first.math.kinematics.SwerveModulePosition;
+
 import edu.wpi.first.math.numbers.N1;
 import edu.wpi.first.math.numbers.N3;
 import edu.wpi.first.units.Units;
@@ -349,6 +342,7 @@ public class Constants {
 
         // di
         public static final int DI_LIMIT_PORT = 9;
+        public static final int DI_SENSOR_PORT = 8;
 
         public static final double GEAR_RATIO = 0;
 
@@ -361,5 +355,9 @@ public class Constants {
 
         public static final double GEAR_RATIO = 24;
         public static final double PULLEY_DIAMETER = 1.75;
+    }
+
+    public static class LEDConstants {
+        public static final int LED_LENGTH = 50;
     }
 }

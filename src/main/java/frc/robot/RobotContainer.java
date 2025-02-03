@@ -10,19 +10,20 @@ import com.ctre.phoenix6.swerve.SwerveModule.DriveRequestType;
 import com.ctre.phoenix6.swerve.SwerveRequest;
 import com.pathplanner.lib.auto.AutoBuilder;
 
-import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
-import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
-import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine.Direction;
 
+import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine.Direction;
+import frc.robot.Constants.ElevatorConstants;
 import frc.robot.Constants.SwerveConstants;
 import frc.robot.commands.algae_intake.AlgaeDeploy;
 import frc.robot.commands.algae_intake.AlgaeStow;
+import frc.robot.commands.elevator.ToHome;
+import frc.robot.commands.elevator.ToPosition;
 import frc.robot.subsystems.AlgaeIntake;
-//import frc.robot.commands.elevator.ToPosition;
+import frc.robot.subsystems.Elevator;
 import frc.robot.subsystems.Drivetrain;
 
 public class RobotContainer {
@@ -35,7 +36,7 @@ public class RobotContainer {
             .withDeadband(MaxSpeed * 0.1).withRotationalDeadband(MaxAngularRate * 0.1) 
             .withDriveRequestType(DriveRequestType.OpenLoopVoltage); 
     private final SwerveRequest.SwerveDriveBrake brake = new SwerveRequest.SwerveDriveBrake();
-    private final SwerveRequest.PointWheelsAt point = new SwerveRequest.PointWheelsAt();
+    //private final SwerveRequest.PointWheelsAt point = new SwerveRequest.PointWheelsAt();
     private final SwerveRequest.RobotCentric forwardStraight = new SwerveRequest.RobotCentric()
         .withDriveRequestType(DriveRequestType.OpenLoopVoltage);
 
@@ -44,7 +45,7 @@ public class RobotContainer {
     private final CommandXboxController driver = new CommandXboxController(0);
 
     public final Drivetrain drivetrain = SwerveConstants.createDrivetrain();
-    //public final Elevator elevator = new Elevator();
+    public final Elevator elevator = new Elevator();
     public final AlgaeIntake algaeintake = new AlgaeIntake();
 
     public RobotContainer() {
@@ -60,8 +61,8 @@ public class RobotContainer {
 
         drivetrain.setDefaultCommand(
             drivetrain.applyRequest(() ->
-                drive.withVelocityX(-driver.getLeftY() * MaxSpeed) 
-                    .withVelocityY(-driver.getLeftX() * MaxSpeed) 
+                drive.withVelocityX(-driver.getLeftX() * MaxSpeed) 
+                    .withVelocityY(-driver.getLeftY() * MaxSpeed) 
                     .withRotationalRate(-driver.getRightX() * MaxAngularRate)) 
             );
 
@@ -71,9 +72,9 @@ public class RobotContainer {
     //    ));
 
         driver.leftTrigger().whileTrue(drivetrain.applyRequest(() ->
-                drive.withVelocityX(1)
-                .withVelocityY(1)
-                .withRotationalRate(1))
+                drive.withVelocityX(-driver.getLeftX() * 0.5)
+                .withVelocityY(-driver.getLeftY() * 0.5)
+                .withRotationalRate(-driver.getRightX() * 0.75))
                 );
 
         // Run SysId routines when holding back/start and X/Y.
@@ -91,18 +92,21 @@ public class RobotContainer {
         driver.start().and(driver.y()).whileTrue(drivetrain.sysIdQuasistatic(Direction.kForward));
         driver.start().and(driver.x()).whileTrue(drivetrain.sysIdQuasistatic(Direction.kReverse));
 
-        // reset the field-centric heading on left bumper press
-        driver.leftBumper().onTrue(drivetrain.runOnce(() -> drivetrain.seedFieldCentric()));
+        //driver.leftBumper().onTrue(drivetrain.runOnce(() -> drivetrain.seedFieldCentric()));
 
-        // driver.a().onTrue(algaeintake.stopmotor());
-        // driver.b().onTrue(new AlgaeDeploy(algaeintake, Inches.of(7)));
-        // driver.x().onTrue(new AlgaeDeploy(algaeintake, Inches.of(1)));
-        // driver.y().onTrue(new AlgaeStow(algaeintake, Inches.of(-4)));
-         driver.start().onTrue(algaeintake.zero_command());
+        // driver.b().whileTrue(new AlgaeDeploy(algaeintake, Inches.of(31))
+        //     .andThen(algaeintake.rollerSpeed_Command(-.5)));
+        // driver.b().whileFalse(new AlgaeStow(algaeintake, Inches.of(0)));
 
-        driver.b().whileTrue(new AlgaeDeploy(algaeintake, Inches.of(31))
-            .andThen(algaeintake.rollerSpeed_Command(-.5)));
-        driver.b().whileFalse(new AlgaeStow(algaeintake, Inches.of(0)));
+        // driver.povUp().onTrue(new ToPosition(elevator, ElevatorConstants.L4_HEIGHT));
+        // driver.povLeft().onTrue(new ToPosition(elevator, ElevatorConstants.HANDOFF_HEIGHT));
+        // driver.povDown().onTrue(new ToPosition(elevator, ElevatorConstants.L2_HEIGHT));
+        // driver.povRight().onTrue(new ToPosition(elevator, ElevatorConstants.L3_HEIGHT));
+        // driver.start().onTrue(new ToHome(elevator, Inches.of(-2)));
+
+        driver.povUp().onTrue(elevator.set_power_command(0.1));
+        driver.povDown().onTrue(elevator.set_power_command(-0.1));
+        driver.start().onTrue(elevator.zero_command());
 
         drivetrain.registerTelemetry(logger::telemeterize);
     }

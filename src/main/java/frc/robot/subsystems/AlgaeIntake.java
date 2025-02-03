@@ -1,13 +1,10 @@
 package frc.robot.subsystems;
 
-import static edu.wpi.first.units.Units.*;
-
 import com.ctre.phoenix6.hardware.TalonFX;
 
 import com.revrobotics.spark.SparkFlex;
 import com.revrobotics.spark.SparkLowLevel.MotorType;
 
-import edu.wpi.first.math.controller.ElevatorFeedforward;
 import edu.wpi.first.math.controller.ProfiledPIDController;
 import edu.wpi.first.math.trajectory.TrapezoidProfile;
 import edu.wpi.first.wpilibj.DigitalInput;
@@ -20,25 +17,26 @@ public class AlgaeIntake extends SubsystemBase {
     private SparkFlex rackmotor;
     private TalonFX rollermotor;
     private DigitalInput limit;
+    private DigitalInput sensor;
 
     private TrapezoidProfile current;
     private final TrapezoidProfile.Constraints constraints;
     private TrapezoidProfile.State goal;
     private TrapezoidProfile.State setpoint;
 
-    private ElevatorFeedforward ff;
     private ProfiledPIDController pid;
    
     public AlgaeIntake() {
         rackmotor = new SparkFlex(AlgaeIntakeConstants.ARACK_ID, MotorType.kBrushless);
         rollermotor = new TalonFX(AlgaeIntakeConstants.AROLLER_ID);
+
         limit = new DigitalInput(AlgaeIntakeConstants.DI_LIMIT_PORT);
+        sensor = new DigitalInput(AlgaeIntakeConstants.DI_SENSOR_PORT);
             
         constraints = new TrapezoidProfile.Constraints(820, 820);
         goal = new TrapezoidProfile.State();
         setpoint = new TrapezoidProfile.State();
 
-        ff = new ElevatorFeedforward(0.002, 0.05, 2.45, 0.02);
         pid = new ProfiledPIDController(0.1, 0, 0.0025, constraints);
     }
 
@@ -59,9 +57,9 @@ public class AlgaeIntake extends SubsystemBase {
 
     // COMMANDS \\
 
-    public Command stopmotor()
+    public Command stopmotor_command()
     {
-        return this.runOnce(() -> stopmotor());
+        return this.runOnce(() -> setRackSpeed(0));
     }
 
     public Command zero_command() {
@@ -84,19 +82,19 @@ public class AlgaeIntake extends SubsystemBase {
         return setpoint;
     }
 
-    public TrapezoidProfile.State getgoal() {
+    public TrapezoidProfile.State getGoal() {
         return goal;
     }
 
-    public TrapezoidProfile.Constraints getconstraints() {
+    public TrapezoidProfile.Constraints getConstraints() {
         return constraints;
     }
 
-    public TrapezoidProfile getcurrent() {
+    public TrapezoidProfile getCurrent() {
         return current;
     }
 
-    public boolean getlimit() {
+    public boolean getLimit() {
         return limit.get();
     }
 
@@ -104,16 +102,16 @@ public class AlgaeIntake extends SubsystemBase {
         return pid;
     }
 
-    public ElevatorFeedforward getFF() {
-        return ff;
+    public boolean getSensor() {
+        return sensor.get();
     }
 
     // SETTERS \\
 
-    public void setgoal(double goal_pose) {
+    public void setGoal(double goal_pose) {
         goal = new TrapezoidProfile.State(goal_pose,0);
     }
-    public void setsetpoint(TrapezoidProfile.State setpoint) {
+    public void setSetpoint(TrapezoidProfile.State setpoint) {
         this.setpoint = setpoint;
     }
 

@@ -1,6 +1,5 @@
 package frc.robot.commands.algae_intake;
 
-import edu.wpi.first.math.controller.ElevatorFeedforward;
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.trajectory.TrapezoidProfile;
 import edu.wpi.first.units.measure.Distance;
@@ -11,14 +10,14 @@ import frc.robot.subsystems.AlgaeIntake;
 public class AlgaeDeploy extends Command {
     private final AlgaeIntake algaeintake;
     private TrapezoidProfile current;
-    private ElevatorFeedforward feedforward;
+
     private PIDController rackPID;
     private Distance extension_length;
 
     public void initialize() {
-        algaeintake.setgoal(extension_length.magnitude());
+        algaeintake.setGoal(extension_length.magnitude());
 
-        algaeintake.setsetpoint(
+        algaeintake.setSetpoint(
             new TrapezoidProfile.State(algaeintake.getAlgaePosition(), 0.0));
     }
 
@@ -37,19 +36,17 @@ public class AlgaeDeploy extends Command {
 
     public void execute() {
         algaeintake.setRollerSpeed(-0.5);
-        current = new TrapezoidProfile(algaeintake.getconstraints());
+        current = new TrapezoidProfile(algaeintake.getConstraints());
         double position = algaeintake.getAlgaePosition();
-        SmartDashboard.putNumber("goal", algaeintake.getgoal().position);
-        TrapezoidProfile.State new_goal = current.calculate(0.02, algaeintake.getSetpoint(), algaeintake.getgoal());
-        SmartDashboard.putNumber("new goal val", new_goal.position);
-        //double feed_power = feedforward.calculate(new_goal.velocity) / 12;
-        algaeintake.setsetpoint(new_goal);
-        SmartDashboard.putNumber("setpoint", algaeintake.getSetpoint().position);
+
+        TrapezoidProfile.State new_goal = current.calculate(0.02, algaeintake.getSetpoint(), algaeintake.getGoal());
+
+        algaeintake.setSetpoint(new_goal);
+
         rackPID.setSetpoint(new_goal.position);
         double power = rackPID.calculate(position);
-        double PIDFFpower = power;
-        SmartDashboard.putNumber("pidffpower", PIDFFpower);
-        algaeintake.setRackSpeed(PIDFFpower);
+
+        algaeintake.setRackSpeed(power);
     }
 
     public void end(boolean interrupted) {

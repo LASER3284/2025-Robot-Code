@@ -3,29 +3,29 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 2.0,
-        "y": 7.0
+        "x": 1.354610655737705,
+        "y": 5.949026639344262
       },
       "prevControl": null,
       "nextControl": {
-        "x": 3.0,
-        "y": 7.0
+        "x": 2.354610655737705,
+        "y": 5.949026639344262
       },
       "isLocked": false,
-      "linkedName": null
+      "linkedName": "link 4"
     },
     {
       "anchor": {
-        "x": 4.0,
-        "y": 6.0
+        "x": 3.800102459016393,
+        "y": 4.954047131147541
       },
       "prevControl": {
-        "x": 3.0,
-        "y": 6.0
+        "x": 2.800102459016393,
+        "y": 4.954047131147541
       },
       "nextControl": null,
       "isLocked": false,
-      "linkedName": null
+      "linkedName": "link 5"
     }
   ],
   "rotationTargets": [],
@@ -42,10 +42,10 @@
   },
   "goalEndState": {
     "velocity": 0,
-    "rotation": 0.0
+    "rotation": -55.784297867562636
   },
   "reversed": false,
-  "folder": null,
+  "folder": "ice cream",
   "idealStartingState": {
     "velocity": 0,
     "rotation": 0.0

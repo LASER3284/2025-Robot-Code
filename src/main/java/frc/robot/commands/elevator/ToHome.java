@@ -8,8 +8,9 @@ import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.Constants.ElevatorConstants;
 import frc.robot.subsystems.Elevator;
 
-public class ToPosition extends Command {
-    private final Elevator elevator;
+public class ToHome extends Command {
+    private Elevator elevator;
+
     private TrapezoidProfile current;
     private ElevatorFeedforward ff;
     private PIDController elevatorPID;
@@ -22,7 +23,7 @@ public class ToPosition extends Command {
             new TrapezoidProfile.State(elevator.getElevatorPosition(), 0.0));
     }
 
-    public ToPosition(Elevator elevator, Distance height) {
+    public ToHome(Elevator elevator, Distance height) {
         this.elevator = elevator;
         this.height = height;
 
@@ -57,6 +58,6 @@ public class ToPosition extends Command {
     }
 
     public boolean isFinished() {
-        return Math.abs(elevator.getElevatorPosition() - height.magnitude()) < ElevatorConstants.TOLERANCE;
+        return elevator.getLimit(); 
     }
 }
