@@ -1,6 +1,6 @@
 package frc.robot.subsystems;
 
-import java.lang.ModuleLayer.Controller;
+/*import java.lang.ModuleLayer.Controller;
 
 import javax.lang.model.util.ElementScanner14;
 
@@ -87,10 +87,10 @@ public class AlgaeIntake extends SubsystemBase {
     public Command zero_command() {
         return this.runOnce(() -> zeroEncoder());
     }
-
-    public Command rollerSpeed_Command(double speed) {
+public Command rollerSpeed_Command(double speed) {
         return this.runOnce(() -> setRollerSpeed(speed));
     }
+    
 
         //GETTERS
     public TrapezoidProfile.State getSetpoint() {
@@ -135,5 +135,6 @@ public class AlgaeIntake extends SubsystemBase {
     }   
 
 
-}
+}/* */
+    
 

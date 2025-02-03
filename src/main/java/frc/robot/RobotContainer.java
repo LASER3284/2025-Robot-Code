@@ -6,10 +6,13 @@ package frc.robot;
 
 import static edu.wpi.first.units.Units.*;
 
+import com.ctre.phoenix6.hardware.TalonFX;
 import com.ctre.phoenix6.swerve.SwerveModule.DriveRequestType;
 import com.ctre.phoenix6.swerve.SwerveRequest;
 
 import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.units.measure.Angle;
+import edu.wpi.first.units.measure.Distance;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.ConditionalCommand;
@@ -18,11 +21,12 @@ import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine.Direction;
 
 import frc.robot.Constants.SwerveConstants;
-import frc.robot.commands.algae_intake.AlgaeDeploy;
-import frc.robot.commands.algae_intake.AlgaeIntakeCommand;
-import frc.robot.commands.algae_intake.AlgaeStow;
+//import frc.robot.commands.algae_intake.AlgaeDeploy;
+//import frc.robot.commands.algae_intake.AlgaeIntakeCommand;
+//import frc.robot.commands.algae_intake.AlgaeStow;
 //import frc.robot.subsystems.Drivetrain;
-import frc.robot.subsystems.AlgaeIntake;
+//import frc.robot.subsystems.AlgaeIntake;
+import frc.robot.subsystems.Climb;
 
 public class RobotContainer {
     private double MaxSpeed = SwerveConstants.kSpeedAt12Volts.in(MetersPerSecond); // kSpeedAt12Volts desired top speed
@@ -37,9 +41,13 @@ public class RobotContainer {
 
     private final Telemetry logger = new Telemetry(MaxSpeed);
 
-    private final AlgaeIntake algaeintake = new AlgaeIntake();
+    //private final AlgaeIntake algaeintake = new AlgaeIntake();
 
     private final CommandXboxController joystick = new CommandXboxController(0);
+
+    private final Climb climb = new Climb();
+   
+
 
    // public final Drivetrain drivetrain = SwerveConstants.createDrivetrain();
 
@@ -76,23 +84,37 @@ public class RobotContainer {
 
        // drivetrain.registerTelemetry(logger::telemeterize);
 
-       joystick.a().onTrue(algaeintake.stopmotor());
+       //joystick.a().onTrue(algaeintake.stopmotor());
        //joystick.b().onTrue(new AlgaeDeploy(algaeintake, Inches.of(7)));
-       joystick.x().onTrue(new AlgaeDeploy(algaeintake, Inches.of(4)));
-       joystick.y().onTrue(new AlgaeStow(algaeintake, Inches.of(-4)));
+      // joystick.x().onTrue(new AlgaeDeploy(algaeintake, Inches.of(4)));
+      // joystick.y().onTrue(new AlgaeStow(algaeintake, Inches.of(-4)));
 
-        joystick.b().whileTrue(new AlgaeDeploy(algaeintake, Inches.of(7))
-            .andThen(algaeintake.rollerSpeed_Command(.5)));
-        joystick.b().whileFalse(new AlgaeStow(algaeintake, Inches.of(-4)));
+       // joystick.b().whileTrue(new AlgaeDeploy(algaeintake, Inches.of(7))
+           // .andThen(algaeintake.rollerSpeed_Command(.5)));
+       // joystick.b().whileFalse(new AlgaeStow(algaeintake, Inches.of(-4)));
 
         
     
 
-       joystick.povUp().onTrue(algaeintake.zero_command());
-    }
+       //joystick.povUp().onTrue(algaeintake.zero_command());
+    //    joystick.a().whileTrue(Climb(climb, Degrees.of(180)));
+    //           climb.rollerSpeed_Command(.5);
+    //           joystick.b().whileFalse(Climb(climb,Degrees.of(0)));
+    //                  climb.rollerSpeed_Command(0);
+    //               }
+    //               private Command Climb(Climb climb, Angle degrees) {
+    //                 throw new UnsupportedOperationException("Unimplemented method 'Climb'");
 
-    public Command getAutonomousCommand() {
-        return Commands.print("No autonomous command configured");
+    //        }
+       
+
+        joystick.a().whileTrue(climb.climbspeedCommand(0.5));
+        joystick.a().whileFalse(climb.climbspeedCommand(0));
+        joystick.b().whileTrue(climb.stopmotor(0));
+        joystick.b().whileFalse(climb.stopmotor(0));
+    }
+                public Command getAutonomousCommand() {
+            return Commands.print("No autonomous command configured");
     }
    
 }
