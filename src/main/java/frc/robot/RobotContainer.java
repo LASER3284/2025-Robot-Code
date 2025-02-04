@@ -26,7 +26,8 @@ import frc.robot.Constants.SwerveConstants;
 //import frc.robot.commands.algae_intake.AlgaeStow;
 //import frc.robot.subsystems.Drivetrain;
 //import frc.robot.subsystems.AlgaeIntake;
-import frc.robot.subsystems.Climb;
+//import frc.robot.subsystems.Climb;
+import frc.robot.subsystems.Roller;
 
 public class RobotContainer {
     private double MaxSpeed = SwerveConstants.kSpeedAt12Volts.in(MetersPerSecond); // kSpeedAt12Volts desired top speed
@@ -45,7 +46,9 @@ public class RobotContainer {
 
     private final CommandXboxController joystick = new CommandXboxController(0);
 
-    private final Climb climb = new Climb();
+   // private final Climb climb = new Climb();   
+     private final Roller roller = new Roller();
+
    
 
 
@@ -108,10 +111,16 @@ public class RobotContainer {
     //        }
        
 
-        joystick.a().whileTrue(climb.climbspeedCommand(0.5));
-        joystick.a().whileFalse(climb.climbspeedCommand(0));
-        joystick.b().whileTrue(climb.stopmotor(0));
-        joystick.b().whileFalse(climb.stopmotor(0));
+       // joystick.a().whileTrue(climb.climbspeedCommand(0.5));
+       // joystick.a().whileFalse(climb.climbspeedCommand(0));
+       // joystick.b().whileTrue(climb.stopmotor(0));
+     //   joystick.b().whileFalse(climb.stopmotor(0));
+
+
+        joystick.a().whileTrue(roller.RollerspeedCommand(0.5));
+        joystick.a().whileFalse(roller.RollerspeedCommand(0));
+        joystick.b().whileTrue(roller.stopmotor(0));
+        joystick.b().whileFalse(roller.stopmotor(0));
     }
                 public Command getAutonomousCommand() {
             return Commands.print("No autonomous command configured");

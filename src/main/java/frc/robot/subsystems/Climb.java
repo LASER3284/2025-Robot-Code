@@ -1,4 +1,4 @@
-package frc.robot.subsystems;
+/* package frc.robot.subsystems;
 
 import static edu.wpi.first.units.Units.Rotation;
 
@@ -38,11 +38,8 @@ import edu.wpi.first.wpilibj2.command.Command;
             return this.runOnce(() -> stopmotor(speed));
         }
         public void stopMotor() {
-            Climbmotor.stopMotor();}
-           
-         public Rotation2d getClimbAngle(){
-             return Rotation2d.fromDegrees(180);
-            }
+            Climbmotor.stopMotor();
+        }
             public TrapezoidProfile.State getSetpoint() {
                 return Setpoint;
             }
@@ -53,6 +50,6 @@ import edu.wpi.first.wpilibj2.command.Command;
                 return constaints;
             }
    
-    }
+    }/* */
     
     
