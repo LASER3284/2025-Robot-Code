@@ -13,11 +13,12 @@ import edu.wpi.first.networktables.NetworkTableInstance;
 import edu.wpi.first.wpilibj.shuffleboard.BuiltInWidgets;
 import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
 public class LimelightAprilTags extends SubsystemBase {
 
-    private final String LimelightName = "limelight-apriltags";
+    private final String LimelightName = "AprilTags_TEST";
     private final Pose2d empty_Pose2d = new Pose2d();
 
     private HttpCamera llFeed;
@@ -26,15 +27,24 @@ public class LimelightAprilTags extends SubsystemBase {
     private LimelightHelpers.LimelightResults llResults;
     private boolean hasPosition = false;
     private Pose2d position = empty_Pose2d;
-
+   
     private NetworkTable table;
     private NetworkTableEntry tv;
     private NetworkTableEntry tx;
     private NetworkTableEntry ty;
     private NetworkTableEntry ta;
+    private NetworkTableEntry tid;
     private NetworkTableEntry pipeline;
-    
-    private ScoringMode currentScoringMode = ScoringMode.Undefined;
+
+    private double aprilTag;
+    private double minCommand = 0.15;
+    private double steeringAdjust;
+    private double mountAngle = 24.0;
+    private double lensHeight = 0.0;
+    private double goalHeight = 0.0;
+    private double mapOffset = 0.0;
+
+    private ScoringMode currentScoringMode = ScoringMode.AprilTag;
 
     /* Creates a new Limelight object for AprilTag alignment. */
     public LimelightAprilTags() {
@@ -58,7 +68,7 @@ public class LimelightAprilTags extends SubsystemBase {
         tab = Shuffleboard.getTab(LimelightName);
         
         llFeed = new HttpCamera(LimelightName, "http://10.32.84.11:5800/stream.mjpg");
-        server = CameraServer.addSwitchedCamera("Object Camera");
+        server = CameraServer.addSwitchedCamera("AprilTag Camera");
         server.setSource(llFeed);
         llFeed.setConnectionStrategy(ConnectionStrategy.kKeepOpen);
         tab.add(server.getSource())
@@ -71,10 +81,31 @@ public class LimelightAprilTags extends SubsystemBase {
 
     }
 
-    /* Reads and stores values periodically. */
+    public double getXPos() {
+        return tx.getDouble(0.0);
+    }
+
+    public double getYPos() {
+        return ty.getDouble(0.0);
+    }
+
+    public double getArea() {
+        return ta.getDouble(0.0);
+    }
+
+    public double getID() {
+        return tid.getDouble(0.0);
+    }
+
+    @Override
     public void periodic() {
         if (currentScoringMode == ScoringMode.AprilTag) {
-            llResults = LimelightHelpers.getLatestResults(LimelightName);
+            SmartDashboard.putNumber("YPos", getXPos());
+            SmartDashboard.putNumber("YPos", getYPos());
+            SmartDashboard.putNumber("Area", getArea());
+            SmartDashboard.putNumber("aprilTag", getID());
+            // SmartDashboard.putNumber("Distance", getDistance());
+            // SmartDashboard.putBoolean("isAligned", isAligned());
         }
     }
 
@@ -96,6 +127,5 @@ public class LimelightAprilTags extends SubsystemBase {
 
     public enum ScoringMode {
         AprilTag,
-        Undefined;
     }
 }

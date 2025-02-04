@@ -40,7 +40,7 @@ public class LimelightObjectDetection extends SubsystemBase {
         // LimelightHelpers.getFirstParse();
     }
 
-    /* Configures the Shuffleboard to recieve Limelight feed. */ 
+    /* Configures the Shuffleboard to receive Limelight feed. */ 
     private void configureShuffleboard() {
         ShuffleboardTab tab;
         tab = Shuffleboard.getTab(LimelightName);
@@ -123,7 +123,7 @@ public class LimelightObjectDetection extends SubsystemBase {
     }
     
     /* Processes the Limelight target results into Shuffleboard. */
-    private void processLlResults(LimelightResults m_llResults) {
+    private void processLlResults(LimelightResults llResults) {
         LimelightTarget_Detector[] detections = fetchTargetsDetector();
         // Change variables to necessary values.
         double algaeHeight = 0;
