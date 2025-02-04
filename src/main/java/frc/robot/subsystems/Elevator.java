@@ -106,7 +106,7 @@ public class Elevator extends SubsystemBase {
         
     public void setPower(double power) {
         rightMotor.set(power);
-        leftMotor.set(-power);
+        leftMotor.set(power);
     }
             
     public void setGoal(double goal_pose) {

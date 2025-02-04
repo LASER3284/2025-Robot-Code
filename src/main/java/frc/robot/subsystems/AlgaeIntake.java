@@ -1,10 +1,6 @@
 package frc.robot.subsystems;
 
-<<<<<<< HEAD
 import com.ctre.phoenix6.hardware.TalonFX;
-=======
-/*import java.lang.ModuleLayer.Controller;
->>>>>>> 36848abd953d918091c05edd2ec64f88856272bb
 
 import com.revrobotics.spark.SparkFlex;
 import com.revrobotics.spark.SparkLowLevel.MotorType;
@@ -136,12 +132,4 @@ public Command rollerSpeed_Command(double speed) {
         SmartDashboard.putNumber("motor dist", rackmotor.getEncoder().getPosition());
         //SmartDashboard.putNumber("DISTANCE TO POSE", getAlgaePosition() - )
     }   
-
-
-<<<<<<< HEAD
 }
-=======
-}/* */
-    
-
->>>>>>> 36848abd953d918091c05edd2ec64f88856272bb

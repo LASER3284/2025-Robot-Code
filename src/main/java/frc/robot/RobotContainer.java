@@ -22,6 +22,7 @@ import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine.Direction;
 import frc.robot.Constants.ElevatorConstants;
 import frc.robot.Constants.SwerveConstants;
+import frc.robot.commands.elevator.ToPosition;
 import frc.robot.subsystems.AlgaeIntake;
 //import frc.robot.commands.algae_intake.AlgaeDeploy;
 //import frc.robot.commands.algae_intake.AlgaeIntakeCommand;
@@ -53,6 +54,7 @@ public class RobotContainer {
     public final Drivetrain drivetrain = SwerveConstants.createDrivetrain();
     public final Elevator elevator = new Elevator();
     public final AlgaeIntake algaeintake = new AlgaeIntake();
+    public final Climb climber = new Climb();
 
     public RobotContainer() {
         autoChooser = AutoBuilder.buildAutoChooser("Tests");
@@ -71,8 +73,9 @@ public class RobotContainer {
                     .withVelocityY(-driver.getLeftY() * MaxSpeed) 
                     .withRotationalRate(-driver.getRightX() * MaxAngularRate)) 
             );
+    
 
-       driver.a().whileTrue(drivetrain.applyRequest(() -> brake));
+    //   driver.a().whileTrue(drivetrain.applyRequest(() -> brake));
     //    driver.b().whileTrue(drivetrain.applyRequest(() ->
     //         point.withModuleDirection(new Rotation2d(-driver.getLeftY(), -driver.getLeftX()))
     //    ));
@@ -86,11 +89,11 @@ public class RobotContainer {
         // Run SysId routines when holding back/start and X/Y.
         // Note that each routine should be run exactly once in a single log.
 
-        driver.pov(0).whileTrue(drivetrain.applyRequest(() -> 
-            forwardStraight.withVelocityX(0.5).withVelocityY(0)));
+        // driver.pov(0).whileTrue(drivetrain.applyRequest(() -> 
+        //     forwardStraight.withVelocityX(0.5).withVelocityY(0)));
 
-        driver.pov(180).whileTrue(drivetrain.applyRequest(() ->
-            forwardStraight.withVelocityX(-.05).withVelocityY(0)));
+        // driver.pov(180).whileTrue(drivetrain.applyRequest(() ->
+        //     forwardStraight.withVelocityX(-.05).withVelocityY(0)));
 
 
         driver.back().and(driver.y()).whileTrue(drivetrain.sysIdDynamic(Direction.kForward));
@@ -103,16 +106,20 @@ public class RobotContainer {
         // driver.b().whileTrue(new AlgaeDeploy(algaeintake, Inches.of(31))
         //     .andThen(algaeintake.rollerSpeed_Command(-.5)));
         // driver.b().whileFalse(new AlgaeStow(algaeintake, Inches.of(0)));
+        driver.povLeft().onTrue(new ToPosition(elevator, ElevatorConstants.HANDOFF_HEIGHT));
+        driver.povDown().onTrue(new ToPosition(elevator, ElevatorConstants.L2_HEIGHT));
+        driver.povRight().onTrue(new ToPosition(elevator, ElevatorConstants.L3_HEIGHT));
+        driver.povUp().onTrue(new ToPosition(elevator, ElevatorConstants.L4_HEIGHT));
+        driver.start().onTrue(new ToPosition(elevator, Inches.of(0)));
 
-        // driver.povUp().onTrue(new ToPosition(elevator, ElevatorConstants.L4_HEIGHT));
-        // driver.povLeft().onTrue(new ToPosition(elevator, ElevatorConstants.HANDOFF_HEIGHT));
-        // driver.povDown().onTrue(new ToPosition(elevator, ElevatorConstants.L2_HEIGHT));
-        // driver.povRight().onTrue(new ToPosition(elevator, ElevatorConstants.L3_HEIGHT));
-        // driver.start().onTrue(new ToHome(elevator, Inches.of(-2)));
 
-        driver.povUp().onTrue(elevator.set_power_command(0.1));
-        driver.povDown().onTrue(elevator.set_power_command(-0.1));
-        driver.start().onTrue(elevator.zero_command());
+        driver.a().onTrue(elevator.zero_command());
+
+        // driver.povUp().onTrue(climber.climbspeedCommand(0.1));
+        // driver.povDown().onTrue(climber.climbspeedCommand(-0.1));
+        // driver.povUp().onFalse(climber.climbspeedCommand(0));
+        // driver.povDown().onFalse(climber.climbspeedCommand(0));
+        // driver.start().onTrue(elevator.zero_command());
 
         drivetrain.registerTelemetry(logger::telemeterize);
     }
