@@ -1,0 +1,43 @@
+{
+  "version": "2025.0",
+  "command": {
+    "type": "sequential",
+    "data": {
+      "commands": [
+        {
+          "type": "path",
+          "data": {
+            "pathName": "Right-G"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "G-Processor"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "Processor-Source"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "Source-D"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "D-Barge"
+          }
+        }
+      ]
+    }
+  },
+  "resetOdom": true,
+  "folder": null,
+  "choreoAuto": false
+}
