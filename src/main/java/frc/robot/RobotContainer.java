@@ -24,19 +24,25 @@ import frc.robot.Constants.ElevatorConstants;
 import frc.robot.Constants.SwerveConstants;
 import frc.robot.commands.elevator.ToPosition;
 import frc.robot.subsystems.AlgaeIntake;
-//import frc.robot.commands.algae_intake.AlgaeDeploy;
-//import frc.robot.commands.algae_intake.AlgaeIntakeCommand;
-//import frc.robot.commands.algae_intake.AlgaeStow;
-//import frc.robot.subsystems.Drivetrain;
-//import frc.robot.subsystems.AlgaeIntake;
-import frc.robot.subsystems.Climb;
+import frc.robot.commands.algae_intake.AlgaeDeploy;
+import frc.robot.commands.algae_intake.AlgaeIntakeCommand;
+import frc.robot.commands.algae_intake.AlgaeStow;
+import frc.robot.subsystems.Drivetrain;
+import frc.robot.subsystems.AlgaeIntake;
+//import frc.robot.subsystems.Climb;
 import frc.robot.subsystems.Drivetrain;
 import frc.robot.subsystems.Elevator;
+import frc.robot.subsystems.Pivot;
+import frc.robot.subsystems.Rollers;
+import frc.robot.commands.pivot.PivotToAngle;
 
 public class RobotContainer {
     private double MaxSpeed = SwerveConstants.kSpeedAt12Volts.in(MetersPerSecond);
     private double MaxAngularRate = RotationsPerSecond.of(0.75).in(RadiansPerSecond); 
 
+    public final Pivot pivot = new Pivot();
+    public final Rollers rollers = new Rollers();
+    
     SendableChooser<Command> autoChooser;
 
     private final SwerveRequest.FieldCentric drive = new SwerveRequest.FieldCentric()
@@ -54,19 +60,20 @@ public class RobotContainer {
     public final Drivetrain drivetrain = SwerveConstants.createDrivetrain();
     public final Elevator elevator = new Elevator();
     public final AlgaeIntake algaeintake = new AlgaeIntake();
-    public final Climb climber = new Climb();
+    //public final Climb climber = new Climb();
 
     public RobotContainer() {
         autoChooser = AutoBuilder.buildAutoChooser("Tests");
         SmartDashboard.putData("Auto Mode", autoChooser);
 
         configureBindings();
+        
     }
-
-    
     
     private void configureBindings() {
 
+        drivetrain.registerTelemetry(logger::telemeterize);
+        
         drivetrain.setDefaultCommand(
             drivetrain.applyRequest(() ->
                 drive.withVelocityX(-driver.getLeftX() * MaxSpeed) 
@@ -103,25 +110,40 @@ public class RobotContainer {
 
         //driver.leftBumper().onTrue(drivetrain.runOnce(() -> drivetrain.seedFieldCentric()));
 
-        // driver.b().whileTrue(new AlgaeDeploy(algaeintake, Inches.of(31))
-        //     .andThen(algaeintake.rollerSpeed_Command(-.5)));
-        // driver.b().whileFalse(new AlgaeStow(algaeintake, Inches.of(0)));
-        driver.povLeft().onTrue(new ToPosition(elevator, ElevatorConstants.HANDOFF_HEIGHT));
-        driver.povDown().onTrue(new ToPosition(elevator, ElevatorConstants.L2_HEIGHT));
-        driver.povRight().onTrue(new ToPosition(elevator, ElevatorConstants.L3_HEIGHT));
-        driver.povUp().onTrue(new ToPosition(elevator, ElevatorConstants.L4_HEIGHT));
-        driver.start().onTrue(new ToPosition(elevator, Inches.of(0)));
+        // driver.povLeft().onTrue(new ToPosition(elevator, ElevatorConstants.HANDOFF_HEIGHT));
+        // driver.povDown().onTrue(new ToPosition(elevator, ElevatorConstants.L2_HEIGHT));
+        // driver.povRight().onTrue(new ToPosition(elevator, ElevatorConstants.L3_HEIGHT));
+        // driver.povUp().onTrue(new ToPosition(elevator, ElevatorConstants.L4_HEIGHT));
+        // driver.leftBumper().onTrue(new ToPosition(elevator, Inches.of(0)));
 
+        driver.povUp().onTrue(elevator.set_power_command(0.5));
+        driver.povUp().onFalse(elevator.set_power_command(0));
 
-        driver.a().onTrue(elevator.zero_command());
+        driver.povDown().onTrue(elevator.set_power_command(-0.1));
+        driver.povDown().onFalse(elevator.set_power_command(0));
 
-        // driver.povUp().onTrue(climber.climbspeedCommand(0.1));
-        // driver.povDown().onTrue(climber.climbspeedCommand(-0.1));
-        // driver.povUp().onFalse(climber.climbspeedCommand(0));
-        // driver.povDown().onFalse(climber.climbspeedCommand(0));
-        // driver.start().onTrue(elevator.zero_command());
+        // driver.povUp().onTrue(elevator.set_power_command(0.25));
+        // driver.povDown().onTrue(elevator.set_power_command(-0.25));
+        // driver.povUp().onFalse(elevator.set_power_command(0));
+        // driver.povDown().onFalse(elevator.set_power_command(0));
 
-        drivetrain.registerTelemetry(logger::telemeterize);
+        driver.back().onTrue(rollers.coral_roller_on_command(0.1));
+        driver.back().onFalse(rollers.coral_roller_on_command(0));
+
+        driver.start().onTrue(rollers.algae_roller_on_command(1));
+        driver.start().onFalse(rollers.algae_roller_on_command(0));
+
+        driver.a().onTrue(pivot.setSpeed_command(-0.1));
+        driver.a().onFalse(pivot.setSpeed_command(0));
+
+        driver.b().whileTrue(new AlgaeDeploy(algaeintake, Inches.of(31))
+            .andThen(algaeintake.rollerSpeed_Command(-.5)));
+        driver.b().whileFalse(new AlgaeStow(algaeintake, Inches.of(0)));
+
+        driver.y().onTrue(pivot.setSpeed_command(0.1));
+        driver.y().onFalse(pivot.setSpeed_command(0));
+
+        driver.x().onTrue(elevator.zero_command());
     }
 
     public Command getAutonomousCommand() {

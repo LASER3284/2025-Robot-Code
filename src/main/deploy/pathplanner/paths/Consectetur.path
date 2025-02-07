@@ -1,0 +1,54 @@
+{
+  "version": "2025.0",
+  "waypoints": [
+    {
+      "anchor": {
+        "x": 3.1704195205479455,
+        "y": 4.145205479452055
+      },
+      "prevControl": null,
+      "nextControl": {
+        "x": 3.394486350660695,
+        "y": 4.034326916856645
+      },
+      "isLocked": false,
+      "linkedName": "amet"
+    },
+    {
+      "anchor": {
+        "x": 0.8264126712328768,
+        "y": 6.819777397260274
+      },
+      "prevControl": {
+        "x": 1.4925077317325357,
+        "y": 5.8384959033055805
+      },
+      "nextControl": null,
+      "isLocked": false,
+      "linkedName": "Consectetur"
+    }
+  ],
+  "rotationTargets": [],
+  "constraintZones": [],
+  "pointTowardsZones": [],
+  "eventMarkers": [],
+  "globalConstraints": {
+    "maxVelocity": 7.0,
+    "maxAcceleration": 8.0,
+    "maxAngularVelocity": 540.0,
+    "maxAngularAcceleration": 720.0,
+    "nominalVoltage": 12.0,
+    "unlimited": false
+  },
+  "goalEndState": {
+    "velocity": 0,
+    "rotation": -54.09027692082231
+  },
+  "reversed": false,
+  "folder": null,
+  "idealStartingState": {
+    "velocity": 0,
+    "rotation": 0.0
+  },
+  "useDefaultConstraints": true
+}

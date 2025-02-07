@@ -3,48 +3,38 @@
   "waypoints": [
     {
       "anchor": {
-<<<<<<< HEAD:src/main/deploy/pathplanner/paths/Algae4 Path.path
-        "x": 1.95,
-        "y": 2.172
-      },
-      "prevControl": null,
-      "nextControl": {
-        "x": 3.3247500000000003,
-        "y": 1.9092499999999994
-=======
-        "x": 3.0,
-        "y": 7.0
-      },
-      "prevControl": null,
-      "nextControl": {
-        "x": 2.0620794820801844,
-        "y": 7.004045973616437
->>>>>>> 1d9a4121011c1c1dd8acf8358e9790bcda6e9c95:src/main/deploy/pathplanner/paths/New Path.path
-      },
-      "isLocked": false,
-      "linkedName": "finalback"
-    },
-    {
-      "anchor": {
-<<<<<<< HEAD:src/main/deploy/pathplanner/paths/Algae4 Path.path
-        "x": 6.377,
-        "y": 0.71
-      },
-      "prevControl": {
-        "x": 5.918749999999999,
-        "y": 1.1487500000000006
-=======
         "x": 0.0,
         "y": 7.0
       },
+      "prevControl": null,
+      "nextControl": {
+        "x": 1.0,
+        "y": 7.0
+      },
+      "isLocked": false,
+      "linkedName": null
+    },
+    {
+      "anchor": {
+<<<<<<< HEAD:src/main/deploy/pathplanner/paths/Example Path.path
+        "x": 4.0,
+        "y": 6.0
+      },
       "prevControl": {
-        "x": -0.3130924103571803,
-        "y": 6.9999716446992215
->>>>>>> 1d9a4121011c1c1dd8acf8358e9790bcda6e9c95:src/main/deploy/pathplanner/paths/New Path.path
+        "x": 3.0,
+        "y": 6.0
+=======
+        "x": 5.0,
+        "y": 7.0
+      },
+      "prevControl": {
+        "x": 4.0,
+        "y": 7.0
+>>>>>>> 1d9a4121011c1c1dd8acf8358e9790bcda6e9c95:src/main/deploy/pathplanner/paths/New Pathw.path
       },
       "nextControl": null,
       "isLocked": false,
-      "linkedName": null
+      "linkedName": "back"
     }
   ],
   "rotationTargets": [],
@@ -61,7 +51,7 @@
   },
   "goalEndState": {
     "velocity": 0,
-    "rotation": -90.05441192999861
+    "rotation": 0.0
   },
   "reversed": false,
   "folder": null,

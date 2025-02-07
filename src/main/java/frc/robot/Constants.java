@@ -9,18 +9,19 @@ import com.ctre.phoenix6.signals.*;
 import com.ctre.phoenix6.swerve.*;
 import com.ctre.phoenix6.swerve.SwerveModuleConstants.*;
 
+
 import edu.wpi.first.math.Matrix;
 
 import edu.wpi.first.math.numbers.N1;
 import edu.wpi.first.math.numbers.N3;
 import edu.wpi.first.units.Units;
 import edu.wpi.first.units.measure.*;
+import edu.wpi.first.wpilibj.smartdashboard.Field2d;
 import frc.robot.subsystems.Drivetrain;
 
 public class Constants {
     public static class SwerveConstants {
-// Both sets of gains need to be tuned to your individual robot.
-
+    // Both sets of gains need to be tuned to your individual robot.
     // The steer motor uses any SwerveModule.SteerRequestType control request with the
     // output type specified by SwerveModuleConstants.SteerMotorClosedLoopOutput
     private static final Slot0Configs steerGains = new Slot0Configs()
@@ -82,7 +83,7 @@ public class Constants {
 
     private static final double kDriveGearRatio = 6.12;
     private static final double kSteerGearRatio = 12.8;
-    private static final Distance kWheelRadius = Inches.of(2);
+    private static final Distance kWheelRadius = Inches.of(1.9422);
 
     private static final boolean kInvertLeftSide = false;
     private static final boolean kInvertRightSide = true;
@@ -168,6 +169,9 @@ public class Constants {
 
     private static final Distance kBackRightXPos = Inches.of(-11.75);
     private static final Distance kBackRightYPos = Inches.of(-11.75);
+
+    //field
+    public static final Field2d field = new Field2d();
 
 
     public static final SwerveModuleConstants<TalonFXConfiguration, TalonFXConfiguration, CANcoderConfiguration> FrontLeft =
@@ -286,6 +290,29 @@ public class Constants {
 
     }
 
+    public static class PivotConstants{
+
+        public static final double P = 0.1;
+        public static final double I = 0.00;
+        public static final double D = 0.002;
+        public static final double G = 0.005;
+        public static final double A = 0.01;
+        public static final double V = 0.001;
+        public static final double S = 0.01;
+
+        public static final Angle L1_ANGLE = Units.Degrees.of(90);
+        public static final Angle L2_ANGLE = Units.Degrees.of(75);
+        public static final Angle L3_ANGLE = Units.Degrees.of(50);
+        public static final Angle L4_ANGLE = Units.Degrees.of(25);
+
+        public static final double GEAR_RATIO = 1/53.33;
+
+        public static final double maxVelocity = 1;
+        public static final double maxAcceleration  = 1;
+
+        public static final int pivotMotorID = 56;
+    }
+
     public static class ElevatorConstants {
 
         //trapezoid profile
@@ -351,7 +378,7 @@ public class Constants {
     }
 
     public static class ClimberConstants {
-        public static final int CLIMBER_ID = 22;
+        //public static final int CLIMBER_ID = 22;
 
         public static final double GEAR_RATIO = 24;
         public static final double PULLEY_DIAMETER = 1.75;
@@ -359,5 +386,14 @@ public class Constants {
 
     public static class LEDConstants {
         public static final int LED_LENGTH = 50;
+    }
+
+    public static class RollerConstants {
+        public static final int CORAL_ROLLER_ID = 20;
+        public static final int ALGAE_ROLLER_ID = 21;
+    }
+
+    public static class JSConstants {
+        public static final int JS_ID = 19;
     }
 }
