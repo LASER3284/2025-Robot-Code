@@ -19,7 +19,7 @@ public class Pivot extends SubsystemBase {
     
     private Rotation2d TargetAngle = Rotation2d.fromDegrees(0);
     
-    private Encoder encoder;
+    //private Encoder encoder;
     
     private PIDController pivotPID;
     private SimpleMotorFeedforward ff;
@@ -31,18 +31,18 @@ public class Pivot extends SubsystemBase {
     
     
     public Pivot() {
-        Pivotmotor = new TalonFX(2);
-        encoder = new Encoder(0, 1);
+        Pivotmotor = new TalonFX(15);
+        //encoder = new Encoder(0, 1);
 
-        constraints = new TrapezoidProfile.Constraints(4.5,4.5);
+        constraints = new TrapezoidProfile.Constraints(10, 10);
         goal = new TrapezoidProfile.State();
         setpoint = new TrapezoidProfile.State();
 
         this.ff = new SimpleMotorFeedforward(
-            1,2,3
+            0.006, 0.012, 0.5679
         );
         this.pivotPID = new PIDController(
-            0,0,0
+            0.1,0,0
         );
    }
 
@@ -60,8 +60,6 @@ public class Pivot extends SubsystemBase {
 
     public double getPivotPosition() {
         double pivotpose = (Pivotmotor.getPosition().getValueAsDouble());
-        pivotpose = (pivotpose * 1) * 1;
-
         return pivotpose;
     }
 
@@ -69,41 +67,13 @@ public class Pivot extends SubsystemBase {
         Pivotmotor.setPosition(0);
     }
 
-    public void setNeutralMode(NeutralModeValue mode){
-        Pivotmotor.setNeutralMode(mode);
-    }
-
-    public Rotation2d getPivotAngle(){
-        return Rotation2d.fromRotations(2);
-    }
-
-    public Rotation2d getPivotError(){
-        return Rotation2d.fromDegrees(Math.abs(TargetAngle.getDegrees()) - Math.abs(getPivotAngle().getDegrees()));
-    }
-
-
-    public DoubleSupplier getPivotAtTarget(){
-        return () -> Math.abs(getPivotError().getDegrees());
-    }
-
-    public double getPivotCurrent(){
-        return Pivotmotor.getSupplyCurrent().getValueAsDouble();
-    }
-
     public void stop(){
         Pivotmotor.stopMotor();
    }
 
-    public void logOutputs(){
-
-    }
 
     public Command setMotorSpeed() {
         return this.runOnce(() -> setMotorSpeed());
-    }
-
-    public Command encoder() {
-        return this.runOnce(() -> encoder());
     }
 
     public Command zero_Command() {
@@ -154,6 +124,6 @@ public class Pivot extends SubsystemBase {
     }
 
     public void periodic() {
-        SmartDashboard.putNumber("Pivot motor pose", Pivotmotor.getPosition().getValueAsDouble());
+        SmartDashboard.putNumber("Pivot motor pose", getPivotPosition());
     }
 }

@@ -9,7 +9,6 @@ import com.ctre.phoenix6.signals.*;
 import com.ctre.phoenix6.swerve.*;
 import com.ctre.phoenix6.swerve.SwerveModuleConstants.*;
 
-
 import edu.wpi.first.math.Matrix;
 
 import edu.wpi.first.math.numbers.N1;
@@ -17,6 +16,7 @@ import edu.wpi.first.math.numbers.N3;
 import edu.wpi.first.units.Units;
 import edu.wpi.first.units.measure.*;
 import edu.wpi.first.wpilibj.smartdashboard.Field2d;
+
 import frc.robot.subsystems.Drivetrain;
 
 public class Constants {
@@ -292,9 +292,9 @@ public class Constants {
 
     public static class PivotConstants{
 
-        public static final double P = 0.1;
+        public static final double P = 2.3;
         public static final double I = 0.00;
-        public static final double D = 0.002;
+        public static final double D = 0.005;
         public static final double G = 0.005;
         public static final double A = 0.01;
         public static final double V = 0.001;

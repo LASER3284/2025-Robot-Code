@@ -1,20 +1,17 @@
 package frc.robot.subsystems;
 
+import edu.wpi.first.wpilibj.Encoder;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import edu.wpi.first.math.controller.PIDController;
+import edu.wpi.first.math.trajectory.TrapezoidProfile;
+
 import frc.robot.Constants.JSConstants;
 import frc.robot.Constants.PivotConstants;
 
 import com.ctre.phoenix6.hardware.TalonFX;
-
-import edu.wpi.first.math.controller.PIDController;
-import edu.wpi.first.math.trajectory.TrapezoidProfile;
-import edu.wpi.first.math.controller.SimpleMotorFeedforward;
-
 import com.ctre.phoenix6.configs.TalonFXConfiguration;
-
-import edu.wpi.first.wpilibj.Encoder;
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
 public class JS extends SubsystemBase {
     private TrapezoidProfile.Constraints constraints;
@@ -24,13 +21,13 @@ public class JS extends SubsystemBase {
 
     private TrapezoidProfile current;
     private TalonFX pivotMotor;
-    private Encoder thru_bore;
+    //private Encoder thru_bore;
 
     public JS() {
         pivotMotor = new TalonFX(JSConstants.JS_ID);
         //(PivotConstants.pivotMotorID);
 
-        thru_bore = new Encoder(6, 7);
+        //thru_bore = new Encoder(6, 7);
 
         constraints = new TrapezoidProfile.Constraints(PivotConstants.maxVelocity, PivotConstants.maxAcceleration);
         goal = new TrapezoidProfile.State();
@@ -55,7 +52,7 @@ public class JS extends SubsystemBase {
     }
 
     public double getPivotPosition() {
-        double pivotPose = thru_bore.get();
+        double pivotPose = pivotMotor.getPosition().getValueAsDouble();
         pivotPose = (pivotPose * PivotConstants.GEAR_RATIO);
 
         return pivotPose;
@@ -77,9 +74,9 @@ public class JS extends SubsystemBase {
         return current;
     }
 
-    public int getEncoder() {
-        return thru_bore.get();
-    }
+    // public int getEncoder() {
+    //     return thru_bore.get();
+    // }
 
     public void zeroEncoders() {
         pivotMotor.setPosition(0);
@@ -114,7 +111,7 @@ public class JS extends SubsystemBase {
     }
 
     public void periodic() {
-        SmartDashboard.putNumber("encoder pose", thru_bore.get());
+        SmartDashboard.putNumber("encoder pose", pivotMotor.getPosition().getValueAsDouble());
         SmartDashboard.putNumber("js pose", getPivotPosition());
     }
 

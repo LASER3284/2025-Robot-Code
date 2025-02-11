@@ -4,6 +4,10 @@
 
 package frc.robot.subsystems;
 
+import static edu.wpi.first.units.Units.MetersPerSecond;
+import static edu.wpi.first.units.Units.RadiansPerSecond;
+import static edu.wpi.first.units.Units.RotationsPerSecond;
+
 import com.ctre.phoenix6.configs.TalonFXConfiguration;
 import com.ctre.phoenix6.controls.DutyCycleOut;
 import com.ctre.phoenix6.hardware.TalonFX;
@@ -14,8 +18,14 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants.ElevatorConstants;
+import frc.robot.Constants.SwerveConstants;
+
+
 
 public class Elevator extends SubsystemBase {
+    public static double MaxSpeed = SwerveConstants.kSpeedAt12Volts.in(MetersPerSecond);
+    public static double MaxAngularRate = RotationsPerSecond.of(0.75).in(RadiansPerSecond); 
+    
     private TalonFX rightMotor;
     private TalonFX leftMotor;
 
@@ -115,6 +125,25 @@ public class Elevator extends SubsystemBase {
 
     public void setSetpoint(TrapezoidProfile.State setpoint) {
         this.setpoint = setpoint; 
+    }
+
+    public void setDrivetrainSpeed() {
+        if (getElevatorPosition() > 12) {
+            MaxSpeed = 1;
+            MaxAngularRate = 1;
+        } else if (getElevatorPosition() > 24) {
+            MaxSpeed = 2;
+            MaxAngularRate = 2;
+        } else if (getElevatorPosition() > 36) {
+            MaxSpeed = 3;
+            MaxAngularRate = 3;
+        } else if (getElevatorPosition() > 48) {
+            MaxSpeed = 4;
+            MaxAngularRate = 4;
+        } else if (getElevatorPosition() > 60) {
+            MaxSpeed = 5;
+            MaxAngularRate = 5;
+        }
     }
 
     public void periodic() {
