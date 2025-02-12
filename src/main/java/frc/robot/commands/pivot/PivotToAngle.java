@@ -1,12 +1,9 @@
 package frc.robot.commands.pivot;
 
-import edu.wpi.first.math.controller.SimpleMotorFeedforward;
 import edu.wpi.first.math.controller.PIDController;
-import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.math.trajectory.TrapezoidProfile;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.units.measure.Angle;
-import edu.wpi.first.units.measure.Distance;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
 import frc.robot.Constants.PivotConstants;
@@ -30,10 +27,6 @@ public class PivotToAngle extends Command{
         this.Pivot = Pivot;
         this.angle = angle;
 
-        //this.ff = new SimpleMotorFeedforward(
-           // 0.001, -
-           // 0.001, 
-           // 0.001,0.02);
         this.pivotPID = new PIDController(
             PivotConstants.P, 
             PivotConstants.I, 
