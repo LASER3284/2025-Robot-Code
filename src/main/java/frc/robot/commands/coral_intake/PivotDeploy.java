@@ -38,7 +38,7 @@ public class PivotDeploy extends Command {
 
         //this.ff = new SimpleMotorFeedforward(0.1,0.27,0.3);
             
-        this.pivotPID = new PIDController(.175, 0, 0.005);
+        this.pivotPID = new PIDController(.4, 0, 0.005);
         addRequirements(pivot);
     }
 

@@ -79,7 +79,7 @@ public class RobotContainer {
 
         drivetrain.setDefaultCommand(
             drivetrain.applyRequest(() ->
-                drive.withVelocityX(-driver.getLeftX() * Elevator.MaxSpeed) 
+                drive.withVelocityX(driver.getLeftX() * Elevator.MaxSpeed) 
                     .withVelocityY(-driver.getLeftY() * Elevator.MaxSpeed) 
                     .withRotationalRate(-driver.getRightX() * Elevator.MaxAngularRate)) 
             );
@@ -149,12 +149,12 @@ public class RobotContainer {
         //driver.povLeft().onTrue(new PivotToAngle(js, Degrees.of(-0.15)));
 
         driver.povRight().onTrue(new CoralIntake(js, irollers, p_intake, -0.25, -7.5)
-            .andThen(irollers.setMotorSpeed_command(0.3)
-            .andThen(rollers.coral_roller_on_command(0.3)))
+            .andThen(irollers.setMotorSpeed_command(0.8)
+            .andThen(rollers.coral_roller_on_command(-0.8)))
             .andThen(new PivotToAngle(js, Degrees.of(0.2))));
         driver.povLeft().onTrue(irollers.setMotorSpeed_command(0)
             .andThen(rollers.coral_roller_on_command(0))
-            .andThen(new PivotToAngle(js, Degrees.of(-0.2))
+            .andThen(new PivotToAngle(js, Degrees.of(0.2))
             .andThen(new PivotDeploy(p_intake, irollers, Degrees.of(0)))));
 
 

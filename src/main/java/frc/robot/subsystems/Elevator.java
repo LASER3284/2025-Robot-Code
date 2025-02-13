@@ -143,8 +143,11 @@ public class Elevator extends SubsystemBase {
         } else if (getElevatorPosition() > 60) {
             MaxSpeed = 5;
             MaxAngularRate = 5;
+        } else {
+            MaxSpeed = SwerveConstants.kSpeedAt12Volts.in(MetersPerSecond);
+            MaxAngularRate = RotationsPerSecond.of(0.75).in(RadiansPerSecond); 
         }
-    }
+    }                           
 
     public void periodic() {
         SmartDashboard.putNumber("right motor pose", rightMotor.getPosition().getValueAsDouble());

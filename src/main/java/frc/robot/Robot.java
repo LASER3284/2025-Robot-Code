@@ -39,9 +39,9 @@ public class Robot extends TimedRobot {
 
   public void autonomousInit() {
 
-   // m_autonomousCommand = m_robotContainer.getAutonomousCommand();
+   m_autonomousCommand = m_robotContainer.getAutonomousCommand();
     
-    // start = m_robotContainer.drivetrain.getState().Pose;
+    start = m_robotContainer.drivetrain.getState().Pose;
      if (m_autonomousCommand != null) {
        m_autonomousCommand.schedule();
      }
@@ -49,7 +49,7 @@ public class Robot extends TimedRobot {
 
   public void autonomousPeriodic() {
 
-    // end = m_robotContainer.drivetrain.getState().Pose;
+    end = m_robotContainer.drivetrain.getState().Pose;
     SmartDashboard.putNumber("original x pose", start.getX());
     SmartDashboard.putNumber("original y pose", start.getY());
     double x = Math.abs(start.getX() - end.getX());
