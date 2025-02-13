@@ -1,15 +1,11 @@
 package frc.robot.commands.coral_intake;
 
-import static edu.wpi.first.units.Units.Degrees;
-
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.controller.SimpleMotorFeedforward;
 import edu.wpi.first.math.trajectory.TrapezoidProfile;
 import edu.wpi.first.units.measure.Angle;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
-import frc.robot.commands.pivot.PivotToAngle;
-import frc.robot.subsystems.JS;
 import frc.robot.subsystems.pivotintake.IntakeRollers;
 import frc.robot.subsystems.pivotintake.Pivot;
 
@@ -35,8 +31,6 @@ public class PivotDeploy extends Command {
         this.pivot = pivot;
         this.rollers = rollers;
         this.degrees = degrees;
-
-        //this.ff = new SimpleMotorFeedforward(0.1,0.27,0.3);
             
         this.pivotPID = new PIDController(.4, 0, 0.005);
         addRequirements(pivot);
@@ -49,13 +43,11 @@ public class PivotDeploy extends Command {
         double pose = pivot.getPivotPosition();
         SmartDashboard.putNumber("goal", pivot.getGoal().position);
         TrapezoidProfile.State next = current.calculate(0.02, pivot.getSetpoint(), pivot.getGoal());
-        //double ff_power = ff.calculate(next.velocity) / 12;
         pivot.setSetpoint(next);
         SmartDashboard.putNumber("setpoint", pivot.getSetpoint().position);
         pivotPID.setSetpoint(next.position);
         double power = pivotPID.calculate(pose);
-        double PIDFFpower = power;
-            pivot.setPower(PIDFFpower);
+        pivot.setPower(power);
     }
 
     public void end(boolean interrupted) {
