@@ -11,21 +11,28 @@ import frc.robot.subsystems.Elevator;
 public class ToHome extends Command {
     private Elevator elevator;
 
-    private TrapezoidProfile current;
+    private TrapezoidProfile current_ele;
+    private TrapezoidProfile current_car;
+
     private ElevatorFeedforward ff;
     private PIDController elevatorPID;
-    private Distance height;
+    private Distance eheight;
+    private Distance cheight;
 
     public void initialize() {
-        elevator.setGoal(height.magnitude());
-
-        elevator.setSetpoint(
+        elevator.setEGoal(eheight.magnitude());
+        elevator.setESetpoint(
             new TrapezoidProfile.State(elevator.getElevatorPosition(), 0.0));
+
+        elevator.setCGoal(cheight.magnitude());
+        elevator.setCSetpoint(
+            new TrapezoidProfile.State(elevator.getCarriagePosition(), 0.0));
     }
 
-    public ToHome(Elevator elevator, Distance height) {
+    public ToHome(Elevator elevator, Distance eheight, Distance cheight) {
         this.elevator = elevator;
-        this.height = height;
+        this.eheight = eheight;
+        this.cheight = cheight;
 
         this.ff = new ElevatorFeedforward(
             ElevatorConstants.kS, 
@@ -39,22 +46,39 @@ public class ToHome extends Command {
     }
 
     public void execute() {
-        elevator.setPower(0);
-        current = new TrapezoidProfile(
-            elevator.getConstraints());
-        double pose = elevator.getElevatorPosition();
-        TrapezoidProfile.State next = current.calculate(0.02, elevator.getSetpoint(), elevator.getGoal());
-        double ff_power = ff.calculate(next.velocity) / 12;
-        elevator.setSetpoint(next);
+        elevator.setElevatorPower(0);
+        elevator.setCarriagePower(0);
 
-        elevatorPID.setSetpoint(next.position);
-        double power = elevatorPID.calculate(pose);
-        double PIDFFpower = power + ff_power;
-        elevator.setPower(PIDFFpower);
+
+        current_ele = new TrapezoidProfile(
+            elevator.getConstraints("elevator"));
+        double epose = elevator.getElevatorPosition();
+        TrapezoidProfile.State enext = current_ele.calculate(0.02, elevator.getSetpoint("elevator"), elevator.getGoal("elevator"));
+        double eff_power = ff.calculate(enext.velocity) / 12;
+        elevator.setESetpoint(enext);
+        elevatorPID.setSetpoint(enext.position);
+        double epower = elevatorPID.calculate(epose);
+        double etotalpower = epower + eff_power;
+
+        current_car = new TrapezoidProfile(
+            elevator.getConstraints("elevator"));
+        double cpose = elevator.getElevatorPosition();
+        TrapezoidProfile.State cnext = current_ele.calculate(0.02, elevator.getSetpoint("elevator"), elevator.getGoal("elevator"));
+        double cff_power = ff.calculate(cnext.velocity) / 12;
+        elevator.setESetpoint(cnext);
+        elevatorPID.setSetpoint(cnext.position);
+        double power = elevatorPID.calculate(cpose);
+        double ctotalpower = power + cff_power;
+
+
+
+        elevator.setElevatorPower(etotalpower);
+        elevator.setCarriagePower(ctotalpower);
     }
 
     public void end(boolean interrupted) {
-        elevator.setPower(0);
+        elevator.setElevatorPower(0);
+        elevator.setCarriagePower(0);
     }
 
     public boolean isFinished() {

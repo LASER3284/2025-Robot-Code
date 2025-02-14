@@ -10,7 +10,6 @@ import com.ctre.phoenix6.swerve.SwerveModule.DriveRequestType;
 import com.ctre.phoenix6.swerve.SwerveRequest;
 import com.pathplanner.lib.auto.AutoBuilder;
 
-import edu.wpi.first.wpilibj.smartdashboard.Field2d;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
@@ -34,6 +33,7 @@ import frc.robot.subsystems.JS;
 import frc.robot.subsystems.Rollers;
 import frc.robot.subsystems.pivotintake.IntakeRollers;
 import frc.robot.subsystems.pivotintake.Pivot;
+import frc.robot.subsystems.vision.LimelightHelpers;
 
 public class RobotContainer { 
 
@@ -44,7 +44,6 @@ public class RobotContainer {
     public final Pivot p_intake = new Pivot();
     
     SendableChooser<Command> autoChooser;
-    Field2d field;
 
     private final SwerveRequest.FieldCentric drive = new SwerveRequest.FieldCentric()
             .withDeadband(Elevator.MaxSpeed * 0.1).withRotationalDeadband(Elevator.MaxAngularRate * 0.1) 
@@ -61,13 +60,15 @@ public class RobotContainer {
     public final Drivetrain drivetrain = SwerveConstants.createDrivetrain();
     public final Elevator elevator = new Elevator();
     public final AlgaeIntake algaeintake = new AlgaeIntake();
+
+    public LimelightHelpers cams = new LimelightHelpers();
+    
     //public final Climb climber = new Climb();
     public RobotContainer() {
         autoChooser = AutoBuilder.buildAutoChooser("Tests");
         SmartDashboard.putData("Auto Mode", autoChooser);
 
-        field = new Field2d();
-        SmartDashboard.putData("field", field);
+        drivetrain.addVisionMeasurement(drivetrain.getState().Pose, 0);
 
         configureBindings();
         
@@ -113,8 +114,6 @@ public class RobotContainer {
 
         //driver.leftBumper().onTrue(drivetrain.runOnce(() -> drivetrain.seedFieldCentric()));
 
-        driver.leftBumper().onTrue(new ToPosition(elevator, Inches.of(0)));
-
         driver.back().onTrue(rollers.coral_roller_on_command(-.5));
         driver.back().onFalse(rollers.coral_roller_on_command(0));
 
@@ -149,19 +148,20 @@ public class RobotContainer {
         //driver.povLeft().onTrue(new PivotToAngle(js, Degrees.of(-0.15)));
 
         driver.povRight().onTrue(new CoralIntake(js, irollers, p_intake, -0.25, -7.5)
-            .andThen(irollers.setMotorSpeed_command(0.8)
+            .andThen(irollers.setMotorSpeed_command(0.4)
             .andThen(rollers.coral_roller_on_command(-0.8)))
             .andThen(new PivotToAngle(js, Degrees.of(0.2))));
         driver.povLeft().onTrue(irollers.setMotorSpeed_command(0)
             .andThen(rollers.coral_roller_on_command(0))
-            .andThen(new PivotToAngle(js, Degrees.of(0.2))
+            .andThen(new PivotToAngle(js, Degrees.of(-0.2))
             .andThen(new PivotDeploy(p_intake, irollers, Degrees.of(0)))));
 
 
         driver.povUp().onTrue(new PivotToAngle(js, Degrees.of(-0.25))
             .andThen(new AlgaeDeploy(algaeintake, Inches.of(31)))
-            .andThen(algaeintake.rollerSpeed_Command(-.5)));
-        driver.povDown().whileFalse(new AlgaeDeploy(algaeintake, Inches.of(0))
+            .andThen(algaeintake.rollerSpeed_Command(-.5))
+            .andThen(rollers.algae_roller_on_command(0.5)));
+        driver.povDown().onTrue(new AlgaeDeploy(algaeintake, Inches.of(0))
             .andThen(new PivotToAngle(js, Degrees.of(0))));
     }
 

@@ -26,25 +26,33 @@ public class Elevator extends SubsystemBase {
     public static double MaxSpeed = SwerveConstants.kSpeedAt12Volts.in(MetersPerSecond);
     public static double MaxAngularRate = RotationsPerSecond.of(0.75).in(RadiansPerSecond); 
     
-    private TalonFX rightMotor;
-    private TalonFX leftMotor;
+    private TalonFX elevatorMotor;
+    private TalonFX carriageMotor;
 
     private DigitalInput limit;
 
     private TrapezoidProfile current;
     DutyCycleOut pose;
 
-    private final TrapezoidProfile.Constraints constraints;
-    private TrapezoidProfile.State goal;
-    private TrapezoidProfile.State setpoint;
+    private final TrapezoidProfile.Constraints e_constraints;
+    private TrapezoidProfile.State e_goal;
+    private TrapezoidProfile.State e_setpoint;
+
+    private final TrapezoidProfile.Constraints c_constraints;
+    private TrapezoidProfile.State c_goal;
+    private TrapezoidProfile.State c_setpoint;
         
     public Elevator() {
-        rightMotor = new TalonFX(ElevatorConstants.ER_ID);
-        leftMotor = new TalonFX(ElevatorConstants.EL_ID);
+        elevatorMotor = new TalonFX(ElevatorConstants.ER_ID);
+        carriageMotor = new TalonFX(ElevatorConstants.EL_ID);
         
-        constraints = new TrapezoidProfile.Constraints(ElevatorConstants.maxVelocity, ElevatorConstants.maxAcceleration);
-        goal = new TrapezoidProfile.State();
-        setpoint = new TrapezoidProfile.State();
+        e_constraints = new TrapezoidProfile.Constraints(ElevatorConstants.maxVelocity, ElevatorConstants.maxAcceleration);
+        e_goal = new TrapezoidProfile.State();
+        e_setpoint = new TrapezoidProfile.State();
+
+        c_constraints = new TrapezoidProfile.Constraints(1, 1);
+        e_goal = new TrapezoidProfile.State();
+        e_setpoint = new TrapezoidProfile.State();
         
         var talonFXConfigs = new TalonFXConfiguration();
     
@@ -63,19 +71,26 @@ public class Elevator extends SubsystemBase {
         motionMagicConfigs.MotionMagicAcceleration = 20; 
         motionMagicConfigs.MotionMagicJerk = 1600;
     
-        rightMotor.getConfigurator().apply(talonFXConfigs);
+        elevatorMotor.getConfigurator().apply(talonFXConfigs);
     }
 
     public double getElevatorPosition() {
-        double elevatorpose = (rightMotor.getPosition().getValueAsDouble() + leftMotor.getPosition().getValueAsDouble()) / 2;
+        double elevatorpose = (elevatorMotor.getPosition().getValueAsDouble());
         elevatorpose = (elevatorpose * ElevatorConstants.GEAR_RATIO) * ElevatorConstants.LINEAR_DISTANCE_CONST;
 
         return elevatorpose;
     }
 
+    public double getCarriagePosition() {
+        double carriagepose = (carriageMotor.getPosition().getValueAsDouble());
+        carriagepose = (carriagepose * ElevatorConstants.GEAR_RATIO) * ElevatorConstants.LINEAR_DISTANCE_CONST;
+
+        return carriagepose;
+    }
+
     public void zeroEncoders() {
-        rightMotor.setPosition(0);
-        leftMotor.setPosition(0);
+        elevatorMotor.setPosition(0);
+        carriageMotor.setPosition(0);
     }
 
     // COMMANDS \\
@@ -83,25 +98,39 @@ public class Elevator extends SubsystemBase {
         return this.runOnce(() -> zeroEncoders());
     }
 
-    public Command stop_command() {
-        return this.runOnce(() -> setPower(0));
+    public Command stop_ele_command() {
+        return this.runOnce(() -> setElevatorPower(0));
     }
 
-    public Command set_power_command(double power) {
-        return this.runOnce(() -> setPower(power));
+    public Command stop_car_command() {
+        return this.runOnce(() -> setCarriagePower(0));
+    }
+
+    public Command set_ele_power_command(double power) {
+        return this.runOnce(() -> setElevatorPower(power));
+    }
+
+    public Command set_car_power_command(double power) {
+        return this.runOnce(() -> setCarriagePower(power));
     }
     
     // GETTERS \\
-    public TrapezoidProfile.State getSetpoint() {
-        return setpoint;
+    public TrapezoidProfile.State getSetpoint(String choice) {
+        if (choice.equals("elevator")) { return e_setpoint; }
+        else if (choice.equals("carriage")) { return c_setpoint; }
+        else return null;
     }
 
-    public TrapezoidProfile.State getGoal() {
-        return goal;
+    public TrapezoidProfile.State getGoal(String choice) {
+        if (choice.equals("elevator")) { return e_goal; }
+        else if (choice.equals("carriage")) { return c_goal; }
+        else return null;
     }
 
-    public TrapezoidProfile.Constraints getConstraints() {
-        return constraints;
+    public TrapezoidProfile.Constraints getConstraints(String choice) {
+        if (choice.equals("elevator")) { return e_constraints; }
+        else if (choice.equals("carriage")) { return c_constraints; }
+        else return null;
     }
 
     public TrapezoidProfile getCurrent() {
@@ -114,17 +143,28 @@ public class Elevator extends SubsystemBase {
 
     // SETTERS \\
         
-    public void setPower(double power) {
-        rightMotor.set(power);
-        leftMotor.set(power);
-    }
-            
-    public void setGoal(double goal_pose) {
-        goal = new TrapezoidProfile.State(goal_pose, 0);
+    public void setElevatorPower(double power) {
+        elevatorMotor.set(power);
     }
 
-    public void setSetpoint(TrapezoidProfile.State setpoint) {
-        this.setpoint = setpoint; 
+    public void setCarriagePower(double power) {
+        carriageMotor.set(power);
+    }
+            
+    public void setEGoal(double goal_pose) {
+        e_goal = new TrapezoidProfile.State(goal_pose, 0);
+    }
+
+    public void setESetpoint(TrapezoidProfile.State setpoint) {
+        this.e_setpoint = setpoint; 
+    }
+
+    public void setCGoal(double goal_pose) {
+        c_goal = new TrapezoidProfile.State(goal_pose, 0);
+    }
+
+    public void setCSetpoint(TrapezoidProfile.State setpoint) {
+        this.c_setpoint = setpoint; 
     }
 
     public void setDrivetrainSpeed() {
@@ -150,8 +190,8 @@ public class Elevator extends SubsystemBase {
     }                           
 
     public void periodic() {
-        SmartDashboard.putNumber("right motor pose", rightMotor.getPosition().getValueAsDouble());
-        SmartDashboard.putNumber("left motor pose", leftMotor.getPosition().getValueAsDouble());
+        SmartDashboard.putNumber("elevator motor pose", elevatorMotor.getPosition().getValueAsDouble());
+        SmartDashboard.putNumber("carriage motor pose", carriageMotor.getPosition().getValueAsDouble());
         SmartDashboard.putNumber("elevator pose", getElevatorPosition());
     }
 }

@@ -99,14 +99,14 @@ public class LimelightAprilTags extends SubsystemBase {
 
     @Override
     public void periodic() {
-        if (currentScoringMode == ScoringMode.AprilTag) {
-            SmartDashboard.putNumber("YPos", getXPos());
+        //if (currentScoringMode == ScoringMode.AprilTag) {
+            SmartDashboard.putNumber("XPos", getXPos());
             SmartDashboard.putNumber("YPos", getYPos());
             SmartDashboard.putNumber("Area", getArea());
             SmartDashboard.putNumber("aprilTag", getID());
             // SmartDashboard.putNumber("Distance", getDistance());
             // SmartDashboard.putBoolean("isAligned", isAligned());
-        }
+        //}
     }
 
     public Pose2d getPose2d() {
