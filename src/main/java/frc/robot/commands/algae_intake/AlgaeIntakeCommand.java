@@ -11,7 +11,7 @@ public class AlgaeIntakeCommand extends SequentialCommandGroup{
     public AlgaeIntakeCommand() {
         addCommands(
             new AlgaeDeploy(algaeintake, distance),
-            algaeintake.rollerSpeed_Command(0.5)
+            algaeintake.rollerSpeed_Command(-0.5)
         );
     }
 }
