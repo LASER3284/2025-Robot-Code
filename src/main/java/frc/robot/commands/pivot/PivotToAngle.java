@@ -12,10 +12,12 @@ import frc.robot.subsystems.*;
 public class PivotToAngle extends Command{
 
     private PIDController pivotPID;
+    private Rollers rollers;
     private TrapezoidProfile trappy;
     private JS Pivot;
     double setPoint;
     private Angle angle;
+    double speed;
 
 
     public void initialize() {
@@ -23,18 +25,21 @@ public class PivotToAngle extends Command{
         Pivot.setSetpoint(new TrapezoidProfile.State(Pivot.getPivotPosition(), 0.0));
     }
 
-    public  PivotToAngle(JS Pivot, Angle angle) {
+    public  PivotToAngle(JS Pivot, Rollers rollers, Angle angle, double speed) {
         this.Pivot = Pivot;
+        this.rollers = rollers;
         this.angle = angle;
+        this.speed = speed;
 
         this.pivotPID = new PIDController(
             PivotConstants.P, 
             PivotConstants.I, 
             PivotConstants.D);
-        addRequirements(Pivot);
+        //addRequirements(Pivot, rollers);
     }
 
     public void execute() {
+        rollers.coral_roller_on_command(speed);
         Pivot.setPower(0);
         trappy = new TrapezoidProfile(
             Pivot.getConstraints());

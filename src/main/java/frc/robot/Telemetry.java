@@ -1,5 +1,8 @@
 package frc.robot;
 
+import static edu.wpi.first.units.Units.Inches;
+import static edu.wpi.first.units.Units.Meters;
+
 import com.ctre.phoenix6.SignalLogger;
 import com.ctre.phoenix6.swerve.SwerveDrivetrain.SwerveDriveState;
 import com.pathplanner.lib.util.PathPlannerLogging;
@@ -21,6 +24,7 @@ import edu.wpi.first.wpilibj.smartdashboard.MechanismLigament2d;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj.util.Color;
 import edu.wpi.first.wpilibj.util.Color8Bit;
+import frc.robot.subsystems.Drivetrain;
 
 public class Telemetry {
     private final double MaxSpeed;
@@ -126,9 +130,13 @@ public class Telemetry {
         SignalLogger.writeDoubleArray("DriveState/ModuleTargets", m_moduleTargetsArray);
         SignalLogger.writeDouble("DriveState/OdometryPeriod", state.OdometryPeriod, "seconds");
 
+        Pose2d pose = new Pose2d(Meters.of(state.Pose.getX()), Meters.of(state.Pose.getY()), state.Pose.getRotation());
+
+
         /* Telemeterize the pose to a Field2d */
-        fieldTypePub.set("field");
+        fieldTypePub.set("Field2d");
         fieldPub.set(m_poseArray);
+        field.setRobotPose(pose);
 
         /* Telemeterize the module states to a Mechanism2d */
         for (int i = 0; i < 4; ++i) {
@@ -138,7 +146,5 @@ public class Telemetry {
 
             SmartDashboard.putData("Module " + i, m_moduleMechanisms[i]);
         }
-
-        field.getRobotPose();
     }
 }

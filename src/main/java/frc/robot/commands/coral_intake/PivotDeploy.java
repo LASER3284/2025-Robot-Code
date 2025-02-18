@@ -1,35 +1,29 @@
 package frc.robot.commands.coral_intake;
 
 import edu.wpi.first.math.controller.PIDController;
-import edu.wpi.first.math.controller.SimpleMotorFeedforward;
 import edu.wpi.first.math.trajectory.TrapezoidProfile;
 import edu.wpi.first.units.measure.Angle;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
-import frc.robot.subsystems.pivotintake.IntakeRollers;
 import frc.robot.subsystems.pivotintake.Pivot;
 
 public class PivotDeploy extends Command {
-    private final Pivot pivot;
-    private final IntakeRollers rollers;
+    private Pivot pivot = new Pivot();
     private TrapezoidProfile current;
-    private SimpleMotorFeedforward ff;
     private PIDController pivotPID;
     private Angle degrees;
-
-
-
+    
+    
+    
     public void initialize() {
         pivot.setGoal(degrees.magnitude());
-
+    
         pivot.setSetpoint(
             new TrapezoidProfile.State(pivot.getPivotPosition(), 0));
-
     }
-
-    public PivotDeploy(Pivot pivot, IntakeRollers rollers, Angle degrees) {
+    
+    public PivotDeploy(Pivot pivot, Angle degrees) {
         this.pivot = pivot;
-        this.rollers = rollers;
         this.degrees = degrees;
             
         this.pivotPID = new PIDController(.4, 0, 0.005);

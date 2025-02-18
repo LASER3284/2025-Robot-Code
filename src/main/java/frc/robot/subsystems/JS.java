@@ -1,23 +1,21 @@
 package frc.robot.subsystems;
 
-import edu.wpi.first.wpilibj.Encoder;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
-import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.trajectory.TrapezoidProfile;
 
 import frc.robot.Constants.JSConstants;
 import frc.robot.Constants.PivotConstants;
 
 import com.ctre.phoenix6.hardware.TalonFX;
+import com.ctre.phoenix6.signals.NeutralModeValue;
 import com.ctre.phoenix6.configs.TalonFXConfiguration;
 
 public class JS extends SubsystemBase {
     private TrapezoidProfile.Constraints constraints;
     private TrapezoidProfile.State goal;
     private TrapezoidProfile.State setpoint;
-    private PIDController pid;
 
     private TrapezoidProfile current;
     private TalonFX pivotMotor;
@@ -25,6 +23,7 @@ public class JS extends SubsystemBase {
 
     public JS() {
         pivotMotor = new TalonFX(JSConstants.JS_ID);
+        pivotMotor.setNeutralMode(NeutralModeValue.Brake);
         //(PivotConstants.pivotMotorID);
 
         //thru_bore = new Encoder(6, 7);

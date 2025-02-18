@@ -8,10 +8,9 @@ import com.ctre.phoenix6.hardware.*;
 import com.ctre.phoenix6.signals.*;
 import com.ctre.phoenix6.swerve.*;
 import com.ctre.phoenix6.swerve.SwerveModuleConstants.*;
-import com.pathplanner.lib.path.PathConstraints;
 
 import edu.wpi.first.math.Matrix;
-
+import edu.wpi.first.math.kinematics.SwerveModulePosition;
 import edu.wpi.first.math.numbers.N1;
 import edu.wpi.first.math.numbers.N3;
 import edu.wpi.first.units.Units;
@@ -33,7 +32,7 @@ public class Constants {
     // When using closed-loop control, the drive motor uses the control
     // output type specified by SwerveModuleConstants.DriveMotorClosedLoopOutput
     private static final Slot0Configs driveGains = new Slot0Configs()
-        .withKP(0.1).withKI(0).withKD(0)
+        .withKP(.075).withKI(0).withKD(0)
         .withKS(0).withKV(0.124);
 
     // The closed-loop output type to use for the steer motors;
@@ -132,7 +131,7 @@ public class Constants {
     private static final int kFrontLeftDriveMotorId = 1;
     private static final int kFrontLeftSteerMotorId = 2;
     private static final int kFrontLeftEncoderId = 3;
-    private static final Angle kFrontLeftEncoderOffset = Rotations.of(0.471923828125);
+    private static final Angle kFrontLeftEncoderOffset = Rotations.of(0.491923828125);
     private static final boolean kFrontLeftSteerMotorInverted = false;
     private static final boolean kFrontLeftEncoderInverted = false;
 
@@ -143,7 +142,7 @@ public class Constants {
     private static final int kFrontRightDriveMotorId = 4;
     private static final int kFrontRightSteerMotorId = 5;
     private static final int kFrontRightEncoderId = 6;
-    private static final Angle kFrontRightEncoderOffset = Rotations.of(-0.36181640625);
+    private static final Angle kFrontRightEncoderOffset = Rotations.of(-0.38181640625);
     private static final boolean kFrontRightSteerMotorInverted = false;
     private static final boolean kFrontRightEncoderInverted = false;
 
@@ -154,7 +153,7 @@ public class Constants {
     private static final int kBackLeftDriveMotorId = 7;
     private static final int kBackLeftSteerMotorId = 8;
     private static final int kBackLeftEncoderId = 9;
-    private static final Angle kBackLeftEncoderOffset = Rotations.of(0.257568359375);
+    private static final Angle kBackLeftEncoderOffset = Rotations.of(0.277568359375);
     private static final boolean kBackLeftSteerMotorInverted = false;
     private static final boolean kBackLeftEncoderInverted = false;
 
@@ -165,7 +164,7 @@ public class Constants {
     private static final int kBackRightDriveMotorId = 10;
     private static final int kBackRightSteerMotorId = 11;
     private static final int kBackRightEncoderId = 12;
-    private static final Angle kBackRightEncoderOffset = Rotations.of(-0.472900390625);
+    private static final Angle kBackRightEncoderOffset = Rotations.of(-0.307568359375);
     private static final boolean kBackRightSteerMotorInverted = false;
     private static final boolean kBackRightEncoderInverted = false;
 
@@ -197,6 +196,8 @@ public class Constants {
             kBackRightXPos, kBackRightYPos, kInvertRightSide, kBackRightSteerMotorInverted, kBackRightEncoderInverted
         );
 
+
+    //public static final SwerveModulePosition FL_POSE = new SwerveModulePosition(, null)
     /**
      * Creates a CommandSwerveDrivetrain instance.
      * This should only be called once in your robot program,.
@@ -205,6 +206,10 @@ public class Constants {
         return new Drivetrain(
             DrivetrainConstants, FrontLeft, FrontRight, BackLeft, BackRight
         );
+    }
+
+    public void getModulePosition() {
+        
     }
 
 
@@ -294,7 +299,7 @@ public class Constants {
 
     public static class PivotConstants{
 
-        public static final double P = 2.3;
+        public static final double P = 2.8;
         public static final double I = 0.00;
         public static final double D = 0.005;
         public static final double G = 0.005;

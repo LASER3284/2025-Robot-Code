@@ -7,6 +7,7 @@ import java.util.function.Supplier;
 import com.ctre.phoenix6.SignalLogger;
 import com.ctre.phoenix6.Utils;
 import com.ctre.phoenix6.swerve.SwerveDrivetrainConstants;
+import com.ctre.phoenix6.swerve.SwerveModule;
 import com.ctre.phoenix6.swerve.SwerveModuleConstants;
 import com.ctre.phoenix6.swerve.SwerveRequest;
 
@@ -16,25 +17,23 @@ import com.pathplanner.lib.config.RobotConfig;
 import com.pathplanner.lib.controllers.PPHolonomicDriveController;
 
 import edu.wpi.first.math.Matrix;
-import edu.wpi.first.math.estimator.PoseEstimator;
+import edu.wpi.first.math.estimator.SwerveDrivePoseEstimator;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
-import edu.wpi.first.math.geometry.Translation2d;
+import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
+import edu.wpi.first.math.kinematics.SwerveDriveOdometry;
+import edu.wpi.first.math.kinematics.SwerveModulePosition;
 import edu.wpi.first.math.numbers.N1;
 import edu.wpi.first.math.numbers.N3;
-import edu.wpi.first.networktables.NetworkTableInstance;
-import edu.wpi.first.units.measure.LinearVelocity;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj.Notifier;
 import edu.wpi.first.wpilibj.RobotController;
-import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.smartdashboard.Field2d;
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Subsystem;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
-import frc.robot.Constants.SwerveConstants;
+import frc.robot.Constants;
 import frc.robot.Constants.SwerveConstants.TunerSwerveDrivetrain;
 import frc.robot.subsystems.vision.LimelightHelpers;
 
@@ -42,15 +41,6 @@ public class Drivetrain extends TunerSwerveDrivetrain implements Subsystem {
     private static final double kSimLoopPeriod = 0.005; // 5 ms
     private Notifier m_simNotifier = null;
     private double m_lastSimTime;
-
-    private static final Field2d field = new Field2d();
-    private static boolean useMegaTag2 = true;
-    private static boolean doRejectUpdate = false;
-    private static String limelightUsed;
-    private static LimelightHelpers.PoseEstimate LLposeEstimate;
-    
-    private static double limelightFrontAvgTagArea = 0;
-    private static double limelightBackAvgTagArea = 0;
 
     /* Blue alliance sees forward as 0 degrees (toward red alliance wall) */
     private static final Rotation2d kBlueAlliancePerspectiveRotation = Rotation2d.kZero;
@@ -62,13 +52,25 @@ public class Drivetrain extends TunerSwerveDrivetrain implements Subsystem {
     private boolean m_hasAppliedOperatorPerspective = false;
 
     private RobotConfig config;
-    
-
-
     /* Swerve requests to apply during SysId characterization */
     private final SwerveRequest.SysIdSwerveTranslation m_translationCharacterization = new SwerveRequest.SysIdSwerveTranslation();
     private final SwerveRequest.SysIdSwerveSteerGains m_steerCharacterization = new SwerveRequest.SysIdSwerveSteerGains();
     private final SwerveRequest.SysIdSwerveRotation m_rotationCharacterization = new SwerveRequest.SysIdSwerveRotation();
+
+    Rotation2d fl_rot = new Rotation2d(getModule(0).getEncoder().getPosition().getValueAsDouble());
+    Rotation2d fr_rot = new Rotation2d(getModule(1).getEncoder().getPosition().getValueAsDouble());
+    Rotation2d bl_rot = new Rotation2d(getModule(2).getEncoder().getPosition().getValueAsDouble());
+    Rotation2d br_rot = new Rotation2d(getModule(3).getEncoder().getPosition().getValueAsDouble());
+
+    SwerveModulePosition front_left = new SwerveModulePosition(getModule(0).getDriveMotor().getPosition().getValueAsDouble(), fl_rot);
+    SwerveModulePosition front_right = new SwerveModulePosition(getModule(1).getDriveMotor().getPosition().getValueAsDouble(), fr_rot);
+    SwerveModulePosition back_left = new SwerveModulePosition(getModule(2).getDriveMotor().getPosition().getValueAsDouble(), bl_rot);
+    SwerveModulePosition back_right = new SwerveModulePosition(getModule(3).getDriveMotor().getPosition().getValueAsDouble(), br_rot);
+
+    private final SwerveModulePosition[] poses = {front_left, front_right, back_left, back_right};
+    
+    public final SwerveDriveOdometry odometry = new SwerveDriveOdometry(getKinematics(), getPigeon2().getRotation2d(), poses);
+    public final SwerveDrivePoseEstimator pose_est = new SwerveDrivePoseEstimator(getKinematics(), getPigeon2().getRotation2d(), poses, new Pose2d());
 
     /* SysId routine for characterizing translation. This is used to find PID gains for the drive motors. */
     private final SysIdRoutine m_sysIdRoutineTranslation = new SysIdRoutine(
@@ -198,7 +200,7 @@ public class Drivetrain extends TunerSwerveDrivetrain implements Subsystem {
                 ),
                 new PPHolonomicDriveController(
                     // PID constants for translation
-                    new PIDConstants(10, 0, 0),
+                    new PIDConstants(30.8, 0.0001, 0.00000),
                     // PID constants for rotation
                     new PIDConstants(7, 0, 0)
                 ),
@@ -249,14 +251,9 @@ public class Drivetrain extends TunerSwerveDrivetrain implements Subsystem {
                 m_hasAppliedOperatorPerspective = true;
             });
         }
-    }
-       //updateOdometry();
-        // SmartDashboard.putData("Field", field);
+        pose_est.update(getPigeon2().getRotation2d(), poses);
 
-        // Pose2d currentPose = getState().Pose;
-        // field.setRobotPose(currentPose); // Fused pose I think
-        // Double[] fusedPose = {currentPose.getX(), currentPose.getY(), currentPose.getRotation().getRadians()};
-        // SmartDashboard.putNumberArray("Fused PoseDBL", fusedPose);
-
-        
+        // 4 cams
+        pose_est.addVisionMeasurement(LimelightHelpers.getBotPose2d("limelight"), kNumConfigAttempts);
+    }   
 }

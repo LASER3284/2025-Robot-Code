@@ -193,5 +193,6 @@ public class Elevator extends SubsystemBase {
         SmartDashboard.putNumber("elevator motor pose", elevatorMotor.getPosition().getValueAsDouble());
         SmartDashboard.putNumber("carriage motor pose", carriageMotor.getPosition().getValueAsDouble());
         SmartDashboard.putNumber("elevator pose", getElevatorPosition());
+        SmartDashboard.putNumber("drive speed", MaxSpeed);
     }
 }

@@ -63,7 +63,7 @@ public class ToPosition extends Command {
         current_car = new TrapezoidProfile(
             elevator.getConstraints("elevator"));
         double cpose = elevator.getElevatorPosition();
-        TrapezoidProfile.State cnext = current_ele.calculate(0.02, elevator.getSetpoint("elevator"), elevator.getGoal("elevator"));
+        TrapezoidProfile.State cnext = current_car.calculate(0.02, elevator.getSetpoint("elevator"), elevator.getGoal("elevator"));
         double cff_power = ff.calculate(cnext.velocity) / 12;
         elevator.setESetpoint(cnext);
         elevatorPID.setSetpoint(cnext.position);

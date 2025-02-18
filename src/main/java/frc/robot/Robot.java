@@ -10,6 +10,7 @@ import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import frc.robot.commands.CoralIntake;
 import frc.robot.commands.SourceIntake;
+//import frc.robot.commands.SourceIntake;
 import frc.robot.commands.elevator.ToHome;
 import frc.robot.commands.elevator.ToPosition;
 import frc.robot.commands.pivot.PivotToAngle;
@@ -30,11 +31,11 @@ import edu.wpi.first.math.util.Units;
 
 
 public class Robot extends TimedRobot {
-  private JS js;
-  private Rollers rollers;
-  private IntakeRollers irollers;
-  private Pivot pintake;
-  private Elevator elevator;
+  private JS js = new JS();
+  private Rollers rollers = new Rollers();
+  private IntakeRollers irollers = new IntakeRollers();
+  private Pivot pintake = new Pivot();
+  private Elevator elevator = new Elevator();
 
   private Command m_autonomousCommand;
  
@@ -50,10 +51,10 @@ public class Robot extends TimedRobot {
     m_robotContainer = new RobotContainer();
 
     NamedCommands.registerCommand("source intake", new SourceIntake(js, rollers));
-    NamedCommands.registerCommand("ground intake", new CoralIntake(js, irollers, pintake, -0.25, -7.5)
+    NamedCommands.registerCommand("ground intake", new CoralIntake(js, rollers, irollers, pintake, -0.25, -7.5)
             .andThen(irollers.setMotorSpeed_command(0.4)
             .andThen(rollers.coral_roller_on_command(-0.8)))
-            .andThen(new PivotToAngle(js, Degrees.of(0.2))));
+            .andThen(new PivotToAngle(js, rollers, Degrees.of(0.2), 0)));
     NamedCommands.registerCommand("L2 Score", new ToPosition(elevator, Inches.of(2), Inches.of(3)));
     NamedCommands.registerCommand("L3 Score", new ToPosition(elevator, Inches.of(3), Inches.of(4)));
     NamedCommands.registerCommand("L4 Score", new ToPosition(elevator, Inches.of(4), Inches.of(5)));
