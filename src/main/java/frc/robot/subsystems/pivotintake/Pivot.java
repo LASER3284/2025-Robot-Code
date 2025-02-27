@@ -58,7 +58,7 @@ public class Pivot extends SubsystemBase {
     }
 
     public double getPivotPosition() {
-        double pivotpose = (Pivotmotor.getPosition().getValueAsDouble());
+        double pivotpose = (encoder.get());
         return pivotpose;
     }
 

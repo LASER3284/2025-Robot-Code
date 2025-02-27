@@ -45,7 +45,6 @@ import frc.robot.subsystems.pivotintake.Pivot;
 import frc.robot.subsystems.vision.LimelightHelpers;
 
 public class RobotContainer { 
-    public final JS js = new JS();
     //public final Pivot pivotIntake = new Pivot();
 
     //public final Rollers rollers = new Rollers();
@@ -75,6 +74,7 @@ public class RobotContainer {
     public final Carriage carriage = new Carriage();
     public final AlgaeIntake algaeintake = new AlgaeIntake();
     public final Rollers rollers = new Rollers();
+    public final JS js = new JS(rollers);
 
     public LimelightHelpers cams = new LimelightHelpers();
     
@@ -146,8 +146,9 @@ public class RobotContainer {
         // driver.y().onTrue(irollers.setMotorSpeed_command(50));
         // driver.y().onFalse(irollers.setMotorSpeed_command(0));
         
-        driver.b().whileTrue(new PivotToAngle(js, rollers, Degrees.of(0.75), 0));
-        driver.x().whileTrue(new PivotToAngle(js, rollers, Degrees.of(0.55), 0)); //.until(() -> js.isAtSetpoint(0.55));
+        //driver.b().whileTrue(new PivotToAngle(js, rollers, 0.75, 0));
+        driver.x().whileTrue(new PivotToAngle(js, rollers, 0.75, 0).andThen(js.setGoalPose()));
+        driver.b().whileTrue(new PivotToAngle(js, rollers, 0.5, 0)); //.until(() -> js.isAtSetpoint(0.55));
 
         // driver.b().whileTrue(js.calcCommand(0.55));
         // driver.x().whileTrue(js.calcCommand(0.75));
