@@ -30,8 +30,8 @@ public class AlgaeIntake extends SubsystemBase {
         rackmotor = new SparkFlex(AlgaeIntakeConstants.ARACK_ID, MotorType.kBrushless);
         rollermotor = new TalonFX(AlgaeIntakeConstants.AROLLER_ID);
 
-        limit = new DigitalInput(AlgaeIntakeConstants.DI_LIMIT_PORT);
-        sensor = new DigitalInput(AlgaeIntakeConstants.DI_SENSOR_PORT);
+        limit = new DigitalInput(0);
+        sensor = new DigitalInput(1);
             
         constraints = new TrapezoidProfile.Constraints(820, 820);
         goal = new TrapezoidProfile.State();

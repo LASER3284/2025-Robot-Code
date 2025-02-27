@@ -28,7 +28,7 @@ public class IntakeRollers extends SubsystemBase {
     }
 
     public Command setMotorSpeed_command(double speed){
-        return this.runOnce(() -> setMotorSpeed(speed));
+        return this.runOnce(() -> Intakemotor.set(speed));
     }
 
     public Command setIntake(){

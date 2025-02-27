@@ -1,6 +1,8 @@
 package frc.robot.subsystems;
 
 import com.ctre.phoenix6.hardware.TalonFX;
+import com.revrobotics.spark.SparkFlex;
+import com.revrobotics.spark.SparkLowLevel.MotorType;
 
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
@@ -8,11 +10,11 @@ import frc.robot.Constants.RollerConstants;
 
 public class Rollers extends SubsystemBase{
 
-    private TalonFX coral_motor;
+    private SparkFlex coral_motor;
     private TalonFX algae_motor;
 
     public Rollers(){
-        coral_motor = new TalonFX(RollerConstants.CORAL_ROLLER_ID);
+        coral_motor = new SparkFlex(51, MotorType.kBrushless);
         algae_motor = new TalonFX(RollerConstants.ALGAE_ROLLER_ID);
     }
 

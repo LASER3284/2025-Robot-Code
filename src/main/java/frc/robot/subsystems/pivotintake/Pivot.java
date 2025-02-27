@@ -38,6 +38,8 @@ public class Pivot extends SubsystemBase {
         this.pivotPID = new PIDController(
             0.1,0,0
         );
+
+        zeroEncoders();
    }
 
    public void setMotorSpeed(double speed){

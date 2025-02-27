@@ -43,7 +43,7 @@ public class AlgaeStow extends Command {
         rackPID.setSetpoint(new_goal.position);
         double power = rackPID.calculate(position);
 
-        algaeintake.setRackSpeed(power);
+        algaeintake.setRackSpeed(-power);
 
     }
 

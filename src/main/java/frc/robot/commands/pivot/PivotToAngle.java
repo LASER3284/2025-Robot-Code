@@ -32,9 +32,9 @@ public class PivotToAngle extends Command{
         this.speed = speed;
 
         this.pivotPID = new PIDController(
-            PivotConstants.P, 
+            2.8, 
             PivotConstants.I, 
-            PivotConstants.D);
+            0);
         //addRequirements(Pivot, rollers);
     }
 
@@ -46,14 +46,12 @@ public class PivotToAngle extends Command{
         double pose = Pivot.getPivotPosition();
         TrapezoidProfile.State next = trappy.calculate(0.02, Pivot.getSetpoint(), Pivot.getGoal());
         Pivot.setSetpoint(next);
-
         pivotPID.setSetpoint(next.position);
         double power = pivotPID.calculate(pose);
         SmartDashboard.putNumber("power", power);
         double PIDFFpower = power;
         SmartDashboard.putNumber("PIDFFpower", PIDFFpower);
-
-        Pivot.setPower(PIDFFpower);
+        Pivot.setPower(-PIDFFpower);
     }
 
     public void end(boolean interrupted) {
@@ -62,6 +60,7 @@ public class PivotToAngle extends Command{
         
     public boolean isFinished() { 
         SmartDashboard.putNumber("Angle Magnitude: ", angle.magnitude());
+        SmartDashboard.putNumber("distance to goal", Pivot.getPivotPosition() - angle.magnitude());
         return Math.abs(Pivot.getPivotPosition() - angle.magnitude()) < 0.01;
     }
 }

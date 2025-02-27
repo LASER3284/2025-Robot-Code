@@ -8,17 +8,14 @@ import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
-import frc.robot.commands.CoralIntake;
-import frc.robot.commands.SourceIntake;
+//import frc.robot.commands.CoralIntake;
 //import frc.robot.commands.SourceIntake;
-import frc.robot.commands.elevator.ToHome;
-import frc.robot.commands.elevator.ToPosition;
-import frc.robot.commands.pivot.PivotToAngle;
+//import frc.robot.commands.pivot.PivotToAngle;
 import frc.robot.subsystems.Elevator;
 import frc.robot.subsystems.JS;
-import frc.robot.subsystems.Rollers;
-import frc.robot.subsystems.pivotintake.IntakeRollers;
-import frc.robot.subsystems.pivotintake.Pivot;
+//import frc.robot.subsystems.Rollers;
+// import frc.robot.subsystems.pivotintake.IntakeRollers;
+// import frc.robot.subsystems.pivotintake.Pivot;
 import frc.robot.subsystems.vision.LimelightHelpers;
 
 import static edu.wpi.first.units.Units.Degrees;
@@ -31,10 +28,9 @@ import edu.wpi.first.math.util.Units;
 
 
 public class Robot extends TimedRobot {
-  private JS js = new JS();
-  private Rollers rollers = new Rollers();
-  private IntakeRollers irollers = new IntakeRollers();
-  private Pivot pintake = new Pivot();
+  //private Rollers rollers = new Rollers();
+  // private IntakeRollers irollers = new IntakeRollers();
+  // private Pivot pintake = new Pivot();
   private Elevator elevator = new Elevator();
 
   private Command m_autonomousCommand;
@@ -49,17 +45,6 @@ public class Robot extends TimedRobot {
 
   public Robot() {
     m_robotContainer = new RobotContainer();
-
-    NamedCommands.registerCommand("source intake", new SourceIntake(js, rollers));
-    NamedCommands.registerCommand("ground intake", new CoralIntake(js, rollers, irollers, pintake, -0.25, -7.5)
-            .andThen(irollers.setMotorSpeed_command(0.4)
-            .andThen(rollers.coral_roller_on_command(-0.8)))
-            .andThen(new PivotToAngle(js, rollers, Degrees.of(0.2), 0)));
-    NamedCommands.registerCommand("L2 Score", new ToPosition(elevator, Inches.of(2), Inches.of(3)));
-    NamedCommands.registerCommand("L3 Score", new ToPosition(elevator, Inches.of(3), Inches.of(4)));
-    NamedCommands.registerCommand("L4 Score", new ToPosition(elevator, Inches.of(4), Inches.of(5)));
-    NamedCommands.registerCommand("Home", new ToHome(elevator, Inches.of(0), Inches.of(0)));
-
   }
 
   public void robotPeriodic() {
@@ -78,13 +63,17 @@ public class Robot extends TimedRobot {
     }
   }
 
-  public void disabledInit() {}
+  public void disabledInit() {
+    CommandScheduler.getInstance().cancelAll();
+  }
 
   public void disabledPeriodic() {
     
   }
 
-  public void disabledExit() {}
+  public void disabledExit() {
+    CommandScheduler.getInstance().cancelAll();
+  }
 
   public void autonomousInit() {
 
@@ -117,6 +106,8 @@ public class Robot extends TimedRobot {
     if (m_autonomousCommand != null) {
       m_autonomousCommand.cancel();
     }
+
+    CommandScheduler.getInstance().cancelAll();
   }
 
   public void teleopPeriodic() {}

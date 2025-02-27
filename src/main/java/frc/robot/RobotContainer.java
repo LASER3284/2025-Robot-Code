@@ -10,58 +10,75 @@ import com.ctre.phoenix6.swerve.SwerveModule.DriveRequestType;
 import com.ctre.phoenix6.swerve.SwerveRequest;
 import com.pathplanner.lib.auto.AutoBuilder;
 
+import edu.wpi.first.wpilibj.event.BooleanEvent;
+import edu.wpi.first.wpilibj.event.EventLoop;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.WaitCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 
 import frc.robot.Constants.*;
-import frc.robot.commands.CoralIntake;
-import frc.robot.commands.SourceIntake;
+import frc.robot.commands.AutoAlign2;
+//import frc.robot.commands.CoralIntake;
+//import frc.robot.commands.SourceIntake;
 import frc.robot.commands.algae_intake.AlgaeDeploy;
+import frc.robot.commands.algae_intake.AlgaeStow;
 import frc.robot.commands.coral_intake.PivotDeploy;
 import frc.robot.commands.pivot.PivotToAngle;
-
+//import frc.robot.commands.coral_intake.PivotDeploy;
+//import frc.robot.commands.pivot.PivotToAngle;
+//import frc.robot.commands.pivot.PivotToAngle;
 import frc.robot.subsystems.AlgaeIntake;
+import frc.robot.subsystems.Carriage;
 import frc.robot.subsystems.Climb;
+import frc.robot.subsystems.Drivetrain;
 import frc.robot.subsystems.Drivetrain;
 import frc.robot.subsystems.Elevator;
 import frc.robot.subsystems.JS;
 import frc.robot.subsystems.Rollers;
+//import frc.robot.subsystems.Rollers;
+//import frc.robot.subsystems.Rollers;
 import frc.robot.subsystems.pivotintake.IntakeRollers;
 import frc.robot.subsystems.pivotintake.Pivot;
+//import frc.robot.subsystems.pivotintake.Pivot;
 import frc.robot.subsystems.vision.LimelightHelpers;
 
 public class RobotContainer { 
-
     public final JS js = new JS();
-    public final Rollers rollers = new Rollers();
+    public final Pivot pivotIntake = new Pivot();
+
+    //public final Rollers rollers = new Rollers();
     public final IntakeRollers irollers = new IntakeRollers();
     public final Climb climb = new Climb();
-
-    public final Pivot p_intake = new Pivot();
+    public final LimelightHelpers ll_helpers = new LimelightHelpers();
     
     SendableChooser<Command> autoChooser;
 
     private final SwerveRequest.FieldCentric drive = new SwerveRequest.FieldCentric()
-            .withDeadband(Elevator.MaxSpeed * 0.1).withRotationalDeadband(Elevator.MaxAngularRate * 0.1) 
+            .withDeadband(SwerveConstants.kSpeedAt12Volts.in(MetersPerSecond) * 0.1).withRotationalDeadband(RotationsPerSecond.of(0.75).in(RadiansPerSecond) * 0.1) 
             .withDriveRequestType(DriveRequestType.OpenLoopVoltage); 
     private final SwerveRequest.SwerveDriveBrake brake = new SwerveRequest.SwerveDriveBrake();
     //private final SwerveRequest.PointWheelsAt point = new SwerveRequest.PointWheelsAt();
     private final SwerveRequest.RobotCentric forwardStraight = new SwerveRequest.RobotCentric()
         .withDriveRequestType(DriveRequestType.OpenLoopVoltage);
 
-    private final Telemetry logger = new Telemetry(Elevator.MaxSpeed);
+    private final Telemetry logger = new Telemetry(SwerveConstants.kSpeedAt12Volts.in(MetersPerSecond));
 
     private final CommandXboxController driver = new CommandXboxController(0);
+    private final EventLoop loop = new EventLoop();
+
+    private final BooleanEvent elevator_event = new BooleanEvent(loop, driver.povDown());
 
     public final Drivetrain drivetrain = SwerveConstants.createDrivetrain();
     public final Elevator elevator = new Elevator();
+    public final Carriage carriage = new Carriage();
     public final AlgaeIntake algaeintake = new AlgaeIntake();
+    public final Rollers rollers = new Rollers();
 
     public LimelightHelpers cams = new LimelightHelpers();
     
-    //public final Climb climber = new Climb();
+    public final Climb climber = new Climb();
     public RobotContainer() {
         autoChooser = AutoBuilder.buildAutoChooser("Tests");
         SmartDashboard.putData("Auto Mode", autoChooser);
@@ -78,9 +95,9 @@ public class RobotContainer {
 
         drivetrain.setDefaultCommand(
             drivetrain.applyRequest(() ->
-                drive.withVelocityX(-driver.getLeftY() * Elevator.MaxSpeed) 
-                    .withVelocityY(-driver.getLeftX() * Elevator.MaxSpeed) 
-                    .withRotationalRate(-driver.getRightX() * Elevator.MaxAngularRate)) 
+                drive.withVelocityX(-driver.getLeftY() * SwerveConstants.kSpeedAt12Volts.in(MetersPerSecond)) 
+                    .withVelocityY(-driver.getLeftX() * SwerveConstants.kSpeedAt12Volts.in(MetersPerSecond)) 
+                    .withRotationalRate(-driver.getRightX() * RotationsPerSecond.of(0.75).in(RadiansPerSecond))) 
             );
     
 
@@ -89,20 +106,11 @@ public class RobotContainer {
     //         point.withModuleDirection(new Rotation2d(-driver.getLeftY(), -driver.getLeftX()))
     //    ));
 
-        driver.leftTrigger().whileTrue(drivetrain.applyRequest(() ->
-                drive.withVelocityX(-driver.getLeftY() * Elevator.MaxSpeed * 0.1)
-                .withVelocityY(-driver.getLeftX() * Elevator.MaxSpeed * 0.1)
-                .withRotationalRate(-driver.getRightX() * Elevator.MaxAngularRate * 0.5))
+        driver.rightTrigger().whileTrue(drivetrain.applyRequest(() ->
+                drive.withVelocityX(-driver.getLeftY() * SwerveConstants.kSpeedAt12Volts.in(MetersPerSecond) * 0.1)
+                .withVelocityY(-driver.getLeftX() * SwerveConstants.kSpeedAt12Volts.in(MetersPerSecond) * 0.1)
+                .withRotationalRate(-driver.getRightX() * RotationsPerSecond.of(0.75).in(RadiansPerSecond) * 0.5))
                 );
-
-        // Run SysId routines when holding back/start and X/Y.
-        // Note that each routine should be run exactly once in a single log.
-
-        // driver.pov(0).whileTrue(drivetrain.applyRequest(() -> 
-        //     forwardStraight.withVelocityX(0.5).withVelocityY(0)));
-
-        // driver.pov(180).whileTrue(drivetrain.applyRequest(() ->
-        //     forwardStraight.withVelocityX(-.05).withVelocityY(0)));
 
 
        // driver.back().and(driver.y()).whileTrue(drivetrain.sysIdDynamic(Direction.kForward));
@@ -110,59 +118,41 @@ public class RobotContainer {
        // driver.start().and(driver.y()).whileTrue(drivetrain.sysIdQuasistatic(Direction.kForward));
        // driver.start().and(driver.x()).whileTrue(drivetrain.sysIdQuasistatic(Direction.kReverse));
 
-        //driver.leftBumper().onTrue(drivetrain.runOnce(() -> drivetrain.seedFieldCentric()));
-
-        driver.back().onTrue(rollers.coral_roller_on_command(-.5));
-        driver.back().onFalse(rollers.coral_roller_on_command(0));
-
-        //driver.start().onTrue(rollers.algae_roller_on_command(1));
-        //driver.start().onFalse(rollers.algae_roller_on_command(0));
-
-        driver.start().onTrue(rollers.coral_roller_on_command(.5));
-        driver.start().onFalse(rollers.coral_roller_on_command(0));
-
-    //    driver.b().whileTrue(new AlgaeDeploy(algaeintake, Inches.of(31))
+    //    driver.b().whileTrue(new AlgaeDeploy(algaeintake, Inches.of(-31))
     //        .andThen(algaeintake.rollerSpeed_Command(-.5)));
-    //    driver.b().whileFalse(new AlgaeStow(algaeintake, Inches.of(0)));
+    //    driver.b().onFalse(new AlgaeDeploy(algaeintake, Inches.of(0)));
 
-        // driver.y().onTrue(pivot.setSpeed_command(-0.1));
-        // driver.y().onFalse(pivot.setSpeed_command(0));
-        driver.y().onTrue(p_intake.zero_Command()
-            .andThen(js.zero_command())
-            .andThen(elevator.zero_command()));
+        driver.start().onTrue(algaeintake.zero_command());
 
-        driver.x().onTrue(new PivotDeploy(p_intake, Degrees.of(11))
-            .andThen(irollers.setMotorSpeed_command(0.4)));
-        driver.x().onFalse(new PivotDeploy(p_intake, Degrees.of(0))
-            .andThen(irollers.setMotorSpeed_command(0))
-            .andThen(p_intake.zero_Command()));
+        // driver.a().whileTrue(carriage.carriageCommand(4).andThen(elevator.elevatorCommand(4)));
+        // driver.b().whileTrue(carriage.carriageCommand(5));
+        // driver.x().whileTrue(carriage.carriageCommand(3).andThen(elevator.elevatorCommand(3)));
+        // POSITIVE TOWARDS THE BACK
+        driver.a().whileTrue(js.JSCommand(0.5));
+        // NEGATIVE TOWARDS THE FRONT
+        driver.x().whileTrue(js.JSCommand(-0.5));
+        driver.b().whileTrue(new PivotDeploy(pivotIntake, Degrees.of(-8))
+        .andThen(js.JSCommand(-25)
+        .andThen(new WaitCommand(0.5))
+        .andThen(carriage.carriageCommand(3))
+        .andThen(rollers.coral_roller_on_command(0.5))
+        .andThen(irollers.setMotorSpeed_command(5))));
+        driver.b().whileFalse(carriage.carriageCommand(-2)
+        .andThen(rollers.coral_roller_on_command(0))
+        .andThen(irollers.setMotorSpeed_command(0))
+        .andThen(js.JSCommand(0))
+        .andThen(new WaitCommand(0.5))
+        .andThen(new PivotDeploy(pivotIntake, Degrees.of(-0.1))));
+        // driver.y().onTrue(irollers.setMotorSpeed_command(50));
+        // driver.y().onFalse(irollers.setMotorSpeed_command(0));
 
-        driver.b().onTrue(rollers.coral_roller_on_command(-0.4)
-            .andThen(new PivotToAngle(js, rollers, Degrees.of(0.06), 0.4)));
+        driver.y().whileTrue(rollers.coral_roller_on_command(0.5));
+        driver.y().whileFalse(rollers.coral_roller_on_command(0));
 
-        //driver.povLeft().onTrue(new PivotToAngle(js, Degrees.of(-0.15)));
 
-        driver.povRight().onTrue(new CoralIntake(js, rollers, irollers, p_intake, -0.25, -7.5)
-            .andThen(irollers.setMotorSpeed_command(0.4)
-            .andThen(rollers.coral_roller_on_command(-0.8)))
-            .andThen(new PivotToAngle(js, rollers, Degrees.of(0.2), 0)));
-        driver.povLeft().onTrue(irollers.setMotorSpeed_command(0)
-            .andThen(rollers.coral_roller_on_command(0))
-            .andThen(new PivotToAngle(js, rollers, Degrees.of(-0.2), 0)
-            .andThen(new PivotDeploy(p_intake, Degrees.of(0)))));
-
-        // driver.povUp().onTrue(new PivotToAngle(js, rollers, Degrees.of(-0.25))
-        //     .andThen(new AlgaeDeploy(algaeintake, Inches.of(31)))
-        //     .andThen(algaeintake.rollerSpeed_Command(-.5))
-        //     .andThen(rollers.algae_roller_on_command(0.5)));
-        // driver.povDown().onTrue(new AlgaeDeploy(algaeintake, Inches.of(0))
-        //     .andThen(new PivotToAngle(js, rollers, Degrees.of(0))));
-
-        driver.povUp().onTrue(climb.climbspeedCommand(0.5));
-        driver.povUp().onFalse(climb.climbspeedCommand(0));
-
-        driver.povDown().onTrue(climb.climbspeedCommand(-0.5));
-        driver.povDown().onFalse(climb.climbspeedCommand(0));
+        driver.rightBumper().onTrue(new AutoAlign2(drivetrain, ll_helpers, -12.5));
+        driver.leftBumper().onTrue(new AutoAlign2(drivetrain, ll_helpers, 12.5));
+        //driver.rightBumper().onTrue(new AutoAlign(drivetrain, ll_helpers, 12, 0));
     }
 
     public Command getAutonomousCommand() {

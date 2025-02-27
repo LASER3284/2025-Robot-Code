@@ -1582,4 +1582,20 @@ public class LimelightHelpers {
 
         return results;
     }
+
+    public double getTargetAngle() {
+        return NetworkTableInstance.getDefault().getTable("limelight").getEntry("tx").getDouble(0.0);
+    }
+
+    public double getTargetTY() {
+        return NetworkTableInstance.getDefault().getTable("limelight").getEntry("ty").getDouble(0.0);
+    }
+
+    public double getTargetTX() {
+        return NetworkTableInstance.getDefault().getTable("limelight").getEntry("tx").getDouble(0.0);
+    }
+
+    public double[] get3DPose() {
+        return NetworkTableInstance.getDefault().getTable("limelight").getEntry("camtran").getDoubleArray(new double[6]);
+    }
 }
