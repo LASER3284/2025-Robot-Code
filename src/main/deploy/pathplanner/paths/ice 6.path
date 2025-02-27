@@ -3,13 +3,13 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 3.800102459016393,
-        "y": 4.954047131147541
+        "x": 3.531035958904109,
+        "y": 5.392337328767123
       },
       "prevControl": null,
       "nextControl": {
-        "x": 1.6543032786885248,
-        "y": 5.457530737704917
+        "x": 1.3852367785762407,
+        "y": 5.895820935324499
       },
       "isLocked": false,
       "linkedName": "link 5"
@@ -48,7 +48,7 @@
   "folder": "ice cream",
   "idealStartingState": {
     "velocity": 0,
-    "rotation": 0.0
+    "rotation": -61.74835145404855
   },
   "useDefaultConstraints": true
 }

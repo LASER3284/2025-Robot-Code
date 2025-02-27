@@ -1,0 +1,55 @@
+{
+  "version": "2025.0",
+  "command": {
+    "type": "sequential",
+    "data": {
+      "commands": [
+        {
+          "type": "path",
+          "data": {
+            "pathName": "BEAN 1"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "BEAN 2"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "BEAN 3"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "BEAN 4"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "BEAN 5"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "BEAN 6"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "BEAN 7"
+          }
+        }
+      ]
+    }
+  },
+  "resetOdom": true,
+  "folder": "AIDEN SPECIAL",
+  "choreoAuto": false
+}
