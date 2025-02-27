@@ -35,7 +35,7 @@ public class PivotToAngle extends Command{
             0.6, 
             PivotConstants.I, 
             0);
-        //addRequirements(Pivot, rollers);
+        addRequirements(Pivot, rollers);
     }
 
     public void execute() {

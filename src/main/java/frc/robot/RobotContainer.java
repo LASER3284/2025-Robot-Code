@@ -146,11 +146,11 @@ public class RobotContainer {
         // driver.y().onTrue(irollers.setMotorSpeed_command(50));
         // driver.y().onFalse(irollers.setMotorSpeed_command(0));
         
-        // driver.b().whileTrue(new PivotToAngle(js, rollers, Degrees.of(0.75), 0));
-        // driver.x().whileTrue(new PivotToAngle(js, rollers, Degrees.of(0.55), 0)); //.until(() -> js.isAtSetpoint(0.55));
+        driver.b().whileTrue(new PivotToAngle(js, rollers, Degrees.of(0.75), 0));
+        driver.x().whileTrue(new PivotToAngle(js, rollers, Degrees.of(0.55), 0)); //.until(() -> js.isAtSetpoint(0.55));
 
-        driver.b().whileTrue(js.setPoseCommand(0.55));
-        driver.x().whileTrue(js.setPoseCommand(0.75));
+        // driver.b().whileTrue(js.calcCommand(0.55));
+        // driver.x().whileTrue(js.calcCommand(0.75));
 
         driver.y().whileTrue(rollers.coral_roller_on_command(0.5));
         driver.y().whileFalse(rollers.coral_roller_on_command(0));

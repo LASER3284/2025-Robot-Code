@@ -36,7 +36,7 @@ public class JS extends SubsystemBase {
 
     private PIDController pid;
 
-    public double current_pose;
+    public double current_pose = 0;
 
     public JS() {
         pivotMotor = new TalonFX(JSConstants.JS_ID);
@@ -53,7 +53,7 @@ public class JS extends SubsystemBase {
             0.025, .3 ,.01, 0.013
         );
 
-        current_pose = thru_bore.get();
+        //current_pose = 0.5;
 
         pid = new PIDController(2, 0, 0);
         
@@ -175,7 +175,7 @@ public class JS extends SubsystemBase {
         SmartDashboard.putNumber("js pose", getPivotPosition());//getPivotPosition());
         SmartDashboard.putNumber("current pose", current_pose);
 
-        calculateJSPose(current_pose);
+        //calculateJSPose(current_pose);
 
     }
 
