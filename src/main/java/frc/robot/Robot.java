@@ -13,6 +13,7 @@ import edu.wpi.first.wpilibj2.command.CommandScheduler;
 //import frc.robot.commands.pivot.PivotToAngle;
 import frc.robot.subsystems.Elevator;
 import frc.robot.subsystems.JS;
+import frc.robot.subsystems.pivotintake.Pivot;
 //import frc.robot.subsystems.Rollers;
 // import frc.robot.subsystems.pivotintake.IntakeRollers;
 // import frc.robot.subsystems.pivotintake.Pivot;
@@ -32,6 +33,7 @@ public class Robot extends TimedRobot {
   // private IntakeRollers irollers = new IntakeRollers();
   // private Pivot pintake = new Pivot();
   private Elevator elevator = new Elevator();
+  private Pivot pivotIntake = new Pivot();
 
   private Command m_autonomousCommand;
  

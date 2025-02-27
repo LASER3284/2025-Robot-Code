@@ -32,7 +32,7 @@ public class PivotToAngle extends Command{
         this.speed = speed;
 
         this.pivotPID = new PIDController(
-            2.8, 
+            0.6, 
             PivotConstants.I, 
             0);
         //addRequirements(Pivot, rollers);

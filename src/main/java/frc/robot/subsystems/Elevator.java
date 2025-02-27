@@ -17,6 +17,7 @@ import com.ctre.phoenix6.controls.DutyCycleOut;
 import com.ctre.phoenix6.controls.Follower;
 import com.ctre.phoenix6.controls.MotionMagicVoltage;
 import com.ctre.phoenix6.controls.PositionVoltage;
+import com.ctre.phoenix6.controls.VoltageOut;
 import com.ctre.phoenix6.hardware.TalonFX;
 import com.ctre.phoenix6.signals.ControlModeValue;
 import com.ctre.phoenix6.signals.NeutralModeValue;
@@ -46,6 +47,9 @@ public class Elevator extends SubsystemBase {
     private TrapezoidProfile.State goal;
 
     private double last_pose;
+
+    VoltageOut request = new VoltageOut(0);
+    MotionMagicVoltage m_magicRequest = new MotionMagicVoltage(0);
     
     public Elevator() {
         rightElevator = new TalonFX(ElevatorConstants.ER_ID);
@@ -75,6 +79,8 @@ public class Elevator extends SubsystemBase {
 
         rightElevator.setNeutralMode(NeutralModeValue.Brake);
         leftElevator.setNeutralMode(NeutralModeValue.Brake);
+
+        leftElevator.setControl(new Follower(rightElevator.getDeviceID(), true));
     }
 
     public double getElevatorPosition() {
@@ -84,21 +90,29 @@ public class Elevator extends SubsystemBase {
         return pose;
     }
 
-    public void setElevatorPosition(double rotations) {
-        // final PositionVoltage request = new PositionVoltage(0).withSlot(0);
-
-        // rightElevator.setControl(request.withPosition(rotations));
-        // leftElevator.setControl(request.withPosition(rotations));
-
-        final MotionMagicVoltage m_request = new MotionMagicVoltage(0);
-
-        // set target position to 100 rotations
-        rightElevator.setControl(m_request.withPosition(-rotations));
-        leftElevator.setControl(m_request.withPosition(rotations));
+    public void manualElevatorMotor(double voltage) {
+        rightElevator.setControl(request.withOutput(voltage));
     }
-
-    public Command elevatorCommand(double rotations) {
-        return this.runOnce(() -> setElevatorPosition(rotations));
+    
+    public void stopElevatorMotor() {
+        rightElevator.setControl(request.withOutput(0));
+    }
+    
+    public void goToSetPoint(double setpoint) {
+        rightElevator.setPosition(setpoint);
+    }
+    
+    public void setElevatorZero() {
+        rightElevator.setPosition(0);
+        System.out.print("Zeroed Elevator");
+    }
+    
+    public boolean atSetpoint(double setpoint) {
+        return rightElevator.getPosition().getValueAsDouble() == setpoint;
+    }
+    
+    public double getPose() {
+        return rightElevator.getPosition().getValueAsDouble();
     }
 
     public void periodic() {

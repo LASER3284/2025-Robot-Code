@@ -2,9 +2,11 @@ package frc.robot.subsystems;
 
 import edu.wpi.first.wpilibj.DutyCycleEncoder;
 import edu.wpi.first.wpilibj.Encoder;
+import edu.wpi.first.wpilibj.event.BooleanEvent;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import edu.wpi.first.math.controller.ArmFeedforward;
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.trajectory.TrapezoidProfile;
 import edu.wpi.first.units.measure.Angle;
@@ -14,9 +16,10 @@ import frc.robot.Constants.PivotConstants;
 
 import com.ctre.phoenix6.hardware.TalonFX;
 import com.ctre.phoenix6.signals.NeutralModeValue;
-import com.ctre.phoenix6.configs.ExternalFeedbackConfigs;
+
+import java.util.function.BooleanSupplier;
+
 import com.ctre.phoenix6.configs.TalonFXConfiguration;
-import com.ctre.phoenix6.controls.MotionMagicVoltage;
 
 public class JS extends SubsystemBase {
     private TrapezoidProfile.Constraints constraints;
@@ -27,11 +30,13 @@ public class JS extends SubsystemBase {
     private TalonFX pivotMotor;
     private DutyCycleEncoder thru_bore; //= new DutyCycleEncoder(3);
 
+    private ArmFeedforward ff;
+    
     private TrapezoidProfile current_js;
 
     private PIDController pid;
 
-    private double rotations;
+    public double current_pose;
 
     public JS() {
         pivotMotor = new TalonFX(JSConstants.JS_ID);
@@ -44,42 +49,28 @@ public class JS extends SubsystemBase {
         goal = new TrapezoidProfile.State();
         setpoint = new TrapezoidProfile.State();
 
+        this.ff = new ArmFeedforward(
+            0.025, .3 ,.01, 0.013
+        );
+
+        current_pose = thru_bore.get();
+
+        pid = new PIDController(2, 0, 0);
         
+        // var motionMagicConfigs = talonFXConfigs.MotionMagic;
+        // motionMagicConfigs.MotionMagicCruiseVelocity = 10; 
+        // motionMagicConfigs.MotionMagicAcceleration = 20; 
+        // motionMagicConfigs.MotionMagicJerk = 1600;
 
-        // this.ff = new SimpleMotorFeedforward(
-        //     0.025, .012 ,.01
-        // );
-
-        var talonFXConfigs = new TalonFXConfiguration();
-
-        var slot0Configs = talonFXConfigs.Slot0;
-            slot0Configs.kS = 0.1;   
-            slot0Configs.kV = 0.5; 
-            slot0Configs.kA = 0.005; 
-            slot0Configs.kG = 0.8;
-            slot0Configs.kP = 0.4; 
-            slot0Configs.kI = 0; 
-            slot0Configs.kD = 0;
-        
-        var motionMagicConfigs = talonFXConfigs.MotionMagic;
-        motionMagicConfigs.MotionMagicCruiseVelocity = 80; 
-        motionMagicConfigs.MotionMagicAcceleration = 20; 
-        motionMagicConfigs.MotionMagicJerk = 1600;
-
-        pivotMotor.getConfigurator().apply(talonFXConfigs);
-        pivotMotor.getConfigurator().apply(motionMagicConfigs);
-
+        // pivotMotor.getConfigurator().apply(talonFXConfigs);
 
         pivotMotor.setNeutralMode(NeutralModeValue.Brake);
-
-        zeroEncoders();
-
     }
 
     public double getPivotPosition() {
         double pivotPose = thru_bore.get();
-        pivotPose = (pivotPose * 0.0107146684);
-        System.out.println(thru_bore.get());
+        //pivotPose = (pivotPose * 0.0107146684);
+        //System.out.println(thru_bore.get());
         return pivotPose;
     }
 
@@ -103,26 +94,12 @@ public class JS extends SubsystemBase {
         return pid;
     }
 
-    public void setPivotPosition(double rotations) {
-
-        final MotionMagicVoltage m_request = new MotionMagicVoltage(rotations);
-
-        // set target position to 100 rotations
-        pivotMotor.setControl(m_request.withPosition(rotations));
-
-        this.rotations = rotations;
-    }
-
-    public Command JSCommand(double rotations) {
-        return this.runOnce(() -> setPivotPosition(rotations));
-    }
-
-    public double getEncoder() {
-        return thru_bore.get();
-    }
+    // public int getEncoder() {
+    //     return thru_bore.get();
+    // }
 
     public void zeroEncoders() {
-        pivotMotor.setPosition(0);
+        //thru_bore.set;
     }
 
     public void setSpeed(double speed) {
@@ -153,8 +130,53 @@ public class JS extends SubsystemBase {
         this.setpoint = setpoint; 
     }
 
+    public boolean isSafeGroundIn() {
+        return thru_bore.get() < 0.75 && thru_bore.get() > 0.55;
+    }
+
+    public boolean isAtSetpoint(double angle) {
+        return (thru_bore.get() - angle) < 0.1;
+    }
+
+    public void calculateJSPose(double angle) {
+        setGoal(angle);
+        setSetpoint(
+            new TrapezoidProfile.State(getPivotPosition(), 0.0));
+        
+        current_js = new TrapezoidProfile(
+            getConstraints());
+        double cpose = getPivotPosition();
+        TrapezoidProfile.State cnext = current_js.calculate(0.02, getSetpoint(), getGoal());
+         double cff_power = ff.calculate(cnext.position, cnext.velocity);
+        setSetpoint(cnext);
+        getPID().setSetpoint(cnext.position);
+        double cpower = getPID().calculate(cpose);
+        double ctotalpower = cpower + cff_power;
+
+        SmartDashboard.putNumber("ctotalpower", ctotalpower);
+
+        pivotMotor.set(ctotalpower);
+    }
+
+    public void setPose(double angle) {
+        current_pose = angle;
+    }
+
+    public Command setPoseCommand(double angle) {
+        return this.run(() -> setPose(angle));
+    }
+
+    public Command calcCommand(double angle) {
+        return this.run(() -> calculateJSPose(angle));
+    }
+
     public void periodic() {
-        SmartDashboard.putNumber("js pose", getEncoder());
+        SmartDashboard.putNumber("encoder pose", thru_bore.get());
+        SmartDashboard.putNumber("js pose", getPivotPosition());//getPivotPosition());
+        SmartDashboard.putNumber("current pose", current_pose);
+
+        calculateJSPose(current_pose);
+
     }
 
 

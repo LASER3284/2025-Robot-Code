@@ -46,7 +46,7 @@ import frc.robot.subsystems.vision.LimelightHelpers;
 
 public class RobotContainer { 
     public final JS js = new JS();
-    public final Pivot pivotIntake = new Pivot();
+    //public final Pivot pivotIntake = new Pivot();
 
     //public final Rollers rollers = new Rollers();
     public final IntakeRollers irollers = new IntakeRollers();
@@ -125,26 +125,32 @@ public class RobotContainer {
         driver.start().onTrue(algaeintake.zero_command());
 
         // driver.a().whileTrue(carriage.carriageCommand(4).andThen(elevator.elevatorCommand(4)));
-        // driver.b().whileTrue(carriage.carriageCommand(5));
-        // driver.x().whileTrue(carriage.carriageCommand(3).andThen(elevator.elevatorCommand(3)));
+         //driver.b().whileTrue(carriage.carriageCommand(5));
+         //driver.x().whileTrue(carriage.carriageCommand(3).andThen(elevator.elevatorCommand(3)));
         // POSITIVE TOWARDS THE BACK
-        driver.a().whileTrue(js.JSCommand(0.5));
+        //driver.a().whileTrue(js.setSpeed_command(js.calculateJSPose(Degrees.of(0.3))));
         // NEGATIVE TOWARDS THE FRONT
-        driver.x().whileTrue(js.JSCommand(-0.5));
-        driver.b().whileTrue(new PivotDeploy(pivotIntake, Degrees.of(-8))
-        .andThen(js.JSCommand(-25)
-        .andThen(new WaitCommand(0.5))
-        .andThen(carriage.carriageCommand(3))
-        .andThen(rollers.coral_roller_on_command(0.5))
-        .andThen(irollers.setMotorSpeed_command(5))));
-        driver.b().whileFalse(carriage.carriageCommand(-2)
-        .andThen(rollers.coral_roller_on_command(0))
-        .andThen(irollers.setMotorSpeed_command(0))
-        .andThen(js.JSCommand(0))
-        .andThen(new WaitCommand(0.5))
-        .andThen(new PivotDeploy(pivotIntake, Degrees.of(-0.1))));
+       // driver.x().whileTrue(js.setSpeed_command(js.calculateJSPose(Degrees.of(0.3))));
+        // driver.b().whileTrue(new PivotDeploy(pivotIntake, Degrees.of(-8))
+        // .andThen(js.setSpeed_command(js.calculateJSPose(Degrees.of(0.3)))
+        // .andThen(new WaitCommand(0.5))
+        // .andThen(carriage.carriageCommand(3))
+        // .andThen(rollers.coral_roller_on_command(0.5))
+        // .andThen(irollers.setMotorSpeed_command(5))));
+        // driver.b().whileFalse(carriage.carriageCommand(-2)
+        // .andThen(rollers.coral_roller_on_command(0))
+        // .andThen(irollers.setMotorSpeed_command(0))
+        // .andThen(js.setSpeed_command(js.calculateJSPose(Degrees.of(0.3))))
+        // .andThen(new WaitCommand(0.5))
+        // .andThen(new PivotDeploy(pivotIntake, Degrees.of(-0.1))));
         // driver.y().onTrue(irollers.setMotorSpeed_command(50));
         // driver.y().onFalse(irollers.setMotorSpeed_command(0));
+        
+        // driver.b().whileTrue(new PivotToAngle(js, rollers, Degrees.of(0.75), 0));
+        // driver.x().whileTrue(new PivotToAngle(js, rollers, Degrees.of(0.55), 0)); //.until(() -> js.isAtSetpoint(0.55));
+
+        driver.b().whileTrue(js.setPoseCommand(0.55));
+        driver.x().whileTrue(js.setPoseCommand(0.75));
 
         driver.y().whileTrue(rollers.coral_roller_on_command(0.5));
         driver.y().whileFalse(rollers.coral_roller_on_command(0));

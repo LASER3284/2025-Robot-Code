@@ -65,7 +65,7 @@ public class AlgaeIntake extends SubsystemBase {
     public Command zero_command() {
         return this.runOnce(() -> zeroEncoder());
     }
-public Command rollerSpeed_Command(double speed) {
+    public Command rollerSpeed_Command(double speed) {
         return this.runOnce(() -> setRollerSpeed(speed));
     }
     
