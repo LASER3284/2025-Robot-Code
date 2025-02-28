@@ -1,53 +1,68 @@
 package frc.robot.subsystems;
 
 import edu.wpi.first.wpilibj.DutyCycleEncoder;
+import edu.wpi.first.wpilibj.Encoder;
+import edu.wpi.first.wpilibj.event.BooleanEvent;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import edu.wpi.first.math.controller.ArmFeedforward;
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.trajectory.TrapezoidProfile;
+import edu.wpi.first.units.measure.Angle;
+import edu.wpi.first.units.measure.Distance;
 import frc.robot.Constants.JSConstants;
+import frc.robot.Constants.PivotConstants;
 import frc.robot.commands.pivot.PivotToAngle;
 
 import com.ctre.phoenix6.hardware.TalonFX;
 import com.ctre.phoenix6.signals.NeutralModeValue;
+
+import java.util.function.BooleanSupplier;
+
+import com.ctre.phoenix6.configs.TalonFXConfiguration;
 
 public class JS extends SubsystemBase {
     private TrapezoidProfile.Constraints constraints;
     private TrapezoidProfile.State goal;
     private TrapezoidProfile.State setpoint;
 
+    private Rollers rollers;
+
     private TrapezoidProfile current;
     private TalonFX pivotMotor;
     private DutyCycleEncoder thru_bore = new DutyCycleEncoder(3);
 
     private ArmFeedforward ff;
-    
+
     private TrapezoidProfile current_js;
 
     private PIDController pid;
 
+    public double current_pose = 0;
     private double last_goal;
 
-    public JS() {
+    public JS(Rollers rollers) {
         pivotMotor = new TalonFX(JSConstants.JS_ID);
-        pivotMotor.setNeutralMode(NeutralModeValue.Brake);
-
-        //(PivotConstants.pivotMotorID);
-
         //thru_bore = new DutyCycleEncoder(3);
+
+        this.rollers = rollers;
+
 
         constraints = new TrapezoidProfile.Constraints(60, 60);
         goal = new TrapezoidProfile.State();
         setpoint = new TrapezoidProfile.State();
 
-        pid = new PIDController(1.6, 0, 0);
+        pid = new PIDController(0.5, 0, 0);
 
         this.ff = new ArmFeedforward(
-            0.025, .2 ,.01, 0.013
+            0.025, .3 ,.01, 0.013
         );
-        
+
+        //current_pose = 0.5;
+
+        pid = new PIDController(2, 0, 0);
+
         // var motionMagicConfigs = talonFXConfigs.MotionMagic;
         // motionMagicConfigs.MotionMagicCruiseVelocity = 10; 
         // motionMagicConfigs.MotionMagicAcceleration = 20; 
@@ -63,7 +78,7 @@ public class JS extends SubsystemBase {
 
     public void initDefaultCommand() {
 
-        setDefaultCommand(new PivotToAngle(this, last_goal ,0.0));
+        setDefaultCommand(new PivotToAngle(this, rollers, last_goal , 0));
     }
 
     public double getPivotPosition() {
@@ -76,11 +91,11 @@ public class JS extends SubsystemBase {
     public TrapezoidProfile.State getSetpoint() {
         return setpoint;
     }
-      
+
     public TrapezoidProfile.State getGoal() {
         return goal;
     }
-      
+
     public TrapezoidProfile.Constraints getConstraints() {
         return constraints;
     }
@@ -120,7 +135,7 @@ public class JS extends SubsystemBase {
     public void setPower(double power) {
         pivotMotor.set(power);
     }
-            
+
     public void setGoal(double current) {
         goal = new TrapezoidProfile.State(current, 0.1);
     }
@@ -134,7 +149,7 @@ public class JS extends SubsystemBase {
     }
 
     public boolean isAtSetpoint(double angle) {
-        return (thru_bore.get() - angle) < 0.0036;
+        return (thru_bore.get() - angle) < 0.1;
     }
 
     public void calculateJSPose(double angle) {
@@ -143,7 +158,7 @@ public class JS extends SubsystemBase {
             new TrapezoidProfile.State(getPivotPosition(), 0.0));
 
         setLastGoal(angle);
-        
+
         current_js = new TrapezoidProfile(
             getConstraints());
         double cpose = getPivotPosition();
@@ -159,14 +174,23 @@ public class JS extends SubsystemBase {
         pivotMotor.set(ctotalpower);
     }
 
+    public void setPose(double angle) {
+        current_pose = angle;
+    }
+
     public Command calcCommand(double angle) {
         return this.run(() -> calculateJSPose(angle));
+    }
+
+    public Command setPoseCommand(double angle) {
+        return this.run(() -> setPose(angle));
     }
 
     public void setLastGoal(double angle) {
         this.last_goal = angle;
     }
 
+    
     public double getLastGoal() {
         return last_goal;
     }
@@ -178,10 +202,14 @@ public class JS extends SubsystemBase {
     public void periodic() {
         SmartDashboard.putNumber("encoder pose", thru_bore.get());
         SmartDashboard.putNumber("js pose", getPivotPosition());//getPivotPosition());
+        SmartDashboard.putNumber("current pose", current_pose);
         SmartDashboard.putNumber("last goal", getLastGoal());
 
+        //calculateJSPose(current_pose);
         initDefaultCommand();
 
         //calculateJSPose(current_pose);
     }
+
+
   }

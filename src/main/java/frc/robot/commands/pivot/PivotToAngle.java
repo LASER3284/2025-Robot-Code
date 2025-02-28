@@ -23,8 +23,8 @@ public class PivotToAngle extends Command {
         Pivot.setSetpoint(new TrapezoidProfile.State(Pivot.getPivotPosition(), 0.0));
     }
 
-    public  PivotToAngle(JS Pivot, double angle, double speed) {
-        this.Pivot = Pivot;
+    public PivotToAngle(JS js, Rollers rollers, double angle, double speed) {
+        Pivot = new JS(rollers);
         this.angle = angle;
         this.speed = speed;
 

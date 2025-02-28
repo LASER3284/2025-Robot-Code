@@ -17,7 +17,7 @@ import frc.robot.subsystems.Elevator;
 public class CoralIntake extends SequentialCommandGroup {
     private IntakeRollers irollers = new IntakeRollers();
     private Rollers rollers = new Rollers();
-    private JS js = new JS();
+    private JS js = new JS(rollers);
     private Pivot pivot = new Pivot();
     private Elevator elevator = new Elevator();
 

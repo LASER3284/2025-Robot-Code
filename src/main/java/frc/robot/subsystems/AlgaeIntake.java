@@ -17,7 +17,6 @@ public class AlgaeIntake extends SubsystemBase {
     private SparkFlex rackmotor;
     private TalonFX rollermotor;
     private DigitalInput limit;
-    private DigitalInput sensor;
 
     private TrapezoidProfile current;
     private final TrapezoidProfile.Constraints constraints;
@@ -31,7 +30,6 @@ public class AlgaeIntake extends SubsystemBase {
         rollermotor = new TalonFX(AlgaeIntakeConstants.AROLLER_ID);
 
         limit = new DigitalInput(0);
-        sensor = new DigitalInput(1);
             
         constraints = new TrapezoidProfile.Constraints(820, 820);
         goal = new TrapezoidProfile.State();
@@ -101,11 +99,7 @@ public class AlgaeIntake extends SubsystemBase {
     public ProfiledPIDController getPID() {
         return pid;
     }
-
-    public boolean getSensor() {
-        return sensor.get();
-    }
-
+    
     // SETTERS \\
 
     public void setGoal(double goal_pose) {
