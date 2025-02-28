@@ -18,11 +18,9 @@ public class JS extends SubsystemBase {
     private TrapezoidProfile.State goal;
     private TrapezoidProfile.State setpoint;
 
-    private Rollers rollers;
-
     private TrapezoidProfile current;
     private TalonFX pivotMotor;
-    private DutyCycleEncoder thru_bore; //= new DutyCycleEncoder(3);
+    private DutyCycleEncoder thru_bore = new DutyCycleEncoder(3);
 
     private ArmFeedforward ff;
     
@@ -32,24 +30,22 @@ public class JS extends SubsystemBase {
 
     private double last_goal;
 
-    public JS(Rollers rollers) {
+    public JS() {
         pivotMotor = new TalonFX(JSConstants.JS_ID);
         pivotMotor.setNeutralMode(NeutralModeValue.Brake);
 
-        this.rollers = rollers;
-
         //(PivotConstants.pivotMotorID);
 
-        thru_bore = new DutyCycleEncoder(3);
+        //thru_bore = new DutyCycleEncoder(3);
 
         constraints = new TrapezoidProfile.Constraints(60, 60);
         goal = new TrapezoidProfile.State();
         setpoint = new TrapezoidProfile.State();
 
-        pid = new PIDController(0.5, 0, 0);
+        pid = new PIDController(1.6, 0, 0);
 
         this.ff = new ArmFeedforward(
-            0.025, .3 ,.01, 0.013
+            0.025, .2 ,.01, 0.013
         );
         
         // var motionMagicConfigs = talonFXConfigs.MotionMagic;
@@ -67,7 +63,7 @@ public class JS extends SubsystemBase {
 
     public void initDefaultCommand() {
 
-        setDefaultCommand(new PivotToAngle(this, rollers, last_goal , 0));
+        setDefaultCommand(new PivotToAngle(this, last_goal ,0.0));
     }
 
     public double getPivotPosition() {
@@ -138,7 +134,7 @@ public class JS extends SubsystemBase {
     }
 
     public boolean isAtSetpoint(double angle) {
-        return (thru_bore.get() - angle) < 0.1;
+        return (thru_bore.get() - angle) < 0.0036;
     }
 
     public void calculateJSPose(double angle) {

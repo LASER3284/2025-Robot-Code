@@ -20,6 +20,8 @@ import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 
 import frc.robot.Constants.*;
 import frc.robot.commands.AutoAlign2;
+import frc.robot.commands.L2;
+import frc.robot.commands.PreScore;
 //import frc.robot.commands.CoralIntake;
 //import frc.robot.commands.SourceIntake;
 import frc.robot.commands.algae_intake.AlgaeDeploy;
@@ -70,11 +72,11 @@ public class RobotContainer {
     private final BooleanEvent elevator_event = new BooleanEvent(loop, driver.povDown());
 
     public final Drivetrain drivetrain = SwerveConstants.createDrivetrain();
-    public final Elevator elevator = new Elevator();
-    public final Carriage carriage = new Carriage();
+    //public final Elevator elevator = new Elevator();
+    //public final Carriage carriage = new Carriage();
     public final AlgaeIntake algaeintake = new AlgaeIntake();
-    public final Rollers rollers = new Rollers();
-    public final JS js = new JS(rollers);
+    //public final Rollers rollers = new Rollers();
+    //public final JS js = new JS(rollers);
 
     public LimelightHelpers cams = new LimelightHelpers();
     
@@ -147,14 +149,21 @@ public class RobotContainer {
         // driver.y().onFalse(irollers.setMotorSpeed_command(0));
         
         //driver.b().whileTrue(new PivotToAngle(js, rollers, 0.75, 0));
-        driver.x().whileTrue(new PivotToAngle(js, rollers, 0.75, 0).andThen(js.setGoalPose()));
-        driver.b().whileTrue(new PivotToAngle(js, rollers, 0.5, 0)); //.until(() -> js.isAtSetpoint(0.55));
+        //driver.x().whileTrue(new PivotToAngle(js, rollers, 0.85, 0).andThen(js.setGoalPose()).andThen(carriage.carriageCommand(5)));
+        // driver.b().whileTrue(new PivotToAngle(js, rollers, 0.45, 0)); //.until(() -> js.isAtSetpoint(0.55));
+        // driver.a().whileTrue(carriage.carriageCommand(10).andThen(elevator.elevatorCommand(13)));
+
+        // driver.x().whileTrue(carriage.carriageCommand(1).andThen(elevator.elevatorCommand(1)));
+
+        driver.x().onTrue(new PreScore());
+        driver.y().onTrue(new L2());
+        // driver.x().whileTrue(elevator.elevatorCommand(5));
 
         // driver.b().whileTrue(js.calcCommand(0.55));
         // driver.x().whileTrue(js.calcCommand(0.75));
 
-        driver.y().whileTrue(rollers.coral_roller_on_command(0.5));
-        driver.y().whileFalse(rollers.coral_roller_on_command(0));
+        // driver.y().whileTrue(rollers.algae_roller_on_command(0.5));
+        // driver.y().whileFalse(rollers.algae_roller_on_command(0));
 
 
         driver.rightBumper().onTrue(new AutoAlign2(drivetrain, ll_helpers, -12.5));

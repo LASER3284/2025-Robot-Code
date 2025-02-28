@@ -10,11 +10,11 @@ import frc.robot.Constants.RollerConstants;
 
 public class Rollers extends SubsystemBase{
 
-    private SparkFlex coral_motor;
+    //private SparkFlex coral_motor;
     private TalonFX algae_motor;
 
     public Rollers(){
-        coral_motor = new SparkFlex(51, MotorType.kBrushless);
+        //coral_motor = new SparkFlex(59, MotorType.kBrushless);
         algae_motor = new TalonFX(RollerConstants.ALGAE_ROLLER_ID);
     }
 
@@ -22,15 +22,16 @@ public class Rollers extends SubsystemBase{
         algae_motor.set(speed);
     }
 
-    public void coral_roller_on(double speed){
-        coral_motor.set(speed);
-    }
+    // public void coral_roller_on(double speed){
+    //     coral_motor.set(speed);
+    // }
     
     public Command algae_roller_on_command(double speed){
         return this.runOnce(() -> algae_roller_on(speed));
     }
-
-    public Command coral_roller_on_command(double speed){
-        return this.runOnce(() -> coral_roller_on(speed));
-    }
 }
+
+//     public Command coral_roller_on_command(double speed){
+//         return this.runOnce(() -> coral_roller_on(speed));
+//     }
+// }

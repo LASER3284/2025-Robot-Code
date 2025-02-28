@@ -59,18 +59,18 @@ public class Carriage extends SubsystemBase {
         // set slot 0 gains
         var slot0Configs = talonFXConfigs.Slot0;
         slot0Configs.kS = 0; 
-        slot0Configs.kG = -50;
-        slot0Configs.kV = 0.6; 
+        slot0Configs.kG = -5;
+        slot0Configs.kV = 0.5; 
         slot0Configs.kA = 0.0025; 
-        slot0Configs.kP = 50; 
+        slot0Configs.kP = 12; 
         slot0Configs.kI = 0; 
         slot0Configs.kD = 0.01; 
         slot0Configs.GravityType = GravityTypeValue.Elevator_Static;
 
         var motionMagicConfigs = talonFXConfigs.MotionMagic;
-        motionMagicConfigs.MotionMagicCruiseVelocity = 320; 
-        motionMagicConfigs.MotionMagicAcceleration = 320; 
-        motionMagicConfigs.MotionMagicJerk = 3284; 
+        motionMagicConfigs.MotionMagicCruiseVelocity = 100; 
+        motionMagicConfigs.MotionMagicAcceleration = 90; 
+        motionMagicConfigs.MotionMagicJerk = 1500; 
 
         carriage.getConfigurator().apply(motionMagicConfigs);
         carriage.getConfigurator().apply(slot0Configs);

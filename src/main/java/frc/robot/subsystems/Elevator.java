@@ -20,6 +20,7 @@ import com.ctre.phoenix6.controls.PositionVoltage;
 import com.ctre.phoenix6.controls.VoltageOut;
 import com.ctre.phoenix6.hardware.TalonFX;
 import com.ctre.phoenix6.signals.ControlModeValue;
+import com.ctre.phoenix6.signals.GravityTypeValue;
 import com.ctre.phoenix6.signals.NeutralModeValue;
 
 import edu.wpi.first.math.controller.ElevatorFeedforward;
@@ -47,72 +48,77 @@ public class Elevator extends SubsystemBase {
     private TrapezoidProfile.State goal;
 
     private double last_pose;
+    private double rotations;
 
     VoltageOut request = new VoltageOut(0);
     MotionMagicVoltage m_magicRequest = new MotionMagicVoltage(0);
     
     public Elevator() {
-        rightElevator = new TalonFX(ElevatorConstants.ER_ID);
-        leftElevator = new TalonFX(ElevatorConstants.EL_ID);
+        rightElevator = new TalonFX(41);
+        leftElevator = new TalonFX(42);
 
+        // in init function
         var talonFXConfigs = new TalonFXConfiguration();
 
         // set slot 0 gains
         var slot0Configs = talonFXConfigs.Slot0;
         slot0Configs.kS = 0; 
-        slot0Configs.kG = 0.6;
-        slot0Configs.kV = 0.3; 
-        slot0Configs.kA = 0.0015; 
-        slot0Configs.kP = 8; 
+        slot0Configs.kG = -25;
+        slot0Configs.kV = 0.6; 
+        slot0Configs.kA = 0.0025; 
+        slot0Configs.kP = 1; 
         slot0Configs.kI = 0; 
         slot0Configs.kD = 0.01; 
+        slot0Configs.GravityType = GravityTypeValue.Elevator_Static;
 
         var motionMagicConfigs = talonFXConfigs.MotionMagic;
-        motionMagicConfigs.MotionMagicCruiseVelocity = 120; 
-        motionMagicConfigs.MotionMagicAcceleration = 160; 
-        motionMagicConfigs.MotionMagicJerk = 3200; 
+        motionMagicConfigs.MotionMagicCruiseVelocity = 50; 
+        motionMagicConfigs.MotionMagicAcceleration = 90; 
+        motionMagicConfigs.MotionMagicJerk = 200; 
 
-        rightElevator.getConfigurator().apply(slot0Configs);
         rightElevator.getConfigurator().apply(motionMagicConfigs);
         leftElevator.getConfigurator().apply(slot0Configs);
-        leftElevator.getConfigurator().apply(motionMagicConfigs);
 
+        leftElevator.setControl(new Follower(41, true));
+    //    carriage.getConfigurator().apply(talonFXConfigs);
         rightElevator.setNeutralMode(NeutralModeValue.Brake);
-        leftElevator.setNeutralMode(NeutralModeValue.Brake);
 
-        leftElevator.setControl(new Follower(rightElevator.getDeviceID(), true));
+     //  setCarriagePosition(0);
     }
 
-    public double getElevatorPosition() {
-        double pose = (rightElevator.get() + leftElevator.get()) / 2;
-        pose *= ElevatorConstants.GEAR_RATIO * ElevatorConstants.LINEAR_DISTANCE_CONST;
+    public double getCarriagePosition() {
+        double pose = rightElevator.get() * ElevatorConstants.GEAR_RATIO * ElevatorConstants.LINEAR_DISTANCE_CONST;
 
         return pose;
     }
 
-    public void manualElevatorMotor(double voltage) {
-        rightElevator.setControl(request.withOutput(voltage));
+    public void setElevatorPosition(double rotations) {
+  //      final PositionVoltage request = new PositionVoltage(0).withSlot(0);
+
+     //   carriage.setControl(request.withPosition(rotations));
+
+       // final TrapezoidProfile m_profile = new TrapezoidProfile(
+       // new TrapezoidProfile.Constraints( 120, 150));
+        // Final target of 200 rot, 0 rps
+       // TrapezoidProfile.State m_goal = new TrapezoidProfile.State(rotations, 0);
+       // TrapezoidProfile.State m_setpoint = new TrapezoidProfile.State();
+
+        // create a position closed-loop request, voltage output, slot 0 configs
+        //final PositionVoltage m_request = new PositionVoltage(0).withSlot(0);
+
+        // calculate the next profile setpoint
+       // m_setpoint = m_profile.calculate(0.020, m_setpoint, m_goal);
+
+        final MotionMagicVoltage m_request = new MotionMagicVoltage(rotations);
+
+        // set target position to 100 rotations
+        rightElevator.setControl(m_request.withPosition(-rotations));
+
+        this.rotations = rotations;
     }
-    
-    public void stopElevatorMotor() {
-        rightElevator.setControl(request.withOutput(0));
-    }
-    
-    public void goToSetPoint(double setpoint) {
-        rightElevator.setPosition(setpoint);
-    }
-    
-    public void setElevatorZero() {
-        rightElevator.setPosition(0);
-        System.out.print("Zeroed Elevator");
-    }
-    
-    public boolean atSetpoint(double setpoint) {
-        return rightElevator.getPosition().getValueAsDouble() == setpoint;
-    }
-    
-    public double getPose() {
-        return rightElevator.getPosition().getValueAsDouble();
+
+    public Command elevatorCommand(double rotations) {
+        return this.runOnce(() -> setElevatorPosition(rotations));
     }
 
     public void periodic() {
