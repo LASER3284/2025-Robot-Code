@@ -26,6 +26,10 @@ public class Rollers extends SubsystemBase{
         algae_motor = new TalonFX(RollerConstants.ALGAE_ROLLER_ID);
     }
 
+    public void initDefaultCommand() {
+        setDefaultCommand(algae_roller_on_command(0).andThen(coral_roller_on_command(0)));
+    }
+
     public void algae_roller_on(double speed){
         algae_motor.set(speed);
     }

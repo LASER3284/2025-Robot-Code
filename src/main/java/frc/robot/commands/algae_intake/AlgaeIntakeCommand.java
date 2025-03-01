@@ -1,6 +1,7 @@
 package frc.robot.commands.algae_intake;
 
 import edu.wpi.first.units.measure.Distance;
+import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import frc.robot.commands.pivot.PivotToAngle;
 import frc.robot.subsystems.AlgaeIntake;
@@ -15,8 +16,11 @@ public class AlgaeIntakeCommand extends SequentialCommandGroup{
 
     public AlgaeIntakeCommand() {
         addCommands(
-            new AlgaeDeploy(algaeintake, distance),
-            algaeintake.rollerSpeed_Command(-0.5),
+            new ParallelCommandGroup(
+                new AlgaeDeploy(algaeintake, distance),
+                algaeintake.rollerSpeed_Command(-0.5),
+                rollers.algae_roller_on_command(0.5)
+            ),
             new PivotToAngle(js, rollers, 0.9, 0, 0.3)
         );
     }

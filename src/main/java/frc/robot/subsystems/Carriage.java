@@ -66,11 +66,26 @@ public class Carriage extends SubsystemBase {
         slot0Configs.kI = 0; 
         slot0Configs.kD = 0.01; 
         slot0Configs.GravityType = GravityTypeValue.Elevator_Static;
+       
+        var slot1Configs = talonFXConfigs.Slot1;
+        slot0Configs.kS = 0; 
+        slot0Configs.kG = -5;
+        slot0Configs.kV = 0.5; 
+        slot0Configs.kA = 0.0025; 
+        slot0Configs.kP = 12; 
+        slot0Configs.kI = 0; 
+        slot0Configs.kD = 0.01; 
 
         var motionMagicConfigs = talonFXConfigs.MotionMagic;
         motionMagicConfigs.MotionMagicCruiseVelocity = 100; 
         motionMagicConfigs.MotionMagicAcceleration = 90; 
         motionMagicConfigs.MotionMagicJerk = 1500; 
+
+        var motionMagicConfigs2 = talonFXConfigs.MotionMagic;
+        motionMagicConfigs.MotionMagicCruiseVelocity = 10;
+        motionMagicConfigs.MotionMagicAcceleration = 10; 
+        motionMagicConfigs.MotionMagicJerk = 400; 
+
 
         carriage.getConfigurator().apply(motionMagicConfigs);
         carriage.getConfigurator().apply(slot0Configs);
@@ -79,6 +94,14 @@ public class Carriage extends SubsystemBase {
 
      //  setCarriagePosition(0);
     }
+
+    public boolean isAtSetpoint(double goal) {
+        return Math.abs(getCarriagePosition() - goal) <= 0.1;
+    }
+
+    // public boolean isAtSetpoint(double goal) {
+    //     return 
+    // }
 
     public double getCarriagePosition() {
         double pose = carriage.get() * ElevatorConstants.C_GEAR_RATIO * ElevatorConstants.LINEAR_DISTANCE_CONST;

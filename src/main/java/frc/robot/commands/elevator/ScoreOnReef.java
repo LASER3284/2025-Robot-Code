@@ -20,7 +20,6 @@ public class ScoreOnReef extends SequentialCommandGroup {
             new WaitCommand(0.5),
             carriage.carriageCommand(car),
             elevator.elevatorCommand(ele),
-            new WaitCommand(0.5),
             new PivotToAngle(js, rollers, js1, 0.0, 0)
         );
     }

@@ -86,7 +86,7 @@ public class Elevator extends SubsystemBase {
      //  setCarriagePosition(0);
     }
 
-    public double getCarriagePosition() {
+    public double getElevatorPosition() {
         double pose = rightElevator.get() * ElevatorConstants.GEAR_RATIO * ElevatorConstants.LINEAR_DISTANCE_CONST;
 
         return pose;
@@ -119,6 +119,10 @@ public class Elevator extends SubsystemBase {
 
     public Command elevatorCommand(double rotations) {
         return this.runOnce(() -> setElevatorPosition(rotations));
+    }
+
+    public boolean isAtHome(double goal) {
+        return Math.abs(getElevatorPosition() - goal) <= 0.1;
     }
 
     public void periodic() {

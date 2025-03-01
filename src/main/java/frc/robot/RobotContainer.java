@@ -105,7 +105,7 @@ public class RobotContainer {
 
         driver.rightTrigger().whileTrue(drivetrain.applyRequest(() ->
                 drive.withVelocityX(-driver.getLeftY() * SwerveConstants.kSpeedAt12Volts.in(MetersPerSecond) * 0.1)
-                .withVelocityY(-driver.getLeftX() * SwerveConstants.kSpeedAt12Volts.in(MetersPerSecond) * 0.1)
+                .withVelocityY(driver.getLeftX() * SwerveConstants.kSpeedAt12Volts.in(MetersPerSecond) * 0.1)
                 .withRotationalRate(-driver.getRightX() * RotationsPerSecond.of(0.75).in(RadiansPerSecond) * 0.5))
                 );
 
@@ -146,13 +146,21 @@ public class RobotContainer {
         // driver.a().onTrue(new PivotDeploy(pivotIntake, 0.3).until(() -> pivotIntake.isAtSetpoint(0.3))
         // .andThen(irollers.setMotorSpeed_command(0.3)));
 
-        driver.a().onTrue(new CoralIntake(0.8, 0.3));
-        driver.b().onTrue(irollers.setMotorSpeed_command(0.7).andThen(rollers.coral_roller_on_command(0.5)));
+        driver.a().whileTrue(new CoralIntake(0.8, 0.3));
+        driver.a().onFalse(new PreScore());
+
+
+        driver.b().onTrue(irollers.setMotorSpeed_command(-0.5).andThen(rollers.coral_roller_on_command(-0.5)));
+        //driver.b().onTrue(irollers.setMotorSpeed_command(0.7).andThen(rollers.coral_roller_on_command(0.5)));
 
         operator.rightBumper().whileTrue(rollers.coral_roller_on_command(-0.6));
         operator.rightBumper().whileFalse(rollers.coral_roller_on_command(0.05));
 
-        driver.rightTrigger().onTrue(new SourceIntake());
+        // driver.x().onTrue(new SourceIntake(0.705, 0.5));
+        // driver.x().onFalse(new SourceIntake(0.6, 0));
+
+
+
     //    rollers.setDefaultCommand(rollers.coral_roller_on_command(.02));
         //driver.rightBumper().onTrue(new AutoAlign(drivetrain, ll_helpers, 12, 0));
     }

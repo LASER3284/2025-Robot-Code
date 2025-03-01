@@ -34,11 +34,11 @@ public class AlgaeIntake extends SubsystemBase {
 
         limit = new DigitalInput(0);
             
-        constraints = new TrapezoidProfile.Constraints(820, 820);
+        constraints = new TrapezoidProfile.Constraints(410, 410);
         goal = new TrapezoidProfile.State();
         setpoint = new TrapezoidProfile.State();
 
-        pid = new ProfiledPIDController(0.3, 0, 0.0025, constraints);
+        pid = new ProfiledPIDController(0.2, 0, 0.05, constraints);
     }
 
     public void initDefaultCommand() {

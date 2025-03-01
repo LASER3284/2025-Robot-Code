@@ -13,11 +13,12 @@ import frc.robot.subsystems.*;
 public class PivotToAngleEnd extends Command {
 
     private TrapezoidProfile trappy;
-    private Rollers rollers;
+    private Rollers rollers = Rollers.getInstance();
     private JS Pivot = JS.getInstance();
     double setPoint;
     private double angle;
-    double speed;
+    double cspeed;
+    double aspeed;
 
 
     public void initialize() {
@@ -28,14 +29,13 @@ public class PivotToAngleEnd extends Command {
     public PivotToAngleEnd(JS pivot, Rollers rollers, double angle, double cspeed, double aspeed) {
         //Pivot = new JS(rollers);
         this.angle = angle;
-        this.speed = speed;
 
         addRequirements(Pivot);
 
     }
 
     public void execute() {
-        //rollers.coral_roller_on_command(speed);
+        rollers.coral_roller_on_command(cspeed);
         Pivot.setLastGoal(angle);
         Pivot.setPower(0);
         trappy = new TrapezoidProfile(

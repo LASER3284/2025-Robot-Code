@@ -31,16 +31,13 @@ public class CoralIntake extends SequentialCommandGroup {
     public CoralIntake(double js_goal, double pivot_goal) {
 
         addCommands(
-          //  new PivotDeployEnd(pivot, pivot_goal).until(() -> pivot.isAtSetpoint(0.3)),
+          new PivotDeployEnd(pivot, pivot_goal).until(() -> pivot.isAtSetpoint(0.3)),
             new SequentialCommandGroup(
-              
-            new PivotDeployEnd(pivot, pivot_goal)
-            .andThen( new PivotToAngleEnd(js, rollers, 0.95, 0.3, 0))
-            .andThen(elevator.elevatorCommand(3)))
-            .andThen(new PivotToAngleEnd(js, rollers, 0.98, 0.3, 0)
-            .andThen(rollers.coral_roller_on_command(0.5))
-            .andThen(irollers.setMotorSpeed_command(0.5)))
-            );
+            new PivotDeployEnd(pivot, pivot_goal).until(() -> pivot.isAtSetpoint(pivot_goal)),
+            new PivotToAngleEnd(js, rollers, 0.95, 0.3, 0).until(() -> js.isAtSetpoint(0.95)),
+            rollers.coral_roller_on_command(0.8)),
+            irollers.setMotorSpeed_command(0.65),
+            elevator.elevatorCommand(3).until(() -> elevator.isAtHome(3)));
             // new SequentialCommandGroup(
             //     new PrintCommand("working"),
             //     elevator.elevatorCommand(3));

@@ -17,8 +17,8 @@ public class ToHome extends SequentialCommandGroup{
         addCommands(
             new PivotToAngle(js, rollers, 0.5, 0, 0).until(() -> js.isAtSetpoint(0.5)),
          //   new WaitCommand(3),
-            carriage.carriageCommand(.2),
-            elevator.elevatorCommand(.1)
+            carriage.carriageCommand(.5),
+            elevator.elevatorCommand(.5)
       //      new PivotToAngle(js, rollers, 0.5, 0.0)
         );
     }

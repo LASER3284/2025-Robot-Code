@@ -144,6 +144,10 @@ public class Pivot extends SubsystemBase {
         return this.runOnce(() -> setLastGoal(last_goal));
     }
 
+    public Command setGoalPose(double pose) {
+        return this.runOnce(() -> setLastGoal(pose));
+    }
+
     // SETTERS \\
 
     public void setPower(double power) {
