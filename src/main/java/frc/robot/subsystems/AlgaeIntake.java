@@ -1,5 +1,7 @@
 package frc.robot.subsystems;
 
+import static edu.wpi.first.units.Units.Inches;
+
 import com.ctre.phoenix6.hardware.TalonFX;
 
 import com.revrobotics.spark.SparkFlex;
@@ -12,6 +14,7 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants.AlgaeIntakeConstants;
+import frc.robot.commands.algae_intake.AlgaeDeploy;
 
 public class AlgaeIntake extends SubsystemBase {
     private SparkFlex rackmotor;
@@ -35,7 +38,11 @@ public class AlgaeIntake extends SubsystemBase {
         goal = new TrapezoidProfile.State();
         setpoint = new TrapezoidProfile.State();
 
-        pid = new ProfiledPIDController(0.1, 0, 0.0025, constraints);
+        pid = new ProfiledPIDController(0.3, 0, 0.0025, constraints);
+    }
+
+    public void initDefaultCommand() {
+        setDefaultCommand(new AlgaeDeploy(this, Inches.of(-9)));
     }
 
     // SYSID \\
@@ -125,5 +132,7 @@ public class AlgaeIntake extends SubsystemBase {
         SmartDashboard.putNumber("getalgae pose", getAlgaePosition());
         SmartDashboard.putNumber("motor dist", rackmotor.getEncoder().getPosition());
         //SmartDashboard.putNumber("DISTANCE TO POSE", getAlgaePosition() - )
+
+        initDefaultCommand();
     }   
 }

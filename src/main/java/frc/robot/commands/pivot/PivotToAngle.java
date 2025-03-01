@@ -36,11 +36,11 @@ public class PivotToAngle extends Command {
 
     public void execute() {
         //rollers.coral_roller_on_command(speed);
+        Pivot.setLastGoal(angle);
         Pivot.setPower(0);
         trappy = new TrapezoidProfile(
             Pivot.getConstraints());
 
-        Pivot.setLastGoal(angle);
         double pose = Pivot.getPivotPosition();
         TrapezoidProfile.State next = trappy.calculate(0.02, Pivot.getSetpoint(), Pivot.getGoal());
         Pivot.setSetpoint(next);

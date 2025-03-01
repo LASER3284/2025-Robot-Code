@@ -202,6 +202,10 @@ public class JS extends SubsystemBase {
         return this.runOnce(() -> setLastGoal(last_goal));
     }
 
+    public Command setGoalPose(double value) {
+        return this.runOnce(() -> setLastGoal(value));
+    }
+
     public void periodic() {
         SmartDashboard.putNumber("encoder pose", thru_bore.get());
         SmartDashboard.putNumber("js pose", getPivotPosition());//getPivotPosition());

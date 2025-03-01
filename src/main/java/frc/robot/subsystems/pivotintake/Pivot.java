@@ -34,7 +34,7 @@ public class Pivot extends SubsystemBase {
         Pivotmotor = new TalonFX(15);
         encoder = new DutyCycleEncoder(2);
 
-        constraints = new TrapezoidProfile.Constraints(10, 10);
+        constraints = new TrapezoidProfile.Constraints(50, 50);
         goal = new TrapezoidProfile.State();
         setpoint = new TrapezoidProfile.State();
 
@@ -49,7 +49,7 @@ public class Pivot extends SubsystemBase {
 
         //encoder.setDutyCycleRange(0, 360);
 
-        last_goal = 0.03;
+        last_goal = 0.01;
    }
 
    public static Pivot getInstance() {
@@ -76,7 +76,7 @@ public class Pivot extends SubsystemBase {
     }
 
     public boolean isAtSetpoint(double angle) {
-        return (encoder.get() - angle) < 0.05;
+        return (encoder.get() - angle) < 0.09;
     }
 
 

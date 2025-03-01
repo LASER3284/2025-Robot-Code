@@ -4,6 +4,8 @@ import static edu.wpi.first.units.Units.Degrees;
 import static edu.wpi.first.units.Units.Inches;
 
 import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
+import edu.wpi.first.wpilibj2.command.PrintCommand;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.WaitCommand;
 import edu.wpi.first.wpilibj2.command.WaitUntilCommand;
@@ -26,12 +28,15 @@ public class CoralIntake extends SequentialCommandGroup {
     public CoralIntake(Elevator elevator, double js_goal, double pivot_goal) {
 
         addCommands(
-            new PivotDeploy(pivot, pivot_goal).until(() -> pivot.isAtSetpoint(pivot_goal)),
+            new PivotDeploy(pivot, pivot_goal).until(() -> pivot.isAtSetpoint(0.3)),
             new WaitCommand(0.5),
-            irollers.setMotorSpeed_command(0.5),
             new WaitCommand(0.5),
-            new PivotToAngle(js, rollers, 0.75, 0.3, 0)
-        );
+            new SequentialCommandGroup(
+                js.setGoalPose(0.95),
+                new PivotToAngle(js, rollers, 0.95, 0.3, 0).until(() -> js.isAtSetpoint(0.95)))
+            );
+            new SequentialCommandGroup(
+                new PrintCommand("working"),
+                carriage.carriageCommand(3));
     }
-
 }

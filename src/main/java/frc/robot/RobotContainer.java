@@ -15,6 +15,7 @@ import edu.wpi.first.wpilibj.event.EventLoop;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.WaitCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 
 import frc.robot.Constants.*;
@@ -114,15 +115,15 @@ public class RobotContainer {
        // driver.start().and(driver.y()).whileTrue(drivetrain.sysIdQuasistatic(Direction.kForward));
        // driver.start().and(driver.x()).whileTrue(drivetrain.sysIdQuasistatic(Direction.kReverse));
 
-        driver.b().whileTrue(
-            new AlgaeDeploy(algaeintake, Inches.of(-31))
-            .andThen(algaeintake.rollerSpeed_Command(-.5))
-            .andThen(new PivotToAngle(js, rollers, 0.4, 0, 0.3)));
-        driver.b().onFalse(
-            new PivotToAngle(js, rollers, 0.5, 0, 0)
-            .andThen(new AlgaeDeploy(algaeintake, Inches.of(0)))
-            .andThen(carriage.carriageCommand(5))
-            .andThen(elevator.elevatorCommand(5)));
+        // driver.b().onTrue(
+        //     new AlgaeDeploy(algaeintake, Inches.of(-31))
+        //     .andThen(algaeintake.rollerSpeed_Command(-.5))
+        //     .andThen(new PivotToAngle(js, rollers, 0.4, 0, 0.3)).until(() -> js.isAtSetpoint(0.4)));
+        // driver.b().onFalse(
+        //     new PivotToAngle(js, rollers, 0.6, 0, 0)
+        //     .andThen(new AlgaeDeploy(algaeintake, Inches.of(0)))
+        //     .andThen(carriage.carriageCommand(5))
+        //     .andThen(elevator.elevatorCommand(5)));
 
        //driver.start().onTrue(algaeintake.zero_command());
 
@@ -133,22 +134,23 @@ public class RobotContainer {
 
        
 
-        operator.b().onTrue(new PreScore());
-        driver.povLeft().onTrue(new ScoreOnReef(0.37, 6, .1)); //l1
+        //operator.b().onTrue(new PreScore());
+        operator.povLeft().onTrue(new ScoreOnReef(0.37, 6, .1)); //l1
         operator.povDown().onTrue(new ScoreOnReef(0.37, 13.5, .1)); //l2 and prescore
         operator.povRight().onTrue(new ScoreOnReef(0.37 , 15, 9)); //l3
         operator.povUp().onTrue(new ScoreOnReef(0.37, 20.5, 19.5)); //l4
         
-        driver.x().onTrue(new ToHome()); //home
+        operator.x().onTrue(new ToHome()); //home
         //driver.y().onTrue(new ScoreOnReef(15, 10));
 
         // driver.a().onTrue(new PivotDeploy(pivotIntake, 0.3).until(() -> pivotIntake.isAtSetpoint(0.3))
         // .andThen(irollers.setMotorSpeed_command(0.3)));
 
-        driver.a().onTrue(new CoralIntake(elevator, 0, 0.3));
+        driver.a().onTrue(new CoralIntake(elevator, 0.8, 0.3));
+        driver.b().onTrue(irollers.setMotorSpeed_command(0.5).andThen(rollers.coral_roller_on_command(0.5)));
 
-        driver.rightBumper().whileTrue(rollers.coral_roller_on_command(-0.6));
-        driver.rightBumper().whileFalse(rollers.coral_roller_on_command(0.05));
+        operator.rightBumper().whileTrue(rollers.coral_roller_on_command(-0.6));
+        operator.rightBumper().whileFalse(rollers.coral_roller_on_command(0.05));
 
         driver.rightTrigger().onTrue(new SourceIntake());
     //    rollers.setDefaultCommand(rollers.coral_roller_on_command(.02));

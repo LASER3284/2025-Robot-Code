@@ -35,7 +35,7 @@ public class AlgaeDeploy extends Command {
     }
 
     public void execute() {
-        algaeintake.setRollerSpeed(-0.5);
+        //algaeintake.setRollerSpeed(-0.5);
         current = new TrapezoidProfile(algaeintake.getConstraints());
         double position = algaeintake.getAlgaePosition();
 
