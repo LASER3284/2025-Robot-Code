@@ -393,6 +393,7 @@ public class Constants {
 
     public static class JSConstants {
         public static final int JS_ID = 56;
+        public static final int port = 3;
     }
 }
 

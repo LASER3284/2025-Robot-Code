@@ -10,8 +10,11 @@ import edu.wpi.first.wpilibj.DutyCycleEncoder;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import frc.robot.commands.coral_intake.PivotDeploy;
 
 public class Pivot extends SubsystemBase {
+    private static Pivot instance;
+
     private TalonFX Pivotmotor;
     
     private DutyCycleEncoder encoder;
@@ -23,6 +26,8 @@ public class Pivot extends SubsystemBase {
     private final TrapezoidProfile.Constraints constraints;
     private TrapezoidProfile.State goal;
     private TrapezoidProfile.State setpoint;
+
+    double last_goal;
     
     
     public Pivot() {
@@ -37,12 +42,25 @@ public class Pivot extends SubsystemBase {
             0.006, 0.012, 0.5679
         );
         this.pivotPID = new PIDController(
-            0.1,0,0
+            0.75,0,0
         );
 
         zeroEncoders();
 
-        encoder.setDutyCycleRange(0, 360);
+        //encoder.setDutyCycleRange(0, 360);
+
+        last_goal = 0.03;
+   }
+
+   public static Pivot getInstance() {
+    if (instance ==null) {
+        instance = new Pivot();
+    }
+    return instance;
+   }
+
+   public void initDefaultCommand() {
+        setDefaultCommand(new PivotDeploy(this, last_goal));
    }
 
    public void setMotorSpeed(double speed){
@@ -56,6 +74,11 @@ public class Pivot extends SubsystemBase {
     public void zeroPivot(){
         Pivotmotor.setPosition(0);
     }
+
+    public boolean isAtSetpoint(double angle) {
+        return (encoder.get() - angle) < 0.05;
+    }
+
 
     public double getPivotPosition() {
         double pivotpose = (encoder.get());
@@ -108,6 +131,19 @@ public class Pivot extends SubsystemBase {
         return current;
     }
 
+    public void setLastGoal(double angle) {
+        this.last_goal = angle;
+    }
+
+    
+    public double getLastGoal() {
+        return last_goal;
+    }
+
+    public Command setGoalPose() {
+        return this.runOnce(() -> setLastGoal(last_goal));
+    }
+
     // SETTERS \\
 
     public void setPower(double power) {
@@ -124,8 +160,10 @@ public class Pivot extends SubsystemBase {
 
     public void periodic() {
         SmartDashboard.putNumber("Pivot motor pose", getPivotPosition());
-        SmartDashboard.putNumber("thru bore pose", encoder.get());
+        SmartDashboard.putNumber("PIVOT pose", encoder.get());
         SmartDashboard.putBoolean("is connected", encoder.isConnected());
+
+        initDefaultCommand();
     }
 }
 

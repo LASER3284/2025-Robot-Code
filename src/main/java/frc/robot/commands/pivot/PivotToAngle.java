@@ -7,12 +7,14 @@ import edu.wpi.first.units.measure.Angle;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
 import frc.robot.Constants.PivotConstants;
+import frc.robot.RobotContainer;
 import frc.robot.subsystems.*;
  
 public class PivotToAngle extends Command {
 
     private TrapezoidProfile trappy;
-    private JS Pivot;
+    private Rollers rollers;
+    private JS Pivot = JS.getInstance();
     double setPoint;
     private double angle;
     double speed;
@@ -23,8 +25,8 @@ public class PivotToAngle extends Command {
         Pivot.setSetpoint(new TrapezoidProfile.State(Pivot.getPivotPosition(), 0.0));
     }
 
-    public PivotToAngle(JS js, Rollers rollers, double angle, double speed) {
-        Pivot = new JS(rollers);
+    public PivotToAngle(JS pivot, Rollers rollers, double angle, double cspeed, double aspeed) {
+        //Pivot = new JS(rollers);
         this.angle = angle;
         this.speed = speed;
 

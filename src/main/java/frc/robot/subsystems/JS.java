@@ -13,16 +13,15 @@ import edu.wpi.first.units.measure.Angle;
 import edu.wpi.first.units.measure.Distance;
 import frc.robot.Constants.JSConstants;
 import frc.robot.Constants.PivotConstants;
+import frc.robot.RobotContainer;
 import frc.robot.commands.pivot.PivotToAngle;
 
 import com.ctre.phoenix6.hardware.TalonFX;
 import com.ctre.phoenix6.signals.NeutralModeValue;
 
-import java.util.function.BooleanSupplier;
-
-import com.ctre.phoenix6.configs.TalonFXConfiguration;
-
 public class JS extends SubsystemBase {
+    private static JS instance;
+
     private TrapezoidProfile.Constraints constraints;
     private TrapezoidProfile.State goal;
     private TrapezoidProfile.State setpoint;
@@ -31,7 +30,7 @@ public class JS extends SubsystemBase {
 
     private TrapezoidProfile current;
     private TalonFX pivotMotor;
-    private DutyCycleEncoder thru_bore = new DutyCycleEncoder(3);
+    private DutyCycleEncoder thru_bore = new DutyCycleEncoder(JSConstants.port);
 
     private ArmFeedforward ff;
 
@@ -42,18 +41,16 @@ public class JS extends SubsystemBase {
     public double current_pose = 0;
     private double last_goal;
 
-    public JS(Rollers rollers) {
+    public JS() {
         pivotMotor = new TalonFX(JSConstants.JS_ID);
         //thru_bore = new DutyCycleEncoder(3);
-
-        this.rollers = rollers;
 
 
         constraints = new TrapezoidProfile.Constraints(60, 60);
         goal = new TrapezoidProfile.State();
         setpoint = new TrapezoidProfile.State();
 
-        pid = new PIDController(0.5, 0, 0);
+        pid = new PIDController(0.6, 0, 0);
 
         this.ff = new ArmFeedforward(
             0.025, .3 ,.01, 0.013
@@ -76,9 +73,15 @@ public class JS extends SubsystemBase {
 
     }
 
-    public void initDefaultCommand() {
+    public static JS getInstance() {
+        if (instance == null) {
+            instance = new JS();
+        }
+        return instance;
+    }
 
-        setDefaultCommand(new PivotToAngle(this, rollers, last_goal , 0));
+    public void initDefaultCommand() {
+        setDefaultCommand(new PivotToAngle(this, rollers, last_goal , 0, 0));
     }
 
     public double getPivotPosition() {
@@ -149,7 +152,7 @@ public class JS extends SubsystemBase {
     }
 
     public boolean isAtSetpoint(double angle) {
-        return (thru_bore.get() - angle) < 0.1;
+        return (thru_bore.get() - angle) < 0.05;
     }
 
     public void calculateJSPose(double angle) {

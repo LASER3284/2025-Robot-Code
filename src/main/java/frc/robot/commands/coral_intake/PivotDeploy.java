@@ -8,30 +8,30 @@ import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.subsystems.pivotintake.Pivot;
 
 public class PivotDeploy extends Command {
-    private Pivot pivot = new Pivot();
+    private Pivot pivot = Pivot.getInstance();
     private TrapezoidProfile current;
-    private PIDController pivotPID;
-    private Angle degrees;
+    private double degrees;
     
     
     
     public void initialize() {
-        pivot.setGoal(degrees.magnitude());
+        pivot.setGoal(degrees);
     
         pivot.setSetpoint(
             new TrapezoidProfile.State(pivot.getPivotPosition(), 0));
     }
     
-    public PivotDeploy(Pivot pivot, Angle degrees) {
+    public PivotDeploy(Pivot pivot, double degrees) {
         this.pivot = pivot;
         this.degrees = degrees;
-            
-        this.pivotPID = new PIDController(.4, 0, 0.005);
+        
         addRequirements(pivot);
     }
 
     public void execute() {
         pivot.setPower(0);
+
+        pivot.setLastGoal(degrees);
         current = new TrapezoidProfile(
             pivot.getConstraints());
         double pose = pivot.getPivotPosition();
@@ -39,18 +39,12 @@ public class PivotDeploy extends Command {
         TrapezoidProfile.State next = current.calculate(0.02, pivot.getSetpoint(), pivot.getGoal());
         pivot.setSetpoint(next);
         SmartDashboard.putNumber("setpoint", pivot.getSetpoint().position);
-        pivotPID.setSetpoint(next.position);
-        double power = pivotPID.calculate(pose);
-        pivot.setPower(power);
+        pivot.getPID().setSetpoint(next.position);
+        double power = pivot.getPID().calculate(pose);
+        pivot.setPower(-power);
     }
 
     public void end(boolean interrupted) {
         pivot.setPower(0);
-    }
-
-    public boolean isFinished() {
-        SmartDashboard.putBoolean("isFinished", Math.abs(pivot.getPivotPosition() - degrees.magnitude()) < 0);
-        SmartDashboard.putNumber("isFinished math", Math.abs(pivot.getPivotPosition() - degrees.magnitude()));
-        return Math.abs(pivot.getPivotPosition() - degrees.magnitude()) < 0.1;
     }
 }

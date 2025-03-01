@@ -33,7 +33,7 @@ public class Robot extends TimedRobot {
   // private IntakeRollers irollers = new IntakeRollers();
   // private Pivot pintake = new Pivot();
   private Elevator elevator = new Elevator();
-  private Pivot pivotIntake = new Pivot();
+  private Pivot pivotIntake = Pivot.getInstance();
 
   private Command m_autonomousCommand;
  
