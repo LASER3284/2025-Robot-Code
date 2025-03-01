@@ -146,8 +146,8 @@ public class RobotContainer {
         // driver.a().onTrue(new PivotDeploy(pivotIntake, 0.3).until(() -> pivotIntake.isAtSetpoint(0.3))
         // .andThen(irollers.setMotorSpeed_command(0.3)));
 
-        driver.a().onTrue(new CoralIntake(elevator, 0.8, 0.3));
-        driver.b().onTrue(irollers.setMotorSpeed_command(0.5).andThen(rollers.coral_roller_on_command(0.5)));
+        driver.a().onTrue(new CoralIntake(0.8, 0.3));
+        driver.b().onTrue(irollers.setMotorSpeed_command(0.7).andThen(rollers.coral_roller_on_command(0.5)));
 
         operator.rightBumper().whileTrue(rollers.coral_roller_on_command(-0.6));
         operator.rightBumper().whileFalse(rollers.coral_roller_on_command(0.05));

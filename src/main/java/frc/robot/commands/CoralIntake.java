@@ -10,7 +10,9 @@ import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.WaitCommand;
 import edu.wpi.first.wpilibj2.command.WaitUntilCommand;
 import frc.robot.commands.coral_intake.PivotDeploy;
+import frc.robot.commands.coral_intake.PivotDeployEnd;
 import frc.robot.commands.pivot.PivotToAngle;
+import frc.robot.commands.pivot.PivotToAngleEnd;
 import frc.robot.subsystems.JS;
 import frc.robot.subsystems.Rollers;
 import frc.robot.subsystems.pivotintake.IntakeRollers;
@@ -24,19 +26,23 @@ public class CoralIntake extends SequentialCommandGroup {
     private JS js = JS.getInstance();
     private Pivot pivot = Pivot.getInstance();
     private Carriage carriage = new Carriage();
+    private Elevator elevator = new Elevator();
 
-    public CoralIntake(Elevator elevator, double js_goal, double pivot_goal) {
+    public CoralIntake(double js_goal, double pivot_goal) {
 
         addCommands(
-            new PivotDeploy(pivot, pivot_goal).until(() -> pivot.isAtSetpoint(0.3)),
-            new WaitCommand(0.5),
-            new WaitCommand(0.5),
+          //  new PivotDeployEnd(pivot, pivot_goal).until(() -> pivot.isAtSetpoint(0.3)),
             new SequentialCommandGroup(
-                js.setGoalPose(0.95),
-                new PivotToAngle(js, rollers, 0.95, 0.3, 0).until(() -> js.isAtSetpoint(0.95)))
+              
+            new PivotDeployEnd(pivot, pivot_goal)
+            .andThen( new PivotToAngleEnd(js, rollers, 0.95, 0.3, 0))
+            .andThen(elevator.elevatorCommand(3)))
+            .andThen(new PivotToAngleEnd(js, rollers, 0.98, 0.3, 0)
+            .andThen(rollers.coral_roller_on_command(0.5))
+            .andThen(irollers.setMotorSpeed_command(0.5)))
             );
-            new SequentialCommandGroup(
-                new PrintCommand("working"),
-                carriage.carriageCommand(3));
+            // new SequentialCommandGroup(
+            //     new PrintCommand("working"),
+            //     elevator.elevatorCommand(3));
     }
 }

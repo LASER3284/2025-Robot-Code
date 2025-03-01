@@ -7,7 +7,7 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.subsystems.pivotintake.Pivot;
 
-public class PivotDeploy extends Command {
+public class PivotDeployEnd extends Command {
     private Pivot pivot = Pivot.getInstance();
     private TrapezoidProfile current;
     private double degrees;
@@ -21,7 +21,7 @@ public class PivotDeploy extends Command {
             new TrapezoidProfile.State(pivot.getPivotPosition(), 0));
     }
     
-    public PivotDeploy(Pivot pivot, double degrees) {
+    public PivotDeployEnd(Pivot pivot, double degrees) {
         this.pivot = pivot;
         this.degrees = degrees;
         
@@ -46,6 +46,10 @@ public class PivotDeploy extends Command {
 
     public void end(boolean interrupted) {
         pivot.setPower(0);
+    }
+
+    public boolean isFinished() {
+        return Math.abs((pivot.getPivotPosition() - degrees)) < 0.1;
     }
 
     

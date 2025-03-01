@@ -152,7 +152,7 @@ public class JS extends SubsystemBase {
     }
 
     public boolean isAtSetpoint(double angle) {
-        return (thru_bore.get() - angle) < 0.05;
+        return (Math.abs(thru_bore.get()) - angle) < 0.05;
     }
 
     public void calculateJSPose(double angle) {
