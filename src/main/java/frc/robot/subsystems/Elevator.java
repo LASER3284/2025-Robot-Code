@@ -87,8 +87,8 @@ public class Elevator extends SubsystemBase {
     }
 
     public double getElevatorPosition() {
-        double pose = rightElevator.get() * ElevatorConstants.GEAR_RATIO * ElevatorConstants.LINEAR_DISTANCE_CONST;
-
+        //double pose = rightElevator.get() * ElevatorConstants.GEAR_RATIO * ElevatorConstants.LINEAR_DISTANCE_CONST;
+        double pose = rightElevator.getPosition().getValueAsDouble();
         return pose;
     }
 

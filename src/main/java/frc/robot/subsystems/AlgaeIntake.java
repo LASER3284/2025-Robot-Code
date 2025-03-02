@@ -7,8 +7,10 @@ import com.ctre.phoenix6.hardware.TalonFX;
 import com.revrobotics.spark.SparkFlex;
 import com.revrobotics.spark.SparkLowLevel.MotorType;
 
+import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.controller.ProfiledPIDController;
 import edu.wpi.first.math.trajectory.TrapezoidProfile;
+import edu.wpi.first.units.measure.Distance;
 import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
@@ -17,6 +19,8 @@ import frc.robot.Constants.AlgaeIntakeConstants;
 import frc.robot.commands.algae_intake.AlgaeDeploy;
 
 public class AlgaeIntake extends SubsystemBase {
+    private static AlgaeIntake instance;
+    
     private SparkFlex rackmotor;
     private TalonFX rollermotor;
     private DigitalInput limit;
@@ -26,23 +30,34 @@ public class AlgaeIntake extends SubsystemBase {
     private TrapezoidProfile.State goal;
     private TrapezoidProfile.State setpoint;
 
-    private ProfiledPIDController pid;
-   
+    private PIDController pid;
+
+    private Distance last_goal;
+   private double last_speed;
     public AlgaeIntake() {
         rackmotor = new SparkFlex(AlgaeIntakeConstants.ARACK_ID, MotorType.kBrushless);
         rollermotor = new TalonFX(AlgaeIntakeConstants.AROLLER_ID);
 
         limit = new DigitalInput(0);
             
-        constraints = new TrapezoidProfile.Constraints(410, 410);
+        constraints = new TrapezoidProfile.Constraints(460, 460);
         goal = new TrapezoidProfile.State();
         setpoint = new TrapezoidProfile.State();
 
-        pid = new ProfiledPIDController(0.2, 0, 0.05, constraints);
+        pid = new PIDController(0.095, 0, 0.0);
+
+        last_goal = Inches.of(-9);
     }
 
     public void initDefaultCommand() {
-        setDefaultCommand(new AlgaeDeploy(this, Inches.of(-9)));
+        setDefaultCommand(new AlgaeDeploy(this, last_goal));
+    }
+
+    public static AlgaeIntake getInstance() {
+        if (instance == null) {
+            instance = new AlgaeIntake();
+        }
+        return instance;
     }
 
     // SYSID \\
@@ -71,7 +86,7 @@ public class AlgaeIntake extends SubsystemBase {
         return this.runOnce(() -> zeroEncoder());
     }
     public Command rollerSpeed_Command(double speed) {
-        return this.runOnce(() -> setRollerSpeed(speed));
+        return this.runOnce(() -> setRollerSpeed(-speed));
     }
     
 
@@ -103,8 +118,12 @@ public class AlgaeIntake extends SubsystemBase {
         return limit.get();
     }
 
-    public ProfiledPIDController getPID() {
+    public PIDController getPID() {
         return pid;
+    }
+
+    public boolean isAtSetpoint(double goal) {
+        return (getAlgaePosition() - goal) < 0.1;
     }
     
     // SETTERS \\
@@ -117,11 +136,15 @@ public class AlgaeIntake extends SubsystemBase {
     }
 
     public void setRollerSpeed(double speed) {
-        rollermotor.set(speed);
+        rollermotor.set(-speed);
     }
 
     public void setRackSpeed(double speed) {
         rackmotor.set(speed);
+    }
+
+    public void setLastGoal(Distance goal) {
+        last_goal = goal;
     }
 
     // SYSID \\

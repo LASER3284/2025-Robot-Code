@@ -62,7 +62,7 @@ public class Carriage extends SubsystemBase {
         slot0Configs.kG = -5;
         slot0Configs.kV = 0.5; 
         slot0Configs.kA = 0.0025; 
-        slot0Configs.kP = 12; 
+        slot0Configs.kP = 15; 
         slot0Configs.kI = 0; 
         slot0Configs.kD = 0.01; 
         slot0Configs.GravityType = GravityTypeValue.Elevator_Static;
@@ -72,7 +72,7 @@ public class Carriage extends SubsystemBase {
         slot0Configs.kG = -5;
         slot0Configs.kV = 0.5; 
         slot0Configs.kA = 0.0025; 
-        slot0Configs.kP = 12; 
+        slot0Configs.kP = 15; 
         slot0Configs.kI = 0; 
         slot0Configs.kD = 0.01; 
 
@@ -104,8 +104,8 @@ public class Carriage extends SubsystemBase {
     // }
 
     public double getCarriagePosition() {
-        double pose = carriage.get() * ElevatorConstants.C_GEAR_RATIO * ElevatorConstants.LINEAR_DISTANCE_CONST;
-
+       // double pose = carriage.get() * ElevatorConstants.C_GEAR_RATIO * ElevatorConstants.LINEAR_DISTANCE_CONST;
+        double pose = carriage.getPosition().getValueAsDouble();
         return pose;
     }
 
@@ -138,8 +138,12 @@ public class Carriage extends SubsystemBase {
         return this.runOnce(() -> setCarriagePosition(rotations));
     }
 
+    public void setPose(double pose) {
+        carriage.setPosition(pose);
+    }
+
     public void periodic() {
-        SmartDashboard.putNumber("carriage pose", carriage.get());
+        SmartDashboard.putNumber("carriage pose", getCarriagePosition());
 
         SmartDashboard.putNumber("carriage rotor pose", carriage.getRotorPosition().getValueAsDouble());
 

@@ -16,12 +16,13 @@ public class PivotDeployEnd extends Command {
     
     public void initialize() {
         pivot.setGoal(degrees);
-    
+        pivot.setLastGoal(degrees);
         pivot.setSetpoint(
             new TrapezoidProfile.State(pivot.getPivotPosition(), 0));
     }
     
     public PivotDeployEnd(Pivot pivot, double degrees) {
+        
         this.pivot = pivot;
         this.degrees = degrees;
         
@@ -31,7 +32,7 @@ public class PivotDeployEnd extends Command {
     public void execute() {
         pivot.setPower(0);
 
-        pivot.setLastGoal(degrees);
+        ///pivot.setLastGoal(degrees);
         current = new TrapezoidProfile(
             pivot.getConstraints());
         double pose = pivot.getPivotPosition();
@@ -49,7 +50,7 @@ public class PivotDeployEnd extends Command {
     }
 
     public boolean isFinished() {
-        return Math.abs((pivot.getPivotPosition() - degrees)) < 0.1;
+        return Math.abs((pivot.getPivotPosition() - degrees)) < 0.01;
     }
 
     

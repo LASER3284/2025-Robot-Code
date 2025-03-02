@@ -11,7 +11,6 @@ public class AlgaeDeploy extends Command {
     private final AlgaeIntake algaeintake;
     private TrapezoidProfile current;
 
-    private PIDController rackPID;
     private Distance extension_length;
 
     public void initialize() {
@@ -30,12 +29,14 @@ public class AlgaeDeploy extends Command {
         // 2.45,
         // 0.02);
 
-        this.rackPID = new PIDController(0.1, 0, 0.0025);
+        //this.rackPID = new PIDController(0.1, 0, 0.0025);
         addRequirements(algaeintake);
     }
 
     public void execute() {
         //algaeintake.setRollerSpeed(-0.5);
+
+        algaeintake.setLastGoal(extension_length);
         current = new TrapezoidProfile(algaeintake.getConstraints());
         double position = algaeintake.getAlgaePosition();
 
@@ -43,8 +44,8 @@ public class AlgaeDeploy extends Command {
 
         algaeintake.setSetpoint(new_goal);
 
-        rackPID.setSetpoint(new_goal.position);
-        double power = rackPID.calculate(position);
+        algaeintake.getPID().setSetpoint(new_goal.position);
+        double power = algaeintake.getPID().calculate(position);
 
         algaeintake.setRackSpeed(power);
     }
@@ -55,8 +56,8 @@ public class AlgaeDeploy extends Command {
     }
 
     public boolean isFinished() {
-        SmartDashboard.putBoolean("isFinished", Math.abs(algaeintake.getAlgaePosition() - extension_length.magnitude()) < 0.5);
+        SmartDashboard.putBoolean("isFinished", Math.abs(algaeintake.getAlgaePosition() - extension_length.magnitude()) < 1);
         SmartDashboard.putNumber("isFinished math", Math.abs(algaeintake.getAlgaePosition() - extension_length.magnitude()));
-        return Math.abs(algaeintake.getAlgaePosition() - extension_length.magnitude()) < 0.1;
+        return Math.abs(algaeintake.getAlgaePosition() - extension_length.magnitude()) < 1;
     }
 }

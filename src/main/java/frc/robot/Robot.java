@@ -8,6 +8,7 @@ import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
+import frc.robot.subsystems.Carriage;
 //import frc.robot.commands.CoralIntake;
 //import frc.robot.commands.SourceIntake;
 //import frc.robot.commands.pivot.PivotToAngle;
@@ -34,6 +35,7 @@ public class Robot extends TimedRobot {
   // private Pivot pintake = new Pivot();
   private Elevator elevator = new Elevator();
   private Pivot pivotIntake = Pivot.getInstance();
+  private Carriage carriage = new Carriage();
 
   private Command m_autonomousCommand;
  
@@ -110,6 +112,8 @@ public class Robot extends TimedRobot {
     }
 
     CommandScheduler.getInstance().cancelAll();
+
+   // carriage.setPose(0);
   }
 
   public void teleopPeriodic() {}

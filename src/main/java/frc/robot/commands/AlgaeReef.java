@@ -1,6 +1,8 @@
 package frc.robot.commands;
 
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
+import frc.robot.commands.elevator.CarriageCommand;
+import frc.robot.commands.elevator.ElevatorCommand;
 import frc.robot.commands.pivot.PivotToAngle;
 import frc.robot.subsystems.AlgaeIntake;
 import frc.robot.subsystems.Carriage;
@@ -19,8 +21,8 @@ public class AlgaeReef extends SequentialCommandGroup {
         addCommands(
             algaeIntake.rollerSpeed_Command(aspeed),
             new PivotToAngle(js, rollers, jsangle ,0 , 0).until(() -> js.isAtSetpoint(jsangle)),
-            carriage.carriageCommand(car),
-            elevator.elevatorCommand(ele)
+            new CarriageCommand(car),
+            new ElevatorCommand(ele)
 
         );
     }

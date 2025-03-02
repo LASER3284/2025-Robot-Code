@@ -11,6 +11,8 @@ import edu.wpi.first.wpilibj2.command.WaitCommand;
 import edu.wpi.first.wpilibj2.command.WaitUntilCommand;
 import frc.robot.commands.coral_intake.PivotDeploy;
 import frc.robot.commands.coral_intake.PivotDeployEnd;
+import frc.robot.commands.elevator.CarriageCommand;
+import frc.robot.commands.elevator.ElevatorCommand;
 import frc.robot.commands.pivot.PivotToAngle;
 import frc.robot.commands.pivot.PivotToAngleEnd;
 import frc.robot.subsystems.JS;
@@ -29,17 +31,23 @@ public class CoralIntake extends SequentialCommandGroup {
     private Elevator elevator = new Elevator();
 
     public CoralIntake(double js_goal, double pivot_goal) {
-
         addCommands(
-          new PivotDeployEnd(pivot, pivot_goal).until(() -> pivot.isAtSetpoint(0.3)),
-            new SequentialCommandGroup(
-            new PivotDeployEnd(pivot, pivot_goal).until(() -> pivot.isAtSetpoint(pivot_goal)),
-            new PivotToAngleEnd(js, rollers, 0.95, 0.3, 0).until(() -> js.isAtSetpoint(0.95)),
-            rollers.coral_roller_on_command(0.8)),
-            irollers.setMotorSpeed_command(0.65),
-            elevator.elevatorCommand(3).until(() -> elevator.isAtHome(3)));
-            // new SequentialCommandGroup(
-            //     new PrintCommand("working"),
-            //     elevator.elevatorCommand(3));
+          new SequentialCommandGroup(
+            new ParallelCommandGroup(
+              new PivotDeployEnd(pivot, .3), 
+              new PivotToAngleEnd(js, rollers, .6, 0, 0))
+            .andThen (new ParallelCommandGroup(
+               new ElevatorCommand(.5 ), 
+              new CarriageCommand(.5))
+             )
+             
+           // .andThen (new ElevatorCommand(0.5))
+           // .andThen (new CarriageCommand(.5))
+            .andThen(new PivotToAngleEnd(js, rollers, 0.90, 0.0, .00))
+            .andThen(new CarriageCommand(.5))
+            .andThen(new PivotToAngleEnd(js, rollers, 0.97, 0.0, .00)),
+            irollers.setMotorSpeed_command(0.8),
+            rollers.coral_roller_on_command(0.8)
+            ));
     }
 }

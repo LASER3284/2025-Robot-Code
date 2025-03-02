@@ -57,7 +57,7 @@ public class PivotToAngleEnd extends Command {
     }
 
     public boolean isFinished() {
-        return (Math.abs(Pivot.getPivotPosition() - angle )) < 0.1;
+        return (Math.abs(Pivot.getPivotPosition() - angle )) < 0.05;
     }
 }
 

@@ -22,12 +22,17 @@ import frc.robot.Constants.*;
 import frc.robot.commands.AutoAlign2;
 import frc.robot.commands.CoralIntake;
 import frc.robot.commands.PreScore;
+import frc.robot.commands.ProcessorPreScore;
+import frc.robot.commands.ProcessorScore;
 import frc.robot.commands.SourceIntake;
 import frc.robot.commands.algae_intake.AlgaeDeploy;
+import frc.robot.commands.algae_intake.AlgaePreScore;
 import frc.robot.commands.coral_intake.PivotDeploy;
+import frc.robot.commands.elevator.CarriageCommand;
 import frc.robot.commands.elevator.L2;
 import frc.robot.commands.elevator.ScoreOnReef;
 import frc.robot.commands.pivot.PivotToAngle;
+import frc.robot.commands.pivot.PivotToAngleEnd;
 import frc.robot.commands.ToHome;
 import frc.robot.subsystems.AlgaeIntake;
 import frc.robot.subsystems.Carriage;
@@ -70,7 +75,7 @@ public class RobotContainer {
 
     public final Drivetrain drivetrain = SwerveConstants.createDrivetrain();
     public final Elevator elevator = new Elevator();
-    public final AlgaeIntake algaeintake = new AlgaeIntake();
+    public final AlgaeIntake algaeintake = AlgaeIntake.getInstance();
     public LimelightHelpers cams = new LimelightHelpers();
     
     public final Climb climber = new Climb();
@@ -147,10 +152,16 @@ public class RobotContainer {
         // .andThen(irollers.setMotorSpeed_command(0.3)));
 
         driver.a().whileTrue(new CoralIntake(0.8, 0.3));
-        driver.a().onFalse(new PreScore());
+        driver.a().whileFalse(new PreScore());
 
+      //driver.y().onTrue(new PivotToAngleEnd(js, rollers, .5, 0.0, 0.0));
 
-        driver.b().onTrue(irollers.setMotorSpeed_command(-0.5).andThen(rollers.coral_roller_on_command(-0.5)));
+        driver.x().onTrue(new AlgaePreScore());
+        driver.x().onFalse(new ProcessorPreScore());
+        driver.y().onTrue(new ProcessorScore());
+        driver.b().onTrue(algaeintake.rollerSpeed_Command(0.5));
+
+        //driver.b().onTrue(irollers.setMotorSpeed_command(-0.5).andThen(rollers.coral_roller_on_command(-0.5)));
         //driver.b().onTrue(irollers.setMotorSpeed_command(0.7).andThen(rollers.coral_roller_on_command(0.5)));
 
         operator.rightBumper().whileTrue(rollers.coral_roller_on_command(-0.6));
