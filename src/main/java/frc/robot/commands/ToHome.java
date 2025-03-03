@@ -15,6 +15,7 @@ public class ToHome extends SequentialCommandGroup{
 
     public ToHome() {
         addCommands(
+            rollers.algae_roller_on_command(0),
             new PivotToAngle(js, rollers, 0.5, 0, 0).until(() -> js.isAtSetpoint(0.5)),
          //   new WaitCommand(3),
             carriage.carriageCommand(.5),

@@ -21,6 +21,7 @@ import com.ctre.phoenix6.controls.VoltageOut;
 import com.ctre.phoenix6.hardware.TalonFX;
 import com.ctre.phoenix6.signals.ControlModeValue;
 import com.ctre.phoenix6.signals.GravityTypeValue;
+import com.ctre.phoenix6.signals.InvertedValue;
 import com.ctre.phoenix6.signals.NeutralModeValue;
 
 import edu.wpi.first.math.controller.ElevatorFeedforward;
@@ -71,17 +72,29 @@ public class Elevator extends SubsystemBase {
         slot0Configs.kD = 0.01; 
         slot0Configs.GravityType = GravityTypeValue.Elevator_Static;
 
+        var motorOutput = talonFXConfigs.MotorOutput;
+        motorOutput.Inverted = InvertedValue.CounterClockwise_Positive;
+        rightElevator.getConfigurator().apply(motorOutput);
+
+        var motorOutputL = talonFXConfigs.MotorOutput;
+        motorOutputL.Inverted = InvertedValue.Clockwise_Positive;
+        leftElevator.getConfigurator().apply(motorOutputL);
+
         var motionMagicConfigs = talonFXConfigs.MotionMagic;
         motionMagicConfigs.MotionMagicCruiseVelocity = 50; 
         motionMagicConfigs.MotionMagicAcceleration = 90; 
         motionMagicConfigs.MotionMagicJerk = 200; 
 
         rightElevator.getConfigurator().apply(motionMagicConfigs);
+        leftElevator.getConfigurator().apply(motionMagicConfigs);
+        rightElevator.getConfigurator().apply(slot0Configs);
         leftElevator.getConfigurator().apply(slot0Configs);
 
         leftElevator.setControl(new Follower(41, true));
-    //    carriage.getConfigurator().apply(talonFXConfigs);
+        //carriage.getConfigurator().apply(talonFXConfigs);
         rightElevator.setNeutralMode(NeutralModeValue.Brake);
+        leftElevator.setNeutralMode(NeutralModeValue.Brake);
+
 
      //  setCarriagePosition(0);
     }
@@ -89,7 +102,7 @@ public class Elevator extends SubsystemBase {
     public double getElevatorPosition() {
         //double pose = rightElevator.get() * ElevatorConstants.GEAR_RATIO * ElevatorConstants.LINEAR_DISTANCE_CONST;
         double pose = rightElevator.getPosition().getValueAsDouble();
-        return pose;
+        return -pose;
     }
 
     public void setElevatorPosition(double rotations) {
@@ -110,11 +123,15 @@ public class Elevator extends SubsystemBase {
        // m_setpoint = m_profile.calculate(0.020, m_setpoint, m_goal);
 
         final MotionMagicVoltage m_request = new MotionMagicVoltage(rotations);
-
+        this.rotations = rotations;
         // set target position to 100 rotations
         rightElevator.setControl(m_request.withPosition(-rotations));
-
         this.rotations = rotations;
+     //   leftElevator.setControl(m_request.withPosition(rotations));
+    }
+
+    public void setElevatorSpeed(double speed) {
+        rightElevator.set(speed);
     }
 
     public Command elevatorCommand(double rotations) {
@@ -126,7 +143,7 @@ public class Elevator extends SubsystemBase {
     }
 
     public void periodic() {
-        SmartDashboard.putNumber("right elevator pose", rightElevator.get());
-        SmartDashboard.putNumber("left elevator pose", leftElevator.get());
+        SmartDashboard.putNumber("right elevator pose", rightElevator.getPosition().getValueAsDouble());
+        SmartDashboard.putNumber("left elevator pose", leftElevator.getPosition().getValueAsDouble());
     }
 }

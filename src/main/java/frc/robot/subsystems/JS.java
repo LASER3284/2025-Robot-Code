@@ -58,7 +58,7 @@ public class JS extends SubsystemBase {
 
         //current_pose = 0.5;
 
-        pid = new PIDController(2, 0, 0);
+        pid = new PIDController(2.1, 0, 0);
 
         // var motionMagicConfigs = talonFXConfigs.MotionMagic;
         // motionMagicConfigs.MotionMagicCruiseVelocity = 10; 

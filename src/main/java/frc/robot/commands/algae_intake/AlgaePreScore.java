@@ -23,10 +23,12 @@ public class AlgaePreScore extends SequentialCommandGroup {
             
            ), 
             new ParallelCommandGroup(
-            new AlgaeDeploy(algaeIntake, Inches.of(-34)) 
-          //  new PivotToAngleEnd(js, rollers, 0.47, 0.0, 0.0)
+            new AlgaeDeployEnd(algaeIntake, Inches.of(-34)),
+            new PivotToAngleEnd(js, rollers, 0.47, 0.0, 0.0)
             )
         );
+
+
         //,
         // new PivotToAngle(js, rollers, 0.47, 0, 0).until(() -> js.isAtSetpoint(0.45))
         // .andThen(new SequentialCommandGroup(

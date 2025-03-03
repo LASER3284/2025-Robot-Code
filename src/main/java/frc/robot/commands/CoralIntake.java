@@ -34,20 +34,20 @@ public class CoralIntake extends SequentialCommandGroup {
         addCommands(
           new SequentialCommandGroup(
             new ParallelCommandGroup(
-              new PivotDeployEnd(pivot, .3), 
+              new PivotDeployEnd(pivot, .47), 
               new PivotToAngleEnd(js, rollers, .6, 0, 0))
             .andThen (new ParallelCommandGroup(
-               new ElevatorCommand(.5 ), 
-              new CarriageCommand(.5))
+               //new ElevatorCommand(.5 ), 
+              new CarriageCommand(-0.3))
              )
              
            // .andThen (new ElevatorCommand(0.5))
            // .andThen (new CarriageCommand(.5))
             .andThen(new PivotToAngleEnd(js, rollers, 0.90, 0.0, .00))
-            .andThen(new CarriageCommand(.5))
             .andThen(new PivotToAngleEnd(js, rollers, 0.97, 0.0, .00)),
-            irollers.setMotorSpeed_command(0.8),
-            rollers.coral_roller_on_command(0.8)
+            irollers.setMotorSpeed_command(0.8)
+            .andThen(
+            rollers.coral_roller_on_command(0.9))
             ));
     }
 }

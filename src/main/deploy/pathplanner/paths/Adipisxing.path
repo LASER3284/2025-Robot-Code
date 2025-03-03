@@ -3,13 +3,13 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 0.8264126712328768,
-        "y": 6.819777397260274
+        "x": 0.899077868852459,
+        "y": 6.824129098360655
       },
       "prevControl": null,
       "nextControl": {
-        "x": 1.07439236111111,
-        "y": 6.344965277777778
+        "x": 1.1470575587306922,
+        "y": 6.349316978878159
       },
       "isLocked": false,
       "linkedName": "Consectetur"
@@ -33,8 +33,8 @@
   "pointTowardsZones": [],
   "eventMarkers": [],
   "globalConstraints": {
-    "maxVelocity": 5.0,
-    "maxAcceleration": 5.0,
+    "maxVelocity": 4.0,
+    "maxAcceleration": 4.0,
     "maxAngularVelocity": 540.0,
     "maxAngularAcceleration": 720.0,
     "nominalVoltage": 12.0,

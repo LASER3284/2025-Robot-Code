@@ -2,8 +2,9 @@ package frc.robot.subsystems;
 
 import static edu.wpi.first.units.Units.Inches;
 
+import com.ctre.phoenix6.configs.TalonFXConfiguration;
 import com.ctre.phoenix6.hardware.TalonFX;
-
+import com.ctre.phoenix6.signals.GravityTypeValue;
 import com.revrobotics.spark.SparkFlex;
 import com.revrobotics.spark.SparkLowLevel.MotorType;
 
@@ -33,7 +34,9 @@ public class AlgaeIntake extends SubsystemBase {
     private PIDController pid;
 
     private Distance last_goal;
-   private double last_speed;
+    private double last_speed;
+
+
     public AlgaeIntake() {
         rackmotor = new SparkFlex(AlgaeIntakeConstants.ARACK_ID, MotorType.kBrushless);
         rollermotor = new TalonFX(AlgaeIntakeConstants.AROLLER_ID);
@@ -47,6 +50,15 @@ public class AlgaeIntake extends SubsystemBase {
         pid = new PIDController(0.095, 0, 0.0);
 
         last_goal = Inches.of(-9);
+
+        var talonFXConfigs = new TalonFXConfiguration();
+
+        var motionMagicConfigs = talonFXConfigs.MotionMagic;
+        motionMagicConfigs.MotionMagicCruiseVelocity = 50; 
+        motionMagicConfigs.MotionMagicAcceleration = 90; 
+        motionMagicConfigs.MotionMagicJerk = 200; 
+
+        rollermotor.getConfigurator().apply(motionMagicConfigs);
     }
 
     public void initDefaultCommand() {

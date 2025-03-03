@@ -76,6 +76,13 @@ public class Carriage extends SubsystemBase {
         slot0Configs.kI = 0; 
         slot0Configs.kD = 0.01; 
 
+
+        // var configs = talonFXConfigs.SoftwareLimitSwitch;
+        // configs.withForwardSoftLimitEnable
+        // (true);
+        // configs.withForwardSoftLimitThreshold(-10);
+
+
         var motionMagicConfigs = talonFXConfigs.MotionMagic;
         motionMagicConfigs.MotionMagicCruiseVelocity = 100; 
         motionMagicConfigs.MotionMagicAcceleration = 90; 
@@ -86,10 +93,11 @@ public class Carriage extends SubsystemBase {
         motionMagicConfigs.MotionMagicAcceleration = 10; 
         motionMagicConfigs.MotionMagicJerk = 400; 
 
-
         carriage.getConfigurator().apply(motionMagicConfigs);
         carriage.getConfigurator().apply(slot0Configs);
-    //    carriage.getConfigurator().apply(talonFXConfigs);
+        //carriage.getConfigurator().apply(configs);
+    
+     //   carriage.getConfigurator().apply(talonFXConfigs);
         carriage.setNeutralMode(NeutralModeValue.Brake);
 
      //  setCarriagePosition(0);
@@ -129,7 +137,7 @@ public class Carriage extends SubsystemBase {
         final MotionMagicVoltage m_request = new MotionMagicVoltage(rotations);
 
         // set target position to 100 rotations
-        carriage.setControl(m_request.withPosition(rotations));
+        carriage.setControl(m_request.withPosition(-rotations));
 
         this.rotations = rotations;
     }

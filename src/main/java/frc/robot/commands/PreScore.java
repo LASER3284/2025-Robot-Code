@@ -37,7 +37,7 @@ public class PreScore extends SequentialCommandGroup {
             new SequentialCommandGroup(
                 irollers.setMotorSpeed_command(0),
                 rollers.coral_roller_on_command(0),
-                new ParallelCommandGroup(new CarriageCommand(0), new ElevatorCommand(0))
+                new ParallelCommandGroup(new CarriageCommand(0)) //new ElevatorCommand(0))
                 .andThen(new PivotToAngleEnd(js, rollers, 0.52, 0.0, .00))
                 .andThen(new CarriageCommand(6))
 

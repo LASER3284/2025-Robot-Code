@@ -5,6 +5,7 @@ import static edu.wpi.first.units.Units.Inches;
 import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import frc.robot.commands.algae_intake.AlgaeDeploy;
+import frc.robot.commands.algae_intake.AlgaeDeployEnd;
 import frc.robot.commands.elevator.CarriageCommand;
 import frc.robot.commands.elevator.ElevatorCommand;
 import frc.robot.commands.pivot.PivotToAngleEnd;
@@ -25,8 +26,8 @@ public class ProcessorPreScore extends SequentialCommandGroup{
         addCommands(
             algaeIntake.rollerSpeed_Command(0),
             rollers.algae_roller_on_command(0),
-            new PivotToAngleEnd(js, rollers, 0.6, 0, 0)
-            .andThen(new AlgaeDeploy(algaeIntake, Inches.of(-9)))
+            new AlgaeDeployEnd(algaeIntake, Inches.of(-9))
+            .andThen( new PivotToAngleEnd(js, rollers, 0.488, 0, 0))
             .andThen(  new ParallelCommandGroup(
                 new CarriageCommand(0.4),
                 new ElevatorCommand(0.4)

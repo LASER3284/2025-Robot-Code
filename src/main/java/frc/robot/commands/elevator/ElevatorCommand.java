@@ -16,9 +16,11 @@ public class ElevatorCommand extends Command {
         elevator.setElevatorPosition(rotations);
     }
 
-    public void end(boolean interrupted) {}
+    public void end(boolean interrupted) {
+       elevator.setElevatorSpeed(0);
+    }
     
     public boolean isFinished() {
-        return Math.abs(elevator.getElevatorPosition() - rotations) < 0.1;
+        return Math.abs(Math.abs(elevator.getElevatorPosition()) - rotations) < 0.1;
     }
 }

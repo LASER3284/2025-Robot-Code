@@ -49,7 +49,7 @@ public class Pivot extends SubsystemBase {
 
         //encoder.setDutyCycleRange(0, 360);
 
-        last_goal = 0.01;
+        last_goal = 0.2;
    }
 
    public static Pivot getInstance() {

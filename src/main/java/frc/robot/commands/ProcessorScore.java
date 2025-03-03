@@ -11,9 +11,7 @@ public class ProcessorScore extends SequentialCommandGroup{
 
     public ProcessorScore() {
         addCommands(
-            new SequentialCommandGroup(
-                new PivotToAngle(js, rollers, 0.5, 0, 0)
-            ),
+            
             rollers.algae_roller_on_command(-0.8)
         );
     }

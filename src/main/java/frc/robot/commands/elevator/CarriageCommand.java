@@ -17,6 +17,7 @@ public class CarriageCommand extends Command {
     }
 
     public void execute() {
+       
         carriage.setCarriagePosition(rotations);
     }
 
