@@ -50,7 +50,7 @@ public class PivotDeployEnd extends Command {
     }
 
     public boolean isFinished() {
-        return Math.abs((pivot.getPivotPosition() - degrees)) < 0.01;
+        return Math.abs((pivot.getPivotPosition() - degrees)) < 0.05;
     }
 
     

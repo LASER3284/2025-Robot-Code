@@ -42,7 +42,7 @@ public class Pivot extends SubsystemBase {
             0.006, 0.012, 0.5679
         );
         this.pivotPID = new PIDController(
-            0.75,0,0
+            1.57,0,0
         );
 
         zeroEncoders();

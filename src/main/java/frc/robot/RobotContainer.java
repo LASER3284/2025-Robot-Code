@@ -32,6 +32,7 @@ import frc.robot.commands.coral_intake.PivotDeploy;
 import frc.robot.commands.elevator.CarriageCommand;
 import frc.robot.commands.elevator.ElevatorCommand;
 import frc.robot.commands.elevator.L2;
+import frc.robot.commands.NetScore;
 import frc.robot.commands.elevator.ScoreOnReef;
 import frc.robot.commands.pivot.PivotToAngle;
 import frc.robot.commands.pivot.PivotToAngleEnd;
@@ -49,6 +50,9 @@ import frc.robot.subsystems.vision.LimelightHelpers;
 
 
 public class RobotContainer { 
+    public static double MaxSpeed = SwerveConstants.kSpeedAt12Volts.in(MetersPerSecond);
+    public static double MaxAngularRate = RotationsPerSecond.of(0.75).in(RadiansPerSecond); 
+
     public final Rollers rollers = Rollers.getInstance();
     public final IntakeRollers irollers = new IntakeRollers();
     public final Climb climb = new Climb();
@@ -58,6 +62,8 @@ public class RobotContainer {
     public final JS js = JS.getInstance();
     public final Pivot pivotIntake = Pivot.getInstance();
     //public final JS js = new JS(rollers);
+    
+
     
     SendableChooser<Command> autoChooser;
 
@@ -83,18 +89,17 @@ public class RobotContainer {
     public final Climb climber = new Climb();
 
     public RobotContainer() {
+    
+
+        NamedCommands.registerCommand("stow", new ScoreOnReef(0.365, 6, -.4));
+        NamedCommands.registerCommand("L2", new ScoreOnReef(0.37, 13.5, 0.1));
+        NamedCommands.registerCommand("L3", new ScoreOnReef(0.37, 13.5, 9));
+        NamedCommands.registerCommand("L4", new ScoreOnReef(0.365, 16, -18.5));
+        NamedCommands.registerCommand("coral intake", new CoralIntake());
+        NamedCommands.registerCommand("prescore", new PreScore());
 
         autoChooser = AutoBuilder.buildAutoChooser("Tests");
         SmartDashboard.putData("Auto Mode", autoChooser);
-
-        NamedCommands.registerCommand("stow", new ScoreOnReef(0.37, 6, 0.2));
-        NamedCommands.registerCommand("L2", new ScoreOnReef(0.37, 13.5, 0.1));
-        NamedCommands.registerCommand("L3", new ScoreOnReef(0.37, 13.5, 9));
-        NamedCommands.registerCommand("L4", new ScoreOnReef(0.37, 19.5, 19.5));
-        NamedCommands.registerCommand("coral intake", new CoralIntake(0.8, 0.3));
-        NamedCommands.registerCommand("prescore", new PreScore());
-        
-
 
         drivetrain.addVisionMeasurement(drivetrain.getState().Pose, 0);
 
@@ -108,22 +113,21 @@ public class RobotContainer {
 
         drivetrain.setDefaultCommand(
             drivetrain.applyRequest(() ->
-                drive.withVelocityX(-driver.getLeftY() * SwerveConstants.kSpeedAt12Volts.in(MetersPerSecond)) 
-                    .withVelocityY(driver.getLeftX() * SwerveConstants.kSpeedAt12Volts.in(MetersPerSecond)) 
-                    .withRotationalRate(-driver.getRightX() * RotationsPerSecond.of(0.75).in(RadiansPerSecond))) 
+                drive.withVelocityX(-driver.getLeftY() * MaxSpeed) 
+                    .withVelocityY(-driver.getLeftX() * MaxSpeed) 
+                    .withRotationalRate(driver.getRightX() * MaxAngularRate)) 
             );
-    
-
-    //   driver.a().whileTrue(drivetrain.applyRequest(() -> brake));
-    //    driver.b().whileTrue(drivetrain.applyRequest(() ->
-    //         point.withModuleDirection(new Rotation2d(-driver.getLeftY(), -driver.getLeftX()))
-    //    ));
 
         driver.rightTrigger().whileTrue(drivetrain.applyRequest(() ->
-                drive.withVelocityX(-driver.getLeftY() * SwerveConstants.kSpeedAt12Volts.in(MetersPerSecond) * 0.1)
-                .withVelocityY(driver.getLeftX() * SwerveConstants.kSpeedAt12Volts.in(MetersPerSecond) * 0.1)
-                .withRotationalRate(-driver.getRightX() * RotationsPerSecond.of(0.75).in(RadiansPerSecond) * 0.25))
+                drive.withVelocityX(-driver.getLeftY() * MaxSpeed * 0.1)
+                .withVelocityY(-driver.getLeftX() * MaxSpeed * 0.1)
+                .withRotationalRate(driver.getRightX() * MaxAngularRate * 0.25))
                 );
+        
+        driver.pov(0).whileTrue(drivetrain.applyRequest(() ->
+                forwardStraight.withVelocityX(0.5).withVelocityY(0)));
+        driver.pov(180).whileTrue(drivetrain.applyRequest(() ->
+                forwardStraight.withVelocityX(-0.5).withVelocityY(0)));
 
 
        // driver.back().and(driver.y()).whileTrue(drivetrain.sysIdDynamic(Direction.kForward));
@@ -157,14 +161,13 @@ public class RobotContainer {
         operator.povDown().onTrue(new ScoreOnReef(0.365, 13.5, -0.3)); //l2 and prescore
         operator.povRight().onTrue(new ScoreOnReef(0.365 , 15, -6)); //l3
         operator.povUp().onTrue(new ScoreOnReef(0.365, 16, -18.5)); //l4
-        
+        operator.y().onTrue(new NetScore(.6, 20, -18.4)); // algae in net boi
         operator.x().onTrue(new ToHome()); //home
-        //driver.y().onTrue(new ScoreOnReef(15, 10));
+     
 
-        // driver.a().onTrue(new PivotDeploy(pivotIntake, 0.3).until(() -> pivotIntake.isAtSetpoint(0.3))
-        // .andThen(irollers.setMotorSpeed_command(0.3)));
+        
 
-        driver.a().whileTrue(new CoralIntake(0.8, 0.3));
+        driver.a().whileTrue(new CoralIntake());
         driver.a().whileFalse(new PreScore());
 
         driver.b().onTrue(rollers.coral_roller_on_command(0.4));

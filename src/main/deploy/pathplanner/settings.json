@@ -3,13 +3,16 @@
   "robotLength": 0.895,
   "holonomicMode": true,
   "pathFolders": [
+    "Left(3) - EDC",
+    "New Folder",
+    "Right(3) - IKL",
     "ice cream"
   ],
   "autoFolders": [
     "New Folder"
   ],
-  "defaultMaxVel": 1.5,
-  "defaultMaxAccel": 1.5,
+  "defaultMaxVel": 1.0,
+  "defaultMaxAccel": 1.0,
   "defaultMaxAngVel": 540.0,
   "defaultMaxAngAccel": 720.0,
   "defaultNominalVoltage": 12.0,

@@ -46,7 +46,7 @@ public class JS extends SubsystemBase {
         //thru_bore = new DutyCycleEncoder(3);
 
 
-        constraints = new TrapezoidProfile.Constraints(90, 90);
+        constraints = new TrapezoidProfile.Constraints(800, 1600);
         goal = new TrapezoidProfile.State();
         setpoint = new TrapezoidProfile.State();
 
@@ -56,7 +56,7 @@ public class JS extends SubsystemBase {
 
         //current_pose = 0.5;
 
-        pid = new PIDController(2.1, 0, 0);
+        pid = new PIDController(6, 0, 0);
 
         // var motionMagicConfigs = talonFXConfigs.MotionMagic;
         // motionMagicConfigs.MotionMagicCruiseVelocity = 10; 
