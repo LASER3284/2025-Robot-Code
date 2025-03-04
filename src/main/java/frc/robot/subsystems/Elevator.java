@@ -122,10 +122,10 @@ public class Elevator extends SubsystemBase {
         // calculate the next profile setpoint
        // m_setpoint = m_profile.calculate(0.020, m_setpoint, m_goal);
 
-        final MotionMagicVoltage m_request = new MotionMagicVoltage(rotations);
+        final MotionMagicVoltage m_request = new MotionMagicVoltage(-rotations);
         this.rotations = rotations;
         // set target position to 100 rotations
-        rightElevator.setControl(m_request.withPosition(-rotations));
+        rightElevator.setControl(m_request.withPosition(rotations));
         this.rotations = rotations;
      //   leftElevator.setControl(m_request.withPosition(rotations));
     }
