@@ -46,14 +46,12 @@ public class JS extends SubsystemBase {
         //thru_bore = new DutyCycleEncoder(3);
 
 
-        constraints = new TrapezoidProfile.Constraints(60, 60);
+        constraints = new TrapezoidProfile.Constraints(90, 90);
         goal = new TrapezoidProfile.State();
         setpoint = new TrapezoidProfile.State();
 
-        pid = new PIDController(0.6, 0, 0);
-
         this.ff = new ArmFeedforward(
-            0.025, .3 ,.01, 0.013
+            0.025, .3 ,.6, 0.013
         );
 
         //current_pose = 0.5;

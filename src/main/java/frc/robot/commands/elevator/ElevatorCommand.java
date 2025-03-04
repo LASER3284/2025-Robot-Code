@@ -10,7 +10,9 @@ public class ElevatorCommand extends Command {
 
     public void initialize() {}
 
-    public ElevatorCommand(double rotations) {}
+    public ElevatorCommand(double rotations) {
+        this.rotations = rotations;
+    }
 
     public void execute() {
         elevator.setElevatorPosition(rotations);
@@ -21,6 +23,6 @@ public class ElevatorCommand extends Command {
     }
     
     public boolean isFinished() {
-        return Math.abs(Math.abs(elevator.getElevatorPosition()) - rotations) < 0.1;
+        return Math.abs(Math.abs(elevator.getElevatorPosition()) - rotations) < 0.4;
     }
 }

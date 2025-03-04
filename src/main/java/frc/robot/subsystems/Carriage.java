@@ -58,23 +58,25 @@ public class Carriage extends SubsystemBase {
 
         // set slot 0 gains
         var slot0Configs = talonFXConfigs.Slot0;
-        slot0Configs.kS = 0; 
-        slot0Configs.kG = -5;
-        slot0Configs.kV = 0.5; 
+        slot0Configs.kS = 0.01; 
+        slot0Configs.kG = 0.785;
+        slot0Configs.kV = 1.5; 
         slot0Configs.kA = 0.0025; 
-        slot0Configs.kP = 15; 
+        slot0Configs.kP = 12.5; 
         slot0Configs.kI = 0; 
-        slot0Configs.kD = 0.01; 
+        slot0Configs.kD = 0.1; 
+
+        
         slot0Configs.GravityType = GravityTypeValue.Elevator_Static;
        
-        var slot1Configs = talonFXConfigs.Slot1;
-        slot0Configs.kS = 0; 
-        slot0Configs.kG = -5;
-        slot0Configs.kV = 0.5; 
-        slot0Configs.kA = 0.0025; 
-        slot0Configs.kP = 15; 
-        slot0Configs.kI = 0; 
-        slot0Configs.kD = 0.01; 
+        // var slot1Configs = talonFXConfigs.Slot1;
+        // slot0Configs.kS = 0; 
+        // slot0Configs.kG = 0.785;
+        // slot0Configs.kV = 0.775; 
+        // slot0Configs.kA = 0.0025; 
+        // slot0Configs.kP = 21; 
+        // slot0Configs.kI = 0; 
+        // slot0Configs.kD = 0.01; 
 
 
         // var configs = talonFXConfigs.SoftwareLimitSwitch;
@@ -85,13 +87,13 @@ public class Carriage extends SubsystemBase {
 
         var motionMagicConfigs = talonFXConfigs.MotionMagic;
         motionMagicConfigs.MotionMagicCruiseVelocity = 100; 
-        motionMagicConfigs.MotionMagicAcceleration = 90; 
-        motionMagicConfigs.MotionMagicJerk = 1500; 
+        motionMagicConfigs.MotionMagicAcceleration = 75; 
+        motionMagicConfigs.MotionMagicJerk = 2500; 
 
-        var motionMagicConfigs2 = talonFXConfigs.MotionMagic;
-        motionMagicConfigs.MotionMagicCruiseVelocity = 10;
-        motionMagicConfigs.MotionMagicAcceleration = 10; 
-        motionMagicConfigs.MotionMagicJerk = 400; 
+        // var motionMagicConfigs2 = talonFXConfigs.MotionMagic;
+        // motionMagicConfigs.MotionMagicCruiseVelocity = 10;
+        // motionMagicConfigs.MotionMagicAcceleration = 10; 
+        // motionMagicConfigs.MotionMagicJerk = 400; 
 
         carriage.getConfigurator().apply(motionMagicConfigs);
         carriage.getConfigurator().apply(slot0Configs);

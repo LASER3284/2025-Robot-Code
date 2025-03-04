@@ -151,10 +151,12 @@ public class RobotContainer {
        
 
         //operator.b().onTrue(new PreScore());
-        operator.povLeft().onTrue(new ScoreOnReef(0.37, 6, -.4)); //l1
-        operator.povDown().onTrue(new ScoreOnReef(0.37, 13.5, 0)); //l2 and prescore
-        operator.povRight().onTrue(new ScoreOnReef(0.37 , 15, 9)); //l3
-        operator.povUp().onTrue(new ScoreOnReef(0.37, 20.5, 19.5)); //l4
+        operator.a().onTrue(elevator.elevatorCommand(-12));
+       
+        operator.povLeft().onTrue(new ScoreOnReef(0.365, 6, -.4)); //l1
+        operator.povDown().onTrue(new ScoreOnReef(0.365, 13.5, -0.3)); //l2 and prescore
+        operator.povRight().onTrue(new ScoreOnReef(0.365 , 15, -6)); //l3
+        operator.povUp().onTrue(new ScoreOnReef(0.365, 16, -18.5)); //l4
         
         operator.x().onTrue(new ToHome()); //home
         //driver.y().onTrue(new ScoreOnReef(15, 10));

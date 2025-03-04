@@ -63,13 +63,13 @@ public class Elevator extends SubsystemBase {
 
         // set slot 0 gains
         var slot0Configs = talonFXConfigs.Slot0;
-        slot0Configs.kS = 0; 
-        slot0Configs.kG = -25;
-        slot0Configs.kV = 0.6; 
-        slot0Configs.kA = 0.0025; 
-        slot0Configs.kP = 1; 
+        slot0Configs.kS = 0.09; 
+        slot0Configs.kG = 1.5;
+        slot0Configs.kV = 3.7; 
+        slot0Configs.kA = 0.25; 
+        slot0Configs.kP = 26; 
         slot0Configs.kI = 0; 
-        slot0Configs.kD = 0.01; 
+        slot0Configs.kD = 0.0; 
         slot0Configs.GravityType = GravityTypeValue.Elevator_Static;
 
         var motorOutput = talonFXConfigs.MotorOutput;
@@ -81,9 +81,9 @@ public class Elevator extends SubsystemBase {
         leftElevator.getConfigurator().apply(motorOutputL);
 
         var motionMagicConfigs = talonFXConfigs.MotionMagic;
-        motionMagicConfigs.MotionMagicCruiseVelocity = 50; 
-        motionMagicConfigs.MotionMagicAcceleration = 90; 
-        motionMagicConfigs.MotionMagicJerk = 200; 
+        motionMagicConfigs.MotionMagicCruiseVelocity = 400; 
+        motionMagicConfigs.MotionMagicAcceleration = 150; 
+        motionMagicConfigs.MotionMagicJerk = 450; 
 
         rightElevator.getConfigurator().apply(motionMagicConfigs);
         leftElevator.getConfigurator().apply(motionMagicConfigs);
@@ -91,7 +91,6 @@ public class Elevator extends SubsystemBase {
         leftElevator.getConfigurator().apply(slot0Configs);
 
         leftElevator.setControl(new Follower(41, true));
-        //carriage.getConfigurator().apply(talonFXConfigs);
         rightElevator.setNeutralMode(NeutralModeValue.Brake);
         leftElevator.setNeutralMode(NeutralModeValue.Brake);
 
@@ -102,7 +101,7 @@ public class Elevator extends SubsystemBase {
     public double getElevatorPosition() {
         //double pose = rightElevator.get() * ElevatorConstants.GEAR_RATIO * ElevatorConstants.LINEAR_DISTANCE_CONST;
         double pose = rightElevator.getPosition().getValueAsDouble();
-        return -pose;
+        return pose;
     }
 
     public void setElevatorPosition(double rotations) {
@@ -122,7 +121,7 @@ public class Elevator extends SubsystemBase {
         // calculate the next profile setpoint
        // m_setpoint = m_profile.calculate(0.020, m_setpoint, m_goal);
 
-        final MotionMagicVoltage m_request = new MotionMagicVoltage(-rotations);
+        final MotionMagicVoltage m_request = new MotionMagicVoltage(rotations);
         this.rotations = rotations;
         // set target position to 100 rotations
         rightElevator.setControl(m_request.withPosition(rotations));
@@ -145,5 +144,6 @@ public class Elevator extends SubsystemBase {
     public void periodic() {
         SmartDashboard.putNumber("right elevator pose", rightElevator.getPosition().getValueAsDouble());
         SmartDashboard.putNumber("left elevator pose", leftElevator.getPosition().getValueAsDouble());
+        SmartDashboard.putNumber("elevator pose", getElevatorPosition());
     }
 }
