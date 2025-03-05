@@ -26,6 +26,8 @@ import edu.wpi.first.math.kinematics.SwerveDriveOdometry;
 import edu.wpi.first.math.kinematics.SwerveModulePosition;
 import edu.wpi.first.math.numbers.N1;
 import edu.wpi.first.math.numbers.N3;
+import edu.wpi.first.networktables.NetworkTable;
+import edu.wpi.first.networktables.NetworkTableInstance;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj.Notifier;
@@ -38,6 +40,7 @@ import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
 import frc.robot.Constants;
 import frc.robot.Constants.SwerveConstants.TunerSwerveDrivetrain;
 import frc.robot.subsystems.vision.LimelightHelpers;
+import frc.robot.subsystems.vision.LimelightManager;
 
 public class Drivetrain extends TunerSwerveDrivetrain implements Subsystem {
     private static final double kSimLoopPeriod = 0.005; // 5 ms
@@ -73,6 +76,10 @@ public class Drivetrain extends TunerSwerveDrivetrain implements Subsystem {
     
     public final SwerveDriveOdometry odometry = new SwerveDriveOdometry(getKinematics(), getPigeon2().getRotation2d(), poses);
     public final SwerveDrivePoseEstimator pose_est = new SwerveDrivePoseEstimator(getKinematics(), getPigeon2().getRotation2d(), poses, new Pose2d());
+
+    public NetworkTable limelight0 = NetworkTableInstance.getDefault().getTable("limelight0");
+    public NetworkTable limelight1 = NetworkTableInstance.getDefault().getTable("limelight1");
+    public NetworkTable limelight2 = NetworkTableInstance.getDefault().getTable("limelight2");
     
 
     /* SysId routine for characterizing translation. This is used to find PID gains for the drive motors. */
@@ -270,7 +277,13 @@ public class Drivetrain extends TunerSwerveDrivetrain implements Subsystem {
         pose_est.update(getPigeon2().getRotation2d(), poses);
 
         // 4 cams
-        pose_est.addVisionMeasurement(LimelightHelpers.getBotPose2d("limelight"), kNumConfigAttempts);
+        pose_est.addVisionMeasurement(LimelightHelpers.getBotPose2d("limelight0"), kNumConfigAttempts);
+        pose_est.addVisionMeasurement(LimelightHelpers.getBotPose2d("limelight1"), kNumConfigAttempts);
+        pose_est.addVisionMeasurement(LimelightHelpers.getBotPose2d("limelight2"), kNumConfigAttempts);
+
+        SmartDashboard.putNumber("tx on limelight2 manager", LimelightManager.getTX("limelight2"));
+        SmartDashboard.putNumber("tx on limelight2", LimelightHelpers.getTX("limelight2"));
+
 
         SmartDashboard.putNumber("gyro", getPigeon2().getYaw().getValueAsDouble());
     }   

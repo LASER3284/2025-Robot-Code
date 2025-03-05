@@ -3,26 +3,32 @@ package frc.robot.commands;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import frc.robot.commands.elevator.CarriageCommand;
 import frc.robot.commands.elevator.ElevatorCommand;
-import frc.robot.commands.pivot.PivotToAngle;
-import frc.robot.subsystems.AlgaeIntake;
+import frc.robot.commands.pivot.PivotToAngleEnd;
 import frc.robot.subsystems.Carriage;
 import frc.robot.subsystems.Elevator;
 import frc.robot.subsystems.JS;
 import frc.robot.subsystems.Rollers;
 
-public class AlgaeReef extends SequentialCommandGroup {
+public class AlgaeReefHigh extends SequentialCommandGroup {
     private Elevator elevator = new Elevator();
     private Carriage carriage = new Carriage();
     private JS js = JS.getInstance();
     private Rollers rollers = Rollers.getInstance();
-    private AlgaeIntake algaeIntake = new AlgaeIntake();
+ 
 
-    public AlgaeReef(double aspeed, double jsangle, double car, double ele) {
+    public AlgaeReefHigh() {
         addCommands(
-            algaeIntake.rollerSpeed_Command(aspeed),
-            new PivotToAngle(js, rollers, jsangle ,0 , 0).until(() -> js.isAtSetpoint(jsangle)),
-            new CarriageCommand(car),
-            new ElevatorCommand(ele)
+      
+         rollers.algae_roller_on_command(0.6),
+             new PivotToAngleEnd(js, rollers, .47 ,0 , 0)
+             .andThen(
+                new CarriageCommand(13.5),
+                new ElevatorCommand(-9),
+                new PivotToAngleEnd(js, rollers, .47 ,0 , 0)
+             )
+
+            // new CarriageCommand(car),
+            // new ElevatorCommand(ele)
 
         );
     }

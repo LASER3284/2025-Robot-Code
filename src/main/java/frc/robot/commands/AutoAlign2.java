@@ -14,6 +14,7 @@ public class AutoAlign2 extends Command {
     private final SwerveRequest.ApplyRobotSpeeds pathApplyRobotSpeeds;
     private double targetAngle;
     private double offset;
+    private String name;
 
     private static final double limelightHeight = 5.3125;  // Example height in inches
     private static final double targetHeight = 12;  
@@ -21,18 +22,20 @@ public class AutoAlign2 extends Command {
     
     public void initialize() {}
 
-    public AutoAlign2(Drivetrain drivetrain, LimelightHelpers ll_tags, double offset) {
+    public AutoAlign2(Drivetrain drivetrain, LimelightHelpers ll_tags, double offset, String name) {
         this.offset = offset;
         this.drivetrain = drivetrain;
         this.ll_tags = ll_tags;
+        this.name = name;
         pathApplyRobotSpeeds = new SwerveRequest.ApplyRobotSpeeds();
 
         //drivetrain.setControl(null);
     }
 
     public void execute() {
-        double tx = LimelightHelpers.getTX("limelight"); // Horizontal offset
-        double ty = LimelightHelpers.getTY("limelight"); // Vertical offset (used for distance)
+
+        double tx = LimelightHelpers.getTX(name); // Horizontal offset
+        double ty = LimelightHelpers.getTY(name); // Vertical offset (used for distance)
 
         // Calculate robot heading (rotation)
         double targetAngle = tx; // Rotate to align with target's horizontal offset
@@ -45,7 +48,7 @@ public class AutoAlign2 extends Command {
         // Set the robot's speed to drive toward the target
         drivetrain.setControl(
             pathApplyRobotSpeeds.withSpeeds(
-                new ChassisSpeeds(targetDistance * 0.1, (targetAngle + offset) * 0.1 , 0) // Adjust speed for your robot
+                new ChassisSpeeds(targetDistance * 0.01, (targetAngle + offset) * 0.01 , 0) // Adjust speed for your robot
             )
         );
     }
@@ -55,7 +58,7 @@ public class AutoAlign2 extends Command {
     }
 
     public boolean isFinished() {
-        return Math.abs(LimelightHelpers.getTX("limelight")) < 8.0 && Math.abs(LimelightHelpers.getTY("limelight")) < 1.0; // Thresholds for alignment
+        return Math.abs(LimelightHelpers.getTX(name)) < 0.5 && Math.abs(LimelightHelpers.getTY(name)) < 0.5; // Thresholds for alignment
     }
 
     private double calculateDistance(double ty) {
