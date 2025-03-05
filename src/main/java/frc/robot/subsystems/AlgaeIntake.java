@@ -49,7 +49,7 @@ public class AlgaeIntake extends SubsystemBase {
 
         pid = new PIDController(0.095, 0, 0.0);
 
-        last_goal = Inches.of(-4);
+        last_goal = Inches.of(-6.5);
 
         var talonFXConfigs = new TalonFXConfiguration();
 

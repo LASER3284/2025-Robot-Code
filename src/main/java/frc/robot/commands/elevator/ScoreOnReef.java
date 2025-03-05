@@ -26,7 +26,11 @@ public class ScoreOnReef extends SequentialCommandGroup {
                     Commands.parallel(new CarriageCommand(car), new ElevatorCommand(ele)).until(() -> carriage.getCarriagePosition() < -6)
                // new CarriageCommand(car)), new ElevatorCommand(ele))
             )
-            .andThen(Commands.parallel(new CarriageCommand(car), new ElevatorCommand(ele), new PivotToAngleEnd(js, rollers, js1, 0.0, 0))
+            .andThen(Commands.parallel(
+                new CarriageCommand(car), 
+            new ElevatorCommand(ele),
+             new PivotToAngleEnd(js, rollers, js1, 0.0, 0)
+             )
             //.andThen(new PivotToAngleEnd(js, rollers, js1, 0.0, 0))
             ))))
         ;

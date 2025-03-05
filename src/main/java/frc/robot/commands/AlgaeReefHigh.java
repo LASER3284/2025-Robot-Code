@@ -1,5 +1,6 @@
 package frc.robot.commands;
 
+import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import frc.robot.commands.elevator.CarriageCommand;
 import frc.robot.commands.elevator.ElevatorCommand;
@@ -22,9 +23,11 @@ public class AlgaeReefHigh extends SequentialCommandGroup {
          rollers.algae_roller_on_command(0.6),
              new PivotToAngleEnd(js, rollers, .47 ,0 , 0)
              .andThen(
+                Commands.parallel(
                 new CarriageCommand(13.5),
                 new ElevatorCommand(-9),
                 new PivotToAngleEnd(js, rollers, .47 ,0 , 0)
+                )
              )
 
             // new CarriageCommand(car),

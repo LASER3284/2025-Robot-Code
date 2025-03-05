@@ -27,7 +27,7 @@ public class AlgaePreScore extends SequentialCommandGroup {
                 new ElevatorCommand(0.2),  
                 new CarriageCommand(0.5),
                 new PivotToAngleEnd(js, rollers, 0.47, 0, 0),
-                new AlgaeDeployEnd(algaeIntake,Inches.of(-34))
+                new AlgaeDeployEnd(algaeIntake,Inches.of(-36))
             ),
     
             rollers.algae_roller_on_command(0.8),

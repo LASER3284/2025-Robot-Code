@@ -122,8 +122,8 @@ public class RobotContainer {
             );
 
         driver.rightTrigger().whileTrue(drivetrain.applyRequest(() ->
-                drive.withVelocityX(-driver.getLeftY() * MaxSpeed * 0.1)
-                .withVelocityY(-driver.getLeftX() * MaxSpeed * 0.1)
+                drive.withVelocityX(-driver.getLeftY() * MaxSpeed * 0.25)
+                .withVelocityY(-driver.getLeftX() * MaxSpeed * 0.25)
                 .withRotationalRate(-driver.getRightX() * MaxAngularRate * 0.25))
                 );
         
@@ -160,10 +160,10 @@ public class RobotContainer {
         //operator.b().onTrue(new PreScore());
        // operator.a().onTrue(elevator.elevatorCommand(-12));
        
-        operator.povLeft().onTrue(new ScoreOnReef(0.365, 6, -.4)); //l1
-        operator.povDown().onTrue(new ScoreOnReef(0.365, 13.5, -0.3)); //l2 and prescore
-        operator.povRight().onTrue(new ScoreOnReef(0.365 , 15, -6)); //l3
-        operator.povUp().onTrue(new ScoreOnReef(0.365, 16, -18.5)); //l4
+        operator.povLeft().onTrue(new ScoreOnReef(0.34, 6, -.4)); //l1
+        operator.povDown().onTrue(new ScoreOnReef(0.34, 13.5, -0.3)); //l2 and prescore
+        operator.povRight().onTrue(new ScoreOnReef(0.34 , 15, -6.5)); //l3
+        operator.povUp().onTrue(new ScoreOnReef(0.34, 19, -18.5)); //l4
         operator.y().onTrue(new NetScore(.6, 20, -18.4)); // algae in net boi
         operator.povUp().and(operator.rightTrigger(.5)).onTrue(new AlgaeReefHigh()); //pick high algae
         operator.povRight().and(operator.rightTrigger(.5)).onTrue(new AlgaeReefLow()); //pick low algae
@@ -175,8 +175,10 @@ public class RobotContainer {
         driver.a().whileTrue(new CoralIntake());
         driver.a().whileFalse(new PreScore());
 
-        driver.b().onTrue(rollers.coral_roller_on_command(0.4));
-        driver.b().onFalse(rollers.coral_roller_on_command(0));
+
+        
+        driver.b().onTrue(rollers.algae_roller_on_command(.8));
+        driver.b().onFalse(rollers.algae_roller_on_command(0));
 
         // driver.a().onTrue(new AlgaeDeploy(algaeintake, Inches.of(-20)));
         // driver.a().onFalse(new AlgaeDeploy(algaeintake, Inches.of(-9)));
@@ -187,8 +189,9 @@ public class RobotContainer {
 
         driver.x().onTrue(new AlgaePreScore());
         driver.x().onFalse(new ProcessorPreScore());
-        driver.y().whileTrue(new ProcessorScore());
-        driver.y().onFalse(rollers.algae_roller_on_command(0));
+        operator.leftBumper().whileTrue(new ProcessorScore());
+        operator.leftBumper().onFalse(rollers.algae_roller_on_command(0));
+
 
 
         //GO RIGHT
@@ -202,13 +205,13 @@ public class RobotContainer {
         //driver.b().onTrue(irollers.setMotorSpeed_command(-0.5).andThen(rollers.coral_roller_on_command(-0.5)));
         //driver.b().onTrue(irollers.setMotorSpeed_command(0.7).andThen(rollers.coral_roller_on_command(0.5)));
 
-        operator.rightBumper().whileTrue(rollers.coral_roller_on_command(-0.6));
+        operator.rightBumper().whileTrue(rollers.coral_roller_on_command(-0.9));
         operator.rightBumper().whileFalse(rollers.coral_roller_on_command(0.05));
 
 
 
-        // driver.x().onTrue(new SourceIntake(0.705, 0.5));
-        // driver.x().onFalse(new SourceIntake(0.6, 0));
+        operator.leftTrigger().onTrue(new SourceIntake(0.705, 0.5));
+        operator.leftTrigger().onFalse(new SourceIntake(0.6, 0));
 
 
 

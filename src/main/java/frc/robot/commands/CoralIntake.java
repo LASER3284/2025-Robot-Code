@@ -45,7 +45,7 @@ public class CoralIntake extends SequentialCommandGroup {
         .andThen(
               new PivotDeployEnd(pivot, .505)   
         )
-            .andThen(new PivotToAngleEnd(js, rollers, 0.945, 0.0, .00),
+            .andThen(new PivotToAngleEnd(js, rollers, 0.96, 0.0, .00),
             irollers.setMotorSpeed_command(0.8),
             rollers.coral_roller_on_command(0.9))
             );       
