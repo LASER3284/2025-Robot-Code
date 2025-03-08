@@ -7,19 +7,20 @@
         {
           "type": "path",
           "data": {
-            "pathName": "emma "
+            "pathName": "bottom top cage to Reef"
           }
         },
         {
-          "type": "named",
+          "type": "sequential",
           "data": {
-            "name": "L4"
-          }
-        },
-        {
-          "type": "named",
-          "data": {
-            "name": "CORAL_SPIT"
+            "commands": [
+              {
+                "type": "named",
+                "data": {
+                  "name": "coral rollers"
+                }
+              }
+            ]
           }
         }
       ]

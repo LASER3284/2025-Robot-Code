@@ -11,33 +11,26 @@ import com.ctre.phoenix6.swerve.SwerveRequest;
 import com.pathplanner.lib.auto.AutoBuilder;
 import com.pathplanner.lib.auto.NamedCommands;
 
-import edu.wpi.first.wpilibj.DutyCycleEncoder;
-import edu.wpi.first.wpilibj.event.EventLoop;
+
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
-import edu.wpi.first.wpilibj2.command.WaitCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 
 import frc.robot.Constants.*;
 import frc.robot.commands.AlgaeReefHigh;
 import frc.robot.commands.AlgaeReefLow;
-import frc.robot.commands.AutoAlign2;
 import frc.robot.commands.CoralIntake;
 import frc.robot.commands.PreScore;
 import frc.robot.commands.ProcessorPreScore;
 import frc.robot.commands.ProcessorScore;
 import frc.robot.commands.SourceIntake;
-import frc.robot.commands.algae_intake.AlgaeDeploy;
+import frc.robot.commands.SourceIntakeRetract;
 import frc.robot.commands.algae_intake.AlgaePreScore;
-import frc.robot.commands.coral_intake.PivotDeploy;
-import frc.robot.commands.elevator.CarriageCommand;
-import frc.robot.commands.elevator.ElevatorCommand;
-import frc.robot.commands.elevator.L2;
 import frc.robot.commands.NetScore;
 import frc.robot.commands.elevator.ScoreOnReef;
-import frc.robot.commands.pivot.PivotToAngle;
-import frc.robot.commands.pivot.PivotToAngleEnd;
+import frc.robot.commands.elevator.ScoreOnReefAuto;
+import frc.robot.commands.elevator.ScoreOnL1;
 import frc.robot.commands.ToHome;
 import frc.robot.subsystems.AlgaeIntake;
 import frc.robot.subsystems.Carriage;
@@ -49,6 +42,8 @@ import frc.robot.subsystems.Rollers;
 import frc.robot.subsystems.pivotintake.IntakeRollers;
 import frc.robot.subsystems.pivotintake.Pivot;
 import frc.robot.subsystems.vision.LimelightHelpers;
+
+import frc.robot.commands.vision.AutoAlign3;
 
 
 public class RobotContainer { 
@@ -93,13 +88,16 @@ public class RobotContainer {
     public RobotContainer() {
     
 
-        NamedCommands.registerCommand("stow", new ScoreOnReef(0.365, 6, -.4));
+        NamedCommands.registerCommand("stow", new ToHome());
         NamedCommands.registerCommand("L2", new ScoreOnReef(0.365, 13.5, -0.3));
         NamedCommands.registerCommand("L3", new ScoreOnReef(0.365, 15, -6));
-        NamedCommands.registerCommand("L4", new ScoreOnReef(0.365, 16, -18.5));
+        NamedCommands.registerCommand("L4", new ScoreOnReefAuto(0.34, 19.5, -19));
         NamedCommands.registerCommand("coral intake", new CoralIntake());
         NamedCommands.registerCommand("prescore", new PreScore());
-        NamedCommands.registerCommand("CORAL_SPIT", rollers.coral_roller_on_command(-0.5));
+        NamedCommands.registerCommand("CORAL_SPIT", rollers.coral_roller_on_command(-0.9));
+        NamedCommands.registerCommand("STOP_SPIT", rollers.coral_roller_on_command(0));
+        NamedCommands.registerCommand("source intake", new SourceIntake(0.705, 0.5));
+        NamedCommands.registerCommand("coral rollers", irollers.setMotorSpeed_command(-0.6));
 
         autoChooser = AutoBuilder.buildAutoChooser("Tests");
         SmartDashboard.putData("Auto Mode", autoChooser);
@@ -122,15 +120,19 @@ public class RobotContainer {
             );
 
         driver.rightTrigger().whileTrue(drivetrain.applyRequest(() ->
-                drive.withVelocityX(-driver.getLeftY() * MaxSpeed * 0.25)
-                .withVelocityY(-driver.getLeftX() * MaxSpeed * 0.25)
-                .withRotationalRate(-driver.getRightX() * MaxAngularRate * 0.25))
+                drive.withVelocityX(-driver.getLeftY() * MaxSpeed * 0.15)
+                .withVelocityY(-driver.getLeftX() * MaxSpeed * 0.15)
+                .withRotationalRate(-driver.getRightX() * MaxAngularRate * 0.15))
                 );
         
         driver.pov(0).whileTrue(drivetrain.applyRequest(() ->
                 forwardStraight.withVelocityX(0.5).withVelocityY(0)));
         driver.pov(180).whileTrue(drivetrain.applyRequest(() ->
                 forwardStraight.withVelocityX(-0.5).withVelocityY(0)));
+        driver.pov(90).whileTrue(drivetrain.applyRequest(() ->
+                forwardStraight.withVelocityX(0).withVelocityY(0.5)));
+        driver.pov(270).whileTrue(drivetrain.applyRequest(() ->
+                forwardStraight.withVelocityX(0).withVelocityY(-.5)));
 
 
        // driver.back().and(driver.y()).whileTrue(drivetrain.sysIdDynamic(Direction.kForward));
@@ -160,25 +162,27 @@ public class RobotContainer {
         //operator.b().onTrue(new PreScore());
        // operator.a().onTrue(elevator.elevatorCommand(-12));
        
-        operator.povLeft().onTrue(new ScoreOnReef(0.34, 6, -.4)); //l1
-        operator.povDown().onTrue(new ScoreOnReef(0.34, 13.5, -0.3)); //l2 and prescore
-        operator.povRight().onTrue(new ScoreOnReef(0.34 , 15, -6.5)); //l3
-        operator.povUp().onTrue(new ScoreOnReef(0.34, 19, -18.5)); //l4
-        operator.y().onTrue(new NetScore(.6, 20, -18.4)); // algae in net boi
+        operator.povLeft().onTrue(new ScoreOnL1()); //l1
+        operator.povDown().onTrue(new ScoreOnReef(0.34, 13, -0.3)); //l2 and prescore
+        operator.povRight().onTrue(new ScoreOnReef(0.34 , 14.25, -8)); //l3
+        operator.povUp().onTrue(new ScoreOnReef(0.34, 18.5, -19 )); //l4
+        operator.y().onTrue(new NetScore(.6, 20, -19.4)); // algae in net boi
         operator.povUp().and(operator.rightTrigger(.5)).onTrue(new AlgaeReefHigh()); //pick high algae
         operator.povRight().and(operator.rightTrigger(.5)).onTrue(new AlgaeReefLow()); //pick low algae
         operator.x().onTrue(new ToHome()); //stow
+
+        operator.a().whileTrue(js.setSpeed_command(0));
     
 
         
 
-        driver.a().whileTrue(new CoralIntake());
-        driver.a().whileFalse(new PreScore());
+        driver.rightBumper().whileTrue(new CoralIntake());
+        driver.rightBumper().whileFalse(new ScoreOnL1());
 
 
         
-        driver.b().onTrue(rollers.algae_roller_on_command(.8));
-        driver.b().onFalse(rollers.algae_roller_on_command(0));
+        driver.b().onTrue(irollers.setMotorSpeed_command(.8));
+        driver.b().onFalse(irollers.setMotorSpeed_command(0));
 
         // driver.a().onTrue(new AlgaeDeploy(algaeintake, Inches.of(-20)));
         // driver.a().onFalse(new AlgaeDeploy(algaeintake, Inches.of(-9)));
@@ -187,31 +191,35 @@ public class RobotContainer {
 
       //driver.y().onTrue(new PivotToAngleEnd(js, rollers, .5, 0.0, 0.0));
 
-        driver.x().onTrue(new AlgaePreScore());
-        driver.x().onFalse(new ProcessorPreScore());
+        driver.leftBumper().onTrue(new AlgaePreScore());
+        driver.leftBumper().onFalse(new ProcessorPreScore());
+
+        // driver.leftBumper().onTrue(new AutoAlign3(false, drivetrain, "limelight_right"));
+        // driver.rightBumper().onTrue(new AutoAlign3(true, drivetrain, "limelight_left"));
         operator.leftBumper().whileTrue(new ProcessorScore());
         operator.leftBumper().onFalse(rollers.algae_roller_on_command(0));
 
 
 
         //GO RIGHT
-        driver.rightBumper().onTrue(new AutoAlign2(drivetrain, ll_helpers, 0, "limelight-left"));
-
+      //  driver.rightBumper().onTrue(new AutoAlign(drivetrain, ll_helpers, 0.1, 0.1, "limelight-left"));
         //GO LEFT
-        driver.leftBumper().onTrue(new AutoAlign2(drivetrain, ll_helpers, 0, "limelight-lower"));
+       // driver.leftBumper().onTrue(new AutoAlign(drivetrain, ll_helpers, 0.1, 0.1, "limelight-right"));
+
+        
 
         //driver.b().onTrue(new ScoreOnReef(0.5, 20.5, 19.5));
         //driver.b().onTrue(new ElevatorCommand(2));
         //driver.b().onTrue(irollers.setMotorSpeed_command(-0.5).andThen(rollers.coral_roller_on_command(-0.5)));
         //driver.b().onTrue(irollers.setMotorSpeed_command(0.7).andThen(rollers.coral_roller_on_command(0.5)));
 
-        operator.rightBumper().whileTrue(rollers.coral_roller_on_command(-0.9));
-        operator.rightBumper().whileFalse(rollers.coral_roller_on_command(0.05));
+        operator.rightBumper().whileTrue(rollers.coral_roller_on_command(-0.6).andThen(irollers.setMotorSpeed_command(-0.5)));
+        operator.rightBumper().whileFalse(rollers.coral_roller_on_command(0.05).andThen(irollers.setMotorSpeed_command(0)));
 
 
 
         operator.leftTrigger().onTrue(new SourceIntake(0.705, 0.5));
-        operator.leftTrigger().onFalse(new SourceIntake(0.6, 0));
+        operator.leftTrigger().onFalse(new SourceIntakeRetract(0.6, 0));
 
 
 

@@ -1,20 +1,25 @@
-package frc.robot.commands;
+package frc.robot.commands.vision;
+
+import static edu.wpi.first.units.Units.MetersPerSecond;
+import static edu.wpi.first.units.Units.RadiansPerSecond;
+import static edu.wpi.first.units.Units.RotationsPerSecond;
 
 import com.ctre.phoenix6.swerve.SwerveModule.DriveRequestType;
 import com.ctre.phoenix6.swerve.SwerveModule.SteerRequestType;
 import com.ctre.phoenix6.swerve.SwerveRequest;
 
+import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj2.command.Command;
+import frc.robot.Constants.SwerveConstants;
 import frc.robot.subsystems.Drivetrain;
-import frc.robot.subsystems.Elevator;
 import frc.robot.subsystems.vision.LimelightHelpers;
 
 public class AutoAlign extends Command{
     private Drivetrain drivetrain;
     private LimelightHelpers ll;
 
-    private final SwerveRequest.RobotCentric m_alignRequest;
+    private final SwerveRequest.ApplyRobotSpeeds pathApplyRobotSpeeds;
 
     private final double MaxSpeed;
     private final double MaxAngularRate;
@@ -22,7 +27,7 @@ public class AutoAlign extends Command{
     private final double targetDistance; // Desired distance from the tag
     private final double targetAngle; // Desired angle relative to the tag
 
-    private static final double kP_aim = 0.005; // Proportional gain for aiming
+    private static final double kP_aim = 0.075; // Proportional gain for aiming
     private static final double kP_range = -0.1; // Proportional gain for ranging
     private static final double kP_horizontal = 0.05; // Reduced proportional gain for horizontal movement
     private static final double distanceTolerance = 0.1; // Tolerance for distance in meters
@@ -37,21 +42,22 @@ public class AutoAlign extends Command{
     private final Timer lostDetectionTimer = new Timer();
     private static final double lostDetectionTimeout = 0.5; // 0.5 seconds timeout for lost detection
 
+    private String name;
+
 
     public void initialize() {}
 
-    public AutoAlign(Drivetrain drivetrain, LimelightHelpers ll, double targetDistance, double targetAngle) {
+    public AutoAlign(Drivetrain drivetrain, LimelightHelpers ll, double targetDistance, double targetAngle, String name) {
         this.drivetrain  = drivetrain;
         this.ll = ll;
         this.targetDistance = targetDistance;
         this.targetAngle = targetAngle;
-        m_alignRequest = new SwerveRequest.RobotCentric()
-            .withDeadband(0.1)
-            .withRotationalDeadband(0.1)
+        this.name = name;
+        pathApplyRobotSpeeds = new SwerveRequest.ApplyRobotSpeeds()
             .withDriveRequestType(DriveRequestType.Velocity)
             .withSteerRequestType(SteerRequestType.MotionMagicExpo);
-        MaxSpeed = Elevator.MaxSpeed * 0.5;
-        MaxAngularRate = Elevator.MaxAngularRate * 0.5;
+        MaxSpeed = SwerveConstants.kSpeedAt12Volts.in(MetersPerSecond) * 0.8;
+        MaxAngularRate = RotationsPerSecond.of(0.75).in(RadiansPerSecond) * 0.8;
         //addRequirements(drivetrain, ll);
     }
 
@@ -98,11 +104,8 @@ public class AutoAlign extends Command{
         System.out.println("Steering Adjust: " + steeringAdjust);
 
         drivetrain.setControl(
-            m_alignRequest
-                .withVelocityX(distanceAdjust)  // Forward/backward movement
-                .withVelocityY(horizontalAdjust) // Horizontal (lateral) movement
-                .withRotationalRate(steeringAdjust) // Rotational correction
-        );
+            pathApplyRobotSpeeds
+            .withSpeeds(new ChassisSpeeds(distanceAdjust, horizontalAdjust, steeringAdjust)));
 
         System.out.println("Control Set:");
         System.out.println("VelocityX: " + distanceAdjust);
@@ -112,7 +115,9 @@ public class AutoAlign extends Command{
 
     public void end(boolean interrupted) {}
 
-    public boolean isFinished() { return true; }
+    public boolean isFinished() { 
+        return (LimelightHelpers.getTXNC(name)) < 0.1 && (LimelightHelpers.getTYNC(name)) < 0.1;
+    }
 
     double limelight_aim_proportional(double angleError) {
         double targetingAngularVelocity = angleError * kP_aim;

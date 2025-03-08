@@ -4,22 +4,22 @@
   "holonomicMode": true,
   "pathFolders": [
     "Left(3) - EDC",
-    "New Folder",
+    "Cage to Reef (L1)",
     "Right(3) - IKL",
     "ice cream"
   ],
   "autoFolders": [
     "New Folder"
   ],
-  "defaultMaxVel": 1.0,
-  "defaultMaxAccel": 1.0,
+  "defaultMaxVel": 4.0,
+  "defaultMaxAccel": 4.0,
   "defaultMaxAngVel": 540.0,
   "defaultMaxAngAccel": 720.0,
   "defaultNominalVoltage": 12.0,
   "robotMass": 65.77,
   "robotMOI": 6.883,
   "robotTrackwidth": 0.546,
-  "driveWheelRadius": 0.051,
+  "driveWheelRadius": 0.052,
   "driveGearing": 7.13,
   "maxDriveSpeed": 4.5,
   "driveMotorType": "krakenX60",

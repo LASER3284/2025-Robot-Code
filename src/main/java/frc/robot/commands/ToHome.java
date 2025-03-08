@@ -5,7 +5,6 @@ import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import frc.robot.commands.elevator.CarriageCommand;
 import frc.robot.commands.elevator.ElevatorCommand;
-import frc.robot.commands.pivot.PivotToAngle;
 import frc.robot.commands.pivot.PivotToAngleEnd;
 import frc.robot.subsystems.Carriage;
 import frc.robot.subsystems.Elevator;

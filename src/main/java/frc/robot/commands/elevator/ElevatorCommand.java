@@ -23,6 +23,6 @@ public class ElevatorCommand extends Command {
     }
     
     public boolean isFinished() {
-        return Math.abs(Math.abs(elevator.getElevatorPosition()) - rotations) < 0.4;
+        return Math.abs(Math.abs(elevator.getElevatorPosition()) - rotations) < 0.5;
     }
 }

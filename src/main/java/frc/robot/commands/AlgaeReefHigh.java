@@ -20,13 +20,13 @@ public class AlgaeReefHigh extends SequentialCommandGroup {
     public AlgaeReefHigh() {
         addCommands(
       
-         rollers.algae_roller_on_command(0.6),
+         rollers.algae_roller_on_command(0.35),
              new PivotToAngleEnd(js, rollers, .47 ,0 , 0)
              .andThen(
                 Commands.parallel(
                 new CarriageCommand(13.5),
-                new ElevatorCommand(-9),
-                new PivotToAngleEnd(js, rollers, .47 ,0 , 0)
+                new ElevatorCommand(-7)
+                .andThen(new PivotToAngleEnd(js, rollers, .47 ,0 , 0))
                 )
              )
 

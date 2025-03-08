@@ -1,13 +1,10 @@
 package frc.robot.commands;
 
 import edu.wpi.first.wpilibj2.command.Commands;
-import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
-import edu.wpi.first.wpilibj2.command.PrintCommand;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
-import edu.wpi.first.wpilibj2.command.WaitCommand;
+import frc.robot.commands.coral_intake.PivotDeployEnd;
 import frc.robot.commands.elevator.CarriageCommand;
 import frc.robot.commands.elevator.ElevatorCommand;
-import frc.robot.commands.pivot.PivotToAngle;
 import frc.robot.commands.pivot.PivotToAngleEnd;
 import frc.robot.subsystems.Carriage;
 import frc.robot.subsystems.Elevator;
@@ -22,16 +19,27 @@ public class SourceIntake extends SequentialCommandGroup {
     private Elevator elevator = new Elevator();
     private Pivot cIntake = Pivot.getInstance();
 
+
     public SourceIntake(double jspose, double speed) {
         addCommands(
-          
+            Commands.parallel(
+          new PivotToAngleEnd(js, rollers, .55, 0, 0  ),
+          new PivotDeployEnd(cIntake, .35) 
+            )
+          .andThen(
         Commands.parallel(
             new ElevatorCommand(0.2), 
             new CarriageCommand(0.5)
 
-        ).until(() -> elevator.getElevatorPosition() > -.22 && carriage.getCarriagePosition() > -.5)
+        ).until(() -> elevator.getElevatorPosition() > -.22 && carriage.getCarriagePosition() > -.5))
     .andThen(
-    new PivotToAngleEnd(js, rollers, jspose, 0, 0)
+    new PivotToAngleEnd(js, rollers, .7925, 0, 0)
+    )
+    .andThen(
+        new CarriageCommand(8.375)
+    )
+    .andThen(
+        new PivotDeployEnd(cIntake, .22)  
     ),
     rollers.coral_roller_on_command(speed)
 
