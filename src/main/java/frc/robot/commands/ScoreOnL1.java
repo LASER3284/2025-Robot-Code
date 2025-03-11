@@ -1,9 +1,7 @@
-package frc.robot.commands.elevator;
+package frc.robot.commands;
 
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
-import frc.robot.commands.coral_intake.PivotDeployEnd;
-import frc.robot.commands.pivot.PivotToAngle;
-import frc.robot.commands.pivot.PivotToAngleEnd;
+import frc.robot.Constants.JSConstants;
 import frc.robot.subsystems.JS;
 import frc.robot.subsystems.Rollers;
 import frc.robot.subsystems.pivotintake.IntakeRollers;
@@ -22,7 +20,7 @@ public class ScoreOnL1 extends SequentialCommandGroup {
                 .andThen(
                     irollers.setMotorSpeed_command(0.0))
                     .andThen(
-                        new PivotToAngleEnd(js, rollers, 0.6, 0, 0))
+                        new PivotToAngleEnd(js, rollers, JSConstants.SCOREONL1))
             ))
         ;
     }

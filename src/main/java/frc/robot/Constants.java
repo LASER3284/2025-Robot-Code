@@ -321,12 +321,6 @@ public class Constants {
         public static final int EL_ID = 42;
         public static final int CAR_ID = 43;
 
-        // heights
-        public static final Distance HANDOFF_HEIGHT = Units.Inches.of(4);
-        public static final Distance L2_HEIGHT = Units.Inches.of(19);
-        public static final Distance L3_HEIGHT = Units.Inches.of(35);
-        public static final Distance L4_HEIGHT = Units.Inches.of(60);
-
         //gearing
         public static final double GEAR_RATIO = 1 / 4.17;
         public static final double C_GEAR_RATIO = 1 / 4;
@@ -344,6 +338,29 @@ public class Constants {
         public static final double kG = 0.4;
         public static final double kV = 0.4567;
         public static final double kA = 0.0128;
+
+        // setpoints
+        public static final double ZERO = 0;
+
+        public static final double ALGAEPRESCORE = 0.2;
+        public static final double ALGAEREEFHIGH = -7;
+        public static final double NETSCORE = -19.4;
+    }
+
+    public static class CarriageConstants {
+        public static final double TOLERANCE = 0.1;
+
+        // setpoints
+        public static final double ALGAEPRESCORE = 0.5;
+        public static final double ALGAEREEFHIGH = 13.5;
+        public static final double ALGAEREEFLOW = 13;
+        public static final double NETSCORE = 20;
+        public static final double PRESCORE = 6;
+        public static final double PROCESSORPRESCORE = 0.4;
+        public static final double SOURCEINTAKE = 8.375;
+
+        public static final double TOHOME = 0.5;
+
     }
 
     public static class AlgaeIntakeConstants {
@@ -351,20 +368,9 @@ public class Constants {
         public static final int ARACK_ID = 13;
         public static final int AROLLER_ID = 14;
 
-        // pid
-        public static final double P = 0;
-        public static final double I = 0;
-        public static final double D = 0;
-
         // motor
         public static final double maxVelocity = 0;
         public static final double maxAcceleration = 0;
-
-        //ff
-        public static final double kS = 0;
-        public static final double kG = 0;
-        public static final double kV = 0;
-        public static final double kA = 0;
 
         // di
         public static final int DI_LIMIT_PORT = 9;
@@ -374,6 +380,9 @@ public class Constants {
 
         public static final Distance DEPLOYED = Inches.of(0);
         public static final Distance ZERO = Inches.of(0);
+
+        // setpoints
+        public static final Distance ALGAEPRESCORE = Inches.of(-34);
     }
 
     public static class ClimberConstants {
@@ -393,9 +402,42 @@ public class Constants {
     }
 
     public static class JSConstants {
+        //ids
         public static final int JS_ID = 56;
         public static final int port = 3;
+
+        // ff
+        public static final double kS = 0.025;
+        public static final double kG = 0.3;
+        public static final double kV = 0.6;
+        public static final double kA = 0.013;
+
+        //pid
+        public static final double kP = 6;
+        public static final double kI = 0;
+        public static final double kD = 0;
+
+        //setpoints
+        public static final double STOW = 0.6;
+        public static final double ALGAEREEFHIGH = 0.47;
+        public static final double ALGAEREEFLOW = 0.47;
+        public static final double CORALINTAKE = 0.6;
+        public static final double PRESCORE = 0.52;
+        public static final double PROCESSORPRESCORE = 0.5;
+
+        public static final double SOURCEINTAKE1 = 0.55;
+        public static final double SOURCEINTAKE2 = 0.7925;
+
+        public static final double TOHOME = 0.5;
+        public static final double SCOREONL1 = 0.6;
+        public static final double ALGAEPRESCORE = 0.46;
+        public static final double NETSCORE = 0.7;
     }
 
+    public static class LimelightConstants {
+        public static final double yOffset = 0.4;
+        public static final double rightOffset = 0.15;
+        public static final double leftOffset = -0.15;
+    }
 }
 

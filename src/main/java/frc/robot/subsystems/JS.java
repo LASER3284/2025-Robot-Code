@@ -8,7 +8,7 @@ import edu.wpi.first.math.controller.ArmFeedforward;
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.trajectory.TrapezoidProfile;
 import frc.robot.Constants.JSConstants;
-import frc.robot.commands.pivot.PivotToAngle;
+import frc.robot.commands.PivotToAngle;
 
 import com.ctre.phoenix6.hardware.TalonFX;
 import com.ctre.phoenix6.signals.NeutralModeValue;
@@ -45,24 +45,20 @@ public class JS extends SubsystemBase {
         setpoint = new TrapezoidProfile.State();
 
         this.ff = new ArmFeedforward(
-            0.025, .3 ,.6, 0.013
+            JSConstants.kS, 
+            JSConstants.kG,
+            JSConstants.kV, 
+            JSConstants.kA
         );
 
-        //current_pose = 0.5;
-
-        pid = new PIDController(6, 0, 0);
-
-        // var motionMagicConfigs = talonFXConfigs.MotionMagic;
-        // motionMagicConfigs.MotionMagicCruiseVelocity = 10; 
-        // motionMagicConfigs.MotionMagicAcceleration = 20; 
-        // motionMagicConfigs.MotionMagicJerk = 1600;
-
-        // pivotMotor.getConfigurator().apply(talonFXConfigs);
+        pid = new PIDController(
+            JSConstants.kP,
+            JSConstants.kI,
+            JSConstants.kD);
 
         pivotMotor.setNeutralMode(NeutralModeValue.Brake);
 
-        last_goal = 0.6;
-
+        last_goal = JSConstants.STOW;
     }
 
     public static JS getInstance() {
@@ -73,13 +69,11 @@ public class JS extends SubsystemBase {
     }
 
     public void initDefaultCommand() {
-        setDefaultCommand(new PivotToAngle(this, rollers, last_goal , 0, 0));
+        setDefaultCommand(new PivotToAngle(this, rollers, last_goal));
     }
 
     public double getPivotPosition() {
         double pivotPose = thru_bore.get();
-        //pivotPose = (pivotPose * 0.0107146684);
-        //System.out.println(thru_bore.get());
         return pivotPose;
     }
 
@@ -103,20 +97,8 @@ public class JS extends SubsystemBase {
         return pid;
     }
 
-    // public int getEncoder() {
-    //     return thru_bore.get();
-    // }
-
-    public void zeroEncoders() {
-        //thru_bore.set;
-    }
-
     public void setSpeed(double speed) {
         pivotMotor.set(speed);
-    }
-
-    public Command zero_command() {
-        return this.runOnce(() -> zeroEncoders());
     }
 
     public Command stop_command() {
@@ -203,12 +185,6 @@ public class JS extends SubsystemBase {
         SmartDashboard.putNumber("js pose", getPivotPosition());//getPivotPosition());
         SmartDashboard.putNumber("current pose", current_pose);
         SmartDashboard.putNumber("last goal", getLastGoal());
-
-        //calculateJSPose(current_pose);
         initDefaultCommand();
-
-        //calculateJSPose(current_pose);
     }
-
-
-  }
+}

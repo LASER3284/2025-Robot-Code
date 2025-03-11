@@ -6,10 +6,19 @@ import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
 public class IntakeRollers extends SubsystemBase {
+    private static IntakeRollers instance;
+
     private TalonFX Intakemotor;
 
     public IntakeRollers() {
         Intakemotor = new TalonFX(16);
+    }
+
+    public static IntakeRollers getInstance() {
+        if (instance == null) {
+            instance = new IntakeRollers();
+        }
+        return instance;
     }
 
     public void setMotorSpeed(double speed){
@@ -19,13 +28,8 @@ public class IntakeRollers extends SubsystemBase {
     public void stop(){
         Intakemotor.stopMotor();
     }
-    
-    @Override
+
     public void periodic() {}
-
-    public void logOutputs(){
-
-    }
 
     public Command setMotorSpeed_command(double speed){
         return this.runOnce(() -> Intakemotor.set(speed));

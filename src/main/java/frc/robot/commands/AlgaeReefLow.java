@@ -2,10 +2,11 @@ package frc.robot.commands;
 
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
-import frc.robot.commands.elevator.CarriageCommand;
-import frc.robot.commands.elevator.ElevatorCommand;
-import frc.robot.commands.pivot.PivotToAngle;
-import frc.robot.commands.pivot.PivotToAngleEnd;
+import frc.robot.Constants.JSConstants;
+import frc.robot.commands.defaults.CarriageCommand;
+import frc.robot.commands.defaults.ElevatorCommand;
+import frc.robot.commands.defaults.PivotToAngle;
+import frc.robot.commands.defaults.PivotToAngleEnd;
 import frc.robot.subsystems.JS;
 import frc.robot.subsystems.Rollers;
 
@@ -15,21 +16,15 @@ public class AlgaeReefLow extends SequentialCommandGroup {
 
     public AlgaeReefLow() {
         addCommands(
-      
-         rollers.algae_roller_on_command(0.35),
-             new PivotToAngleEnd(js, rollers, .47 ,0 , 0)
-             .andThen(
-                Commands.parallel(
-                new CarriageCommand(13),
-                new ElevatorCommand(0),
-                new PivotToAngle(js, rollers, .47 ,0 , 0)
-                )
-             )
-             
-
-            // new CarriageCommand(car),
-            // new ElevatorCommand(ele)
-
+            rollers.algae_roller_on_command(0.35),
+                new PivotToAngleEnd(js, rollers, JSConstants.ALGAEREEFLOW)
+                    .andThen(
+                        Commands.parallel(
+                            new CarriageCommand(JSConstants.ALGAEREEFLOW),
+                            new ElevatorCommand(ElevatorConstants.ZERO),
+                            new PivotToAngle(js, rollers, JSConstants.ALGAEREEFLOW)
+                        )
+                    )
         );
     }
 }

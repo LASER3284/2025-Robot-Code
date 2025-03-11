@@ -10,7 +10,7 @@ import edu.wpi.first.wpilibj.DutyCycleEncoder;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
-import frc.robot.commands.coral_intake.PivotDeploy;
+import frc.robot.commands.PivotDeploy;
 
 public class Pivot extends SubsystemBase {
     private static Pivot instance;

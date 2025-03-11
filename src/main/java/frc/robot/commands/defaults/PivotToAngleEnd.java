@@ -17,16 +17,13 @@ public class PivotToAngleEnd extends Command {
     private JS Pivot = JS.getInstance();
     double setPoint;
     private double angle;
-    double cspeed;
-    double aspeed;
-
 
     public void initialize() {
         Pivot.setGoal(angle);
         Pivot.setSetpoint(new TrapezoidProfile.State(Pivot.getPivotPosition(), 0.0));
     }
 
-    public PivotToAngleEnd(JS pivot, Rollers rollers, double angle, double cspeed, double aspeed) {
+    public PivotToAngleEnd(JS pivot, Rollers rollers, double angle) {
         //Pivot = new JS(rollers);
         this.angle = angle;
 
@@ -35,7 +32,6 @@ public class PivotToAngleEnd extends Command {
     }
 
     public void execute() {
-        rollers.coral_roller_on_command(cspeed);
         Pivot.setLastGoal(angle);
         Pivot.setPower(0);
         trappy = new TrapezoidProfile(

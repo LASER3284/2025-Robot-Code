@@ -2,10 +2,12 @@ package frc.robot.commands;
 
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
-import frc.robot.commands.coral_intake.PivotDeployEnd;
-import frc.robot.commands.elevator.CarriageCommand;
-import frc.robot.commands.elevator.ElevatorCommand;
-import frc.robot.commands.pivot.PivotToAngleEnd;
+import frc.robot.Constants.CarriageConstants;
+import frc.robot.Constants.JSConstants;
+import frc.robot.commands.defaults.CarriageCommand;
+import frc.robot.commands.defaults.ElevatorCommand;
+import frc.robot.commands.defaults.PivotDeployEnd;
+import frc.robot.commands.defaults.PivotToAngleEnd;
 import frc.robot.subsystems.Carriage;
 import frc.robot.subsystems.Elevator;
 import frc.robot.subsystems.JS;
@@ -22,33 +24,19 @@ public class SourceIntakeRetract extends SequentialCommandGroup {
 
     public SourceIntakeRetract(double jspose, double speed) {
         addCommands(       
-          new PivotDeployEnd(cIntake, .505)  
-            
-          .andThen(
-        Commands.parallel(
-            new ElevatorCommand(0.2), 
-            new CarriageCommand(0.5)
-
-        ).until(() -> elevator.getElevatorPosition() > -.22 && carriage.getCarriagePosition() > -.5))
-    .andThen(
-    new PivotToAngleEnd(js, rollers, .55, 0, 0)
-    )
-    .andThen(
-        new PivotDeployEnd(cIntake, .22)
-    ),
-    rollers.coral_roller_on_command(speed)
-
-
-            // new ParallelCommandGroup(
-            //     new CarriageCommand(0.2),
-            //     new ElevatorCommand(0.2),
-            //     cIntake.setGoalPose()
-            // ).until(() -> carriage.isAtSetpoint(0.2) && elevator.isAtHome(0.2) && cIntake.isAtSetpoint(0.01)),
-            // new ParallelCommandGroup(
-            //     new PrintCommand("is this working"),
-            // new PivotToAngle(js, rollers, jspose, 0.3, 0)
-            // .until(() -> js.isAtSetpoint(jspose))),
-            // rollers.coral_roller_on_command(speed));
+            new PivotDeployEnd(cIntake, .505)   
+            .andThen(
+                Commands.parallel(
+                    new ElevatorCommand(0.2), 
+                    new CarriageCommand(CarriageConstants.ALGAEPRESCORE))
+                        .until(() -> 
+                            elevator.getElevatorPosition() > -.22 && 
+                            carriage.getCarriagePosition() > -.5))
+            .andThen(
+                new PivotToAngleEnd(js, rollers, JSConstants.SOURCEINTAKE1))
+            .andThen(
+                new PivotDeployEnd(cIntake, .22)),
+            rollers.coral_roller_on_command(speed)
         );
     }
 }

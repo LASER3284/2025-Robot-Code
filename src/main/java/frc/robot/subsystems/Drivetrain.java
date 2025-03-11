@@ -35,7 +35,6 @@ import edu.wpi.first.wpilibj2.command.Subsystem;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
 import frc.robot.Constants.SwerveConstants.TunerSwerveDrivetrain;
 import frc.robot.subsystems.vision.LimelightHelpers;
-import frc.robot.subsystems.vision.LimelightManager;
 
 
 public class Drivetrain extends TunerSwerveDrivetrain implements Subsystem {
@@ -273,7 +272,6 @@ public class Drivetrain extends TunerSwerveDrivetrain implements Subsystem {
         pose_est.addVisionMeasurement(LimelightHelpers.getBotPose2d("limelight1"), kNumConfigAttempts);
         pose_est.addVisionMeasurement(LimelightHelpers.getBotPose2d("limelight2"), kNumConfigAttempts);
 
-        SmartDashboard.putNumber("tx on limelight2 manager", LimelightManager.getTX("limelight2"));
         SmartDashboard.putNumber("tx on limelight2", LimelightHelpers.getTX("limelight2"));
 
 

@@ -8,25 +8,10 @@ import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
-import frc.robot.subsystems.Carriage;
-//import frc.robot.commands.CoralIntake;
-//import frc.robot.commands.SourceIntake;
-//import frc.robot.commands.pivot.PivotToAngle;
-import frc.robot.subsystems.Elevator;
-import frc.robot.subsystems.pivotintake.Pivot;
-//import frc.robot.subsystems.Rollers;
-// import frc.robot.subsystems.pivotintake.IntakeRollers;
-// import frc.robot.subsystems.pivotintake.Pivot;
 import edu.wpi.first.math.geometry.Pose2d;
 
 
 public class Robot extends TimedRobot {
-  //private Rollers rollers = new Rollers();
-  // private IntakeRollers irollers = new IntakeRollers();
-  // private Pivot pintake = new Pivot();
-  private Elevator elevator = new Elevator();
-  private Pivot pivotIntake = Pivot.getInstance();
-  private Carriage carriage = new Carriage();
 
   private Command m_autonomousCommand;
  
@@ -35,8 +20,6 @@ public class Robot extends TimedRobot {
   private Pose2d end;
   private RobotContainer m_robotContainer;
 
-  private final boolean kUseLimelight = false;
-
 
   public Robot() {
     m_robotContainer = new RobotContainer();
@@ -44,18 +27,6 @@ public class Robot extends TimedRobot {
 
   public void robotPeriodic() {
     CommandScheduler.getInstance().run();
-
-    // if (kUseLimelight) {
-    //   var driveState = m_robotContainer.drivetrain.getState();
-    //   double headingDeg = driveState.Pose.getRotation().getDegrees();
-    //   double omegaRps = Units.radiansToRotations(driveState.Speeds.omegaRadiansPerSecond);
-
-    //   LimelightHelpers.SetRobotOrientation("limelight1", headingDeg, 0, 0, 0, 0, 0);
-    //   var llMeasurement = LimelightHelpers.getBotPoseEstimate_wpiBlue_MegaTag2("limelight1");
-    //   if (llMeasurement != null && llMeasurement.tagCount > 0 && Math.abs(omegaRps) < 2.0) {
-    //     m_robotContainer.drivetrain.addVisionMeasurement(llMeasurement.pose, llMeasurement.timestampSeconds);
-    //   }
-    // }
   }
 
   public void disabledInit() {
@@ -103,8 +74,6 @@ public class Robot extends TimedRobot {
     }
 
     CommandScheduler.getInstance().cancelAll();
-
-   // carriage.setPose(0);
   }
 
   public void teleopPeriodic() {}

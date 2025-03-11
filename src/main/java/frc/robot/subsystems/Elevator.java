@@ -24,17 +24,14 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants.SwerveConstants;
 
 public class Elevator extends SubsystemBase {
+    private static Elevator instance;
+
     public static double MaxSpeed = SwerveConstants.kSpeedAt12Volts.in(MetersPerSecond);
     public static double MaxAngularRate = RotationsPerSecond.of(0.75).in(RadiansPerSecond); 
 
     private TalonFX rightElevator;
     private TalonFX leftElevator;
 
-    private TrapezoidProfile.Constraints constraints;
-    private TrapezoidProfile.State setpoint;
-    private TrapezoidProfile.State goal;
-
-    private double last_pose;
     private double rotations;
 
     VoltageOut request = new VoltageOut(0);
@@ -80,39 +77,25 @@ public class Elevator extends SubsystemBase {
         rightElevator.setNeutralMode(NeutralModeValue.Brake);
         leftElevator.setNeutralMode(NeutralModeValue.Brake);
 
-
-     //  setCarriagePosition(0);
     }
 
     public double getElevatorPosition() {
-        //double pose = rightElevator.get() * ElevatorConstants.GEAR_RATIO * ElevatorConstants.LINEAR_DISTANCE_CONST;
         double pose = rightElevator.getPosition().getValueAsDouble();
         return pose;
     }
 
+    public static Elevator getInstance() {
+        if (instance == null) {
+            instance = new Elevator();
+        }
+        return instance;
+    }
+
     public void setElevatorPosition(double rotations) {
-  //      final PositionVoltage request = new PositionVoltage(0).withSlot(0);
-
-     //   carriage.setControl(request.withPosition(rotations));
-
-       // final TrapezoidProfile m_profile = new TrapezoidProfile(
-       // new TrapezoidProfile.Constraints( 120, 150));
-        // Final target of 200 rot, 0 rps
-       // TrapezoidProfile.State m_goal = new TrapezoidProfile.State(rotations, 0);
-       // TrapezoidProfile.State m_setpoint = new TrapezoidProfile.State();
-
-        // create a position closed-loop request, voltage output, slot 0 configs
-        //final PositionVoltage m_request = new PositionVoltage(0).withSlot(0);
-
-        // calculate the next profile setpoint
-       // m_setpoint = m_profile.calculate(0.020, m_setpoint, m_goal);
-
         final MotionMagicVoltage m_request = new MotionMagicVoltage(rotations);
         this.rotations = rotations;
-        // set target position to 100 rotations
         rightElevator.setControl(m_request.withPosition(rotations));
         this.rotations = rotations;
-     //   leftElevator.setControl(m_request.withPosition(rotations));
     }
 
     public void setElevatorSpeed(double speed) {
