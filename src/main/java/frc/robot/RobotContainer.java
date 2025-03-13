@@ -255,7 +255,7 @@ public class RobotContainer {
         //driver.b().onTrue(new ScoreOnReef(0.5, 20.5, 19.5));
         //driver.b().onTrue(new ElevatorCommand(2));
         //driver.b().onTrue(irollers.setMotorSpeed_command(-0.5).andThen(rollers.coral_roller_on_command(-0.5)));
-        //driver.b().onTrue(irollers.setMotorSpeed_command(0.7).andThen(rollers.coral_roller_on_command(0.5)));
+        //driver.b().onTrue(irollers.setMotorSpeed_command(0.7).ndThen(rollers.coral_roller_on_command(0.5)));
 
         operator.rightBumper().whileTrue(rollers.coral_roller_on_command(-0.6).andThen(irollers.setMotorSpeed_command(-0.5)));
         operator.rightBumper().whileFalse(rollers.coral_roller_on_command(0.05).andThen(irollers.setMotorSpeed_command(0)));
