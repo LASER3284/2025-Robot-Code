@@ -8,10 +8,11 @@ import static edu.wpi.first.units.Units.*;
 
 import com.ctre.phoenix6.swerve.SwerveModule.DriveRequestType;
 import com.ctre.phoenix6.swerve.SwerveRequest;
+import com.ctre.phoenix6.swerve.SwerveModule.SteerRequestType;
 import com.pathplanner.lib.auto.AutoBuilder;
 import com.pathplanner.lib.auto.NamedCommands;
 
-
+import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
@@ -42,8 +43,7 @@ import frc.robot.subsystems.Rollers;
 import frc.robot.subsystems.pivotintake.IntakeRollers;
 import frc.robot.subsystems.pivotintake.Pivot;
 import frc.robot.subsystems.vision.LimelightHelpers;
-
-import frc.robot.commands.vision.AutoAlign3;
+// import frc.robot.subsystems.LimelightAlignment;
 
 
 public class RobotContainer { 
@@ -63,6 +63,17 @@ public class RobotContainer {
 
     
     SendableChooser<Command> autoChooser;
+
+
+    //5968 malware
+
+    public final LimelightAlignment limelight = new LimelightAlignment();
+
+    private final SwerveRequest.FieldCentricFacingAngle headingRequest = new SwerveRequest.FieldCentricFacingAngle()
+    .withDeadband(MaxSpeed * 0.05) // Add a 3% deadband to translation
+    .withDriveRequestType(DriveRequestType.Velocity)
+    .withSteerRequestType(SteerRequestType.MotionMagicExpo)
+    ;   
 
     private final SwerveRequest.FieldCentric drive = new SwerveRequest.FieldCentric()
             .withDeadband(SwerveConstants.kSpeedAt12Volts.in(MetersPerSecond) * 0.1).withRotationalDeadband(RotationsPerSecond.of(0.75).in(RadiansPerSecond) * 0.1) 
@@ -124,15 +135,48 @@ public class RobotContainer {
                 .withVelocityY(-driver.getLeftX() * MaxSpeed * 0.15)
                 .withRotationalRate(-driver.getRightX() * MaxAngularRate * 0.15))
                 );
+
+
+        //5968 malware
+        // contact 785-317-5769 for question 
+
+        //robot centric drive
+        // driver.pov(0).whileTrue(drivetrain.applyRequest(() ->
+        //         forwardStraight.withVelocityX(0.5).withVelocityY(0)));
+        // driver.pov(180).whileTrue(drivetrain.applyRequest(() ->
+        //         forwardStraight.withVelocityX(-0.5).withVelocityY(0)));
+        // driver.pov(90).whileTrue(drivetrain.applyRequest(() ->
+        //         forwardStraight.withVelocityX(0).withVelocityY(0.5)));
+        // driver.pov(270).whileTrue(drivetrain.applyRequest(() ->
+        //         forwardStraight.withVelocityX(0).withVelocityY(-.5)));
+
         
-        driver.pov(0).whileTrue(drivetrain.applyRequest(() ->
-                forwardStraight.withVelocityX(0.5).withVelocityY(0)));
-        driver.pov(180).whileTrue(drivetrain.applyRequest(() ->
-                forwardStraight.withVelocityX(-0.5).withVelocityY(0)));
-        driver.pov(90).whileTrue(drivetrain.applyRequest(() ->
-                forwardStraight.withVelocityX(0).withVelocityY(0.5)));
-        driver.pov(270).whileTrue(drivetrain.applyRequest(() ->
-                forwardStraight.withVelocityX(0).withVelocityY(-.5)));
+        // //resets which which way is considered forward
+        // //the "back" button is in the middle of the controller slightly on the left
+        // driver.back().onTrue(drivetrain.runOnce(() -> drivetrain.seedFieldCentric()));
+
+        // headingRequest.HeadingController.setP(4.0);
+        // headingRequest.HeadingController.setI(0.0001);
+        // headingRequest.HeadingController.setD(.8);
+
+        // double banana = Math.PI/2; //IN RADIANS
+
+        // driver.rightTrigger().whileTrue(
+        //     drivetrain.applyRequest(() -> 
+        //     headingRequest.withVelocityX(-driver.getLeftY() * MaxSpeed)
+        //         .withVelocityY(-driver.getLeftX() * MaxSpeed)
+        //         .withTargetDirection(new Rotation2d(banana)))
+        // );
+
+        //the "back" button is in the middle of the controller slightly on the left
+        //limelight malware
+        //driver.leftTrigger().whileTrue(limelight.LimelightAlign(drivetrain, true));
+
+
+        //aign right
+        //driver.start().whileTrue(limelight.LimelightAlign(drivetrain, false));
+
+
 
 
        // driver.back().and(driver.y()).whileTrue(drivetrain.sysIdDynamic(Direction.kForward));

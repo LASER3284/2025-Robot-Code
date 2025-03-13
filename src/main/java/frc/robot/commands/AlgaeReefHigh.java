@@ -25,8 +25,8 @@ public class AlgaeReefHigh extends SequentialCommandGroup {
              .andThen(
                 Commands.parallel(
                 new CarriageCommand(13.5),
-                new ElevatorCommand(-7)
-                .andThen(new PivotToAngleEnd(js, rollers, .47 ,0 , 0))
+                new ElevatorCommand(-6)
+                .andThen(new PivotToAngleEnd(js, rollers, .45 ,0 , 0))
                 )
              )
 

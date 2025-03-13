@@ -25,6 +25,7 @@
 // import edu.wpi.first.math.controller.PIDController;
 // import frc.robot.Constants;
 
+
 // public class LimelightAlignment extends SubsystemBase {
 
 //   //private CommandSwerveDrivetrain drivetrain  = TunerConstants.createDrivetrain();
@@ -56,9 +57,11 @@
 //     return run(() -> yawControl.setSetpoint(yaw));
 //   }
 
+//   Pose3d cameraPose_TargetSpace = LimelightHelpers.getCameraPose3d_TargetSpace(""); // Camera's pose relative to tag (should use Robot's pose in the future)
+
 //   // George Code
 //   private void driveAtTag(Drivetrain driveT, boolean left){
-//       Pose3d cameraPose_TargetSpace = LimelightHelpers.getCameraPose3d_TargetSpace(""); // Camera's pose relative to tag (should use Robot's pose in the future)
+      
    
 //       // when basing speed off offsets lets add an extra proportional term for each of these
 //       // lets not edit the yaw
@@ -82,6 +85,8 @@
 //       if (cameraPose_TargetSpace.getX() != 0 && cameraPose_TargetSpace.getY() != 0)
 //       {
 //         ySpeed = kiy * (cameraPose_TargetSpace.getX() + xOffset);
+
+//         //how far away from reef 
 //         xSpeed = -kix * (cameraPose_TargetSpace.getZ() + Constants.LimelightAlignment.kYofset);
 //       }
 //       else
@@ -91,11 +96,11 @@
 //         xSpeed = 0;
 //       }
 
-//       System.out.println("Z: " + cameraPose_TargetSpace.getZ());
-//       double yawSpeed = -yawControl.calculate(driveT.getPigeon2().getYaw().getValueAsDouble())  * 0.01;
-//       if(yawSpeed < 0.05){
-//         yawSpeed = 0;
-//       }
+//       // System.out.println("Z: " + cameraPose_TargetSpace.getZ());
+//       // double yawSpeed = -yawControl.calculate(driveT.getPigeon2().getYaw().getValueAsDouble())  * 0.01;
+//       // if(yawSpeed < 0.05){
+//       //   yawSpeed = 0;
+//       // }
       
 //       //driveT.applyRequest(() ->
 //       //  robotCentricRequest.withVelocityX(xSpeed).withVelocityY(ySpeed)
@@ -103,7 +108,7 @@
 
 //       // if tx or ty is not 0, then move
       
-//       driveT.setControl(new SwerveRequest.RobotCentric().withVelocityX(xSpeed).withVelocityY(ySpeed).withRotationalRate(yawSpeed));
+//       driveT.setControl(new SwerveRequest.RobotCentric().withVelocityX(xSpeed).withVelocityY(ySpeed).withRotationalRate(0));
       
       
 //       //System.out.println("X Speed: " + xSpeed + " Y Speed: " + ySpeed + " X Pos: " + cameraPose_TargetSpace.getX() + " Y Pos: " + cameraPose_TargetSpace.getY());
@@ -118,6 +123,10 @@
 //     double ta = LimelightHelpers.getTA("");  // Target area (0% to 100% of image)
 //     boolean tv = LimelightHelpers.getTV(""); // Do you have a valid target?
 
-//     // System.out.println("tx: " + tx + " ty: " + ty + " ta: " + ta + " tv: " + tv);
+
+
+
+
+//     //System.out.println("tx: " + tx + " ty: " + ty + " ta: " + ta + " tv: " + tv);
 //   }
 // }
