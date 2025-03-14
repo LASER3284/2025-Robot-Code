@@ -21,6 +21,7 @@ import frc.robot.Constants.*;
 import frc.robot.commands.AlgaePreScore;
 import frc.robot.commands.AlgaeReefHigh;
 import frc.robot.commands.AlgaeReefLow;
+import frc.robot.commands.AutoAlign3;
 import frc.robot.commands.CoralIntake;
 import frc.robot.commands.PreScore;
 import frc.robot.commands.ProcessorPreScore;
@@ -41,6 +42,7 @@ import frc.robot.subsystems.JS;
 import frc.robot.subsystems.Rollers;
 import frc.robot.subsystems.pivotintake.IntakeRollers;
 import frc.robot.subsystems.pivotintake.Pivot;
+import frc.robot.subsystems.vision.LimelightAlignment;
 
 
 public class RobotContainer { 
@@ -57,6 +59,8 @@ public class RobotContainer {
     public final Pivot pivotIntake = Pivot.getInstance();
     public final Elevator elevator = Elevator.getInstance();
     public final AlgaeIntake algaeintake = AlgaeIntake.getInstance();
+
+    public final LimelightAlignment alignment = new LimelightAlignment();
     
 
     
@@ -88,6 +92,9 @@ public class RobotContainer {
         NamedCommands.registerCommand("STOP_SPIT", rollers.coral_roller_on_command(0));
         NamedCommands.registerCommand("source intake", new SourceIntake(0.705, 0.5));
         NamedCommands.registerCommand("coral rollers", irollers.setMotorSpeed_command(-0.6));
+
+        // NamedCommands.registerCommand("right align", alignment.LimelightAlign(drivetrain, true, "limelight-right").withTimeout(2));
+        // NamedCommands.registerCommand("left align", alignment.LimelightAlign(drivetrain, false, "limelight-left").withTimeout(2));
 
         autoChooser = AutoBuilder.buildAutoChooser("Tests");
         SmartDashboard.putData("Auto Mode", autoChooser);
@@ -130,16 +137,23 @@ public class RobotContainer {
                 forwardStraight.withVelocityX(0).withVelocityY(-.5)));
 
         // coral ground intake to score l1 pose
-        driver.rightBumper().whileTrue(new CoralIntake());
-        driver.rightBumper().whileFalse(new ScoreOnL1());
+        // driver.rightBumper().whileTrue(new CoralIntake());
+        // driver.rightBumper().whileFalse(new ScoreOnL1());
 
         // coral ground intake rollers on/off
         driver.b().onTrue(irollers.setMotorSpeed_command(.8));
         driver.b().onFalse(irollers.setMotorSpeed_command(0));
 
         // algae ground intake to prescore processor/prep for barge score
-        driver.leftBumper().onTrue(new AlgaePreScore());
-        driver.leftBumper().onFalse(new ProcessorPreScore());
+        // driver.leftBumper().onTrue(new AlgaePreScore());
+        // driver.leftBumper().onFalse(new ProcessorPreScore());
+        // driver.leftBumper().onTrue(alignment.setYaw(drivetrain.getPigeon2().getYaw().getValueAsDouble()));
+        // driver.leftBumper().whileTrue(alignment.LimelightAlign(drivetrain, true, "limelight-left"));
+
+
+        // driver.rightBumper().onTrue(alignment.setYaw(drivetrain.getPigeon2().getYaw().getValueAsDouble()));
+        // driver.rightBumper().whileTrue(alignment.LimelightAlign(drivetrain, false, "limelight-right"));
+
 
 
         // OPERATOR CONTROLS \\

@@ -361,6 +361,7 @@ public class Constants {
 
         public static final double TOHOME = 0.5;
 
+
     }
 
     public static class AlgaeIntakeConstants {
@@ -435,7 +436,7 @@ public class Constants {
     }
 
     public static class LimelightConstants {
-        public static final double yOffset = 0.4;
+        public static final double yOffset = 0;
         public static final double rightOffset = 0.15;
         public static final double leftOffset = -0.15;
     }

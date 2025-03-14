@@ -2,7 +2,7 @@
 // Open Source Software; you can modify and/or share it under the terms of
 // the WPILib BSD license file in the root directory of this project.
 
-package frc.robot.subsystems;
+package frc.robot.subsystems.vision;
 
 import java.io.ObjectInputFilter.Config;
 import java.security.PublicKey;
@@ -35,9 +35,10 @@ public class LimelightAlignment extends SubsystemBase {
   //PID bad for Limelight don't use
   private final PIDController xControl = new PIDController(1, 0, 0.3);
   private final PIDController zControl = new PIDController(1, 0, 0.3);
-  private final PIDController yawControl = new PIDController(0.3, 0, 0.4);
+  private final PIDController yawControl = new PIDController(0.3, 0, 0.2);
   private final double kix = 1.5;
   private final double kiy = 1.5;
+  private String limelightname;
 
   double ySpeed = 0;
   double xSpeed = 0;
@@ -49,8 +50,8 @@ public class LimelightAlignment extends SubsystemBase {
   /** Creates a new LimelightAlignment. */
   public LimelightAlignment() {}
 
-  public Command LimelightAlign(Drivetrain drivetrain, boolean left){
-    return run(() -> this.driveAtTag(drivetrain, left));
+  public Command LimelightAlign(Drivetrain drivetrain, boolean left, String name){
+    return run(() -> this.driveAtTag(drivetrain, left, name));
   }
   
   public Command setYaw(double yaw){
@@ -58,8 +59,8 @@ public class LimelightAlignment extends SubsystemBase {
   }
 
   // George Code
-  private void driveAtTag(Drivetrain driveT, boolean left){
-      Pose3d cameraPose_TargetSpace = LimelightHelpers.getCameraPose3d_TargetSpace(""); // Camera's pose relative to tag (should use Robot's pose in the future)
+  private void driveAtTag(Drivetrain driveT, boolean left, String limelightname){
+      Pose3d cameraPose_TargetSpace = LimelightHelpers.getCameraPose3d_TargetSpace(limelightname); // Camera's pose relative to tag (should use Robot's pose in the future)
    
       // when basing speed off offsets lets add an extra proportional term for each of these
       // lets not edit the yaw
@@ -92,7 +93,7 @@ public class LimelightAlignment extends SubsystemBase {
         xSpeed = 0;
       }
 
-      System.out.println("Z: " + cameraPose_TargetSpace.getZ());
+      //System.out.println("rot: " + cameraPose_TargetSpace.getRotation());
       double yawSpeed = -yawControl.calculate(driveT.getPigeon2().getYaw().getValueAsDouble())  * 0.01;
       if(yawSpeed < 0.05){
         yawSpeed = 0;
@@ -114,10 +115,10 @@ public class LimelightAlignment extends SubsystemBase {
   @Override
   public void periodic() {
     // Basic targeting data
-    double tx = LimelightHelpers.getTX("");  // Horizontal offset from crosshair to target in degrees
-    double ty = LimelightHelpers.getTY("");  // Vertical offset from crosshair to target in degrees
-    double ta = LimelightHelpers.getTA("");  // Target area (0% to 100% of image)
-    boolean tv = LimelightHelpers.getTV(""); // Do you have a valid target?
+    double tx = LimelightHelpers.getTX(limelightname);  // Horizontal offset from crosshair to target in degrees
+    double ty = LimelightHelpers.getTY(limelightname);  // Vertical offset from crosshair to target in degrees
+    double ta = LimelightHelpers.getTA(limelightname);  // Target area (0% to 100% of image)
+    boolean tv = LimelightHelpers.getTV(limelightname); // Do you have a valid target?
 
     // System.out.println("tx: " + tx + " ty: " + ty + " ta: " + ta + " tv: " + tv);
   }

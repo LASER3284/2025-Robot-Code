@@ -1,4 +1,4 @@
-package frc.robot.commands.defaults;
+package frc.robot.commands;
 
 import edu.wpi.first.math.trajectory.TrapezoidProfile;
 import edu.wpi.first.units.measure.Distance;

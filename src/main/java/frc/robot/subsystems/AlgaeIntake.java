@@ -15,7 +15,7 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants.AlgaeIntakeConstants;
-import frc.robot.commands.defaults.AlgaeDeploy;
+import frc.robot.commands.AlgaeDeploy;
 
 public class AlgaeIntake extends SubsystemBase {
     private static AlgaeIntake instance;
