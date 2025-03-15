@@ -23,6 +23,7 @@ import frc.robot.commands.AlgaeReefHigh;
 import frc.robot.commands.AlgaeReefLow;
 import frc.robot.commands.AutoAlign3;
 import frc.robot.commands.CoralIntake;
+import frc.robot.commands.LimelightAlignmentCommand;
 import frc.robot.commands.PreScore;
 import frc.robot.commands.ProcessorPreScore;
 import frc.robot.commands.ProcessorScore;
@@ -51,7 +52,7 @@ public class RobotContainer {
 
 
     // subsystem instantiation
-    public final Drivetrain drivetrain = SwerveConstants.createDrivetrain();
+    public static final Drivetrain drivetrain = SwerveConstants.createDrivetrain();
     public final Rollers rollers = Rollers.getInstance();
     public final IntakeRollers irollers = IntakeRollers.getInstance();
     public final Carriage carriage = Carriage.getInstance();
@@ -60,7 +61,7 @@ public class RobotContainer {
     public final Elevator elevator = Elevator.getInstance();
     public final AlgaeIntake algaeintake = AlgaeIntake.getInstance();
 
-    public final LimelightAlignment alignment = new LimelightAlignment();
+    //public final LimelightAlignment alignment = new LimelightAlignment();
     
 
     
@@ -99,7 +100,7 @@ public class RobotContainer {
         autoChooser = AutoBuilder.buildAutoChooser("Tests");
         SmartDashboard.putData("Auto Mode", autoChooser);
 
-        drivetrain.addVisionMeasurement(drivetrain.getState().Pose, 0);
+        //drivetrain.addVisionMeasurement(drivetrain.getState().Pose, 0);
 
         configureBindings();
         
@@ -127,14 +128,14 @@ public class RobotContainer {
                 );
 
         // tb tested... 5986 robot centric stuff        
-        driver.pov(0).whileTrue(drivetrain.applyRequest(() ->
-                forwardStraight.withVelocityX(0.5).withVelocityY(0)));
-        driver.pov(180).whileTrue(drivetrain.applyRequest(() ->
-                forwardStraight.withVelocityX(-0.5).withVelocityY(0)));
-        driver.pov(90).whileTrue(drivetrain.applyRequest(() ->
-                forwardStraight.withVelocityX(0).withVelocityY(0.5)));
-        driver.pov(270).whileTrue(drivetrain.applyRequest(() ->
-                forwardStraight.withVelocityX(0).withVelocityY(-.5)));
+        // driver.pov(0).whileTrue(drivetrain.applyRequest(() ->
+        //         forwardStraight.withVelocityX(0.5).withVelocityY(0)));
+        // driver.pov(180).whileTrue(drivetrain.applyRequest(() ->
+        //         forwardStraight.withVelocityX(-0.5).withVelocityY(0)));
+        // driver.pov(90).whileTrue(drivetrain.applyRequest(() ->
+        //         forwardStraight.withVelocityX(0).withVelocityY(0.5)));
+        // driver.pov(270).whileTrue(drivetrain.applyRequest(() ->
+        //         forwardStraight.withVelocityX(0).withVelocityY(-.5)));
 
         // coral ground intake to score l1 pose
         // driver.rightBumper().whileTrue(new CoralIntake());
@@ -147,12 +148,13 @@ public class RobotContainer {
         // algae ground intake to prescore processor/prep for barge score
         // driver.leftBumper().onTrue(new AlgaePreScore());
         // driver.leftBumper().onFalse(new ProcessorPreScore());
-        // driver.leftBumper().onTrue(alignment.setYaw(drivetrain.getPigeon2().getYaw().getValueAsDouble()));
-        // driver.leftBumper().whileTrue(alignment.LimelightAlign(drivetrain, true, "limelight-left"));
 
 
-        // driver.rightBumper().onTrue(alignment.setYaw(drivetrain.getPigeon2().getYaw().getValueAsDouble()));
-        // driver.rightBumper().whileTrue(alignment.LimelightAlign(drivetrain, false, "limelight-right"));
+        //driver.a().onTrue(new LimelightAlignment().setYaw(drivetrain.getPigeon2().getYaw().getValueAsDouble()));
+        operator.b().whileTrue(
+            new LimelightAlignmentCommand(drivetrain.getPigeon2().getYaw().getValueAsDouble(),
+                true,
+                "limelight-right"));
 
 
 

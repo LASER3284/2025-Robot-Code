@@ -17,6 +17,7 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
 import frc.robot.subsystems.vision.LimelightHelpers;
 import frc.robot.subsystems.Drivetrain;
+import frc.robot.subsystems.Rollers;
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.geometry.Pose3d;
 import edu.wpi.first.networktables.NetworkTable;
@@ -27,8 +28,9 @@ import edu.wpi.first.math.controller.PIDController;
 import frc.robot.Constants;
 
 public class LimelightAlignment extends SubsystemBase {
+  private static LimelightAlignment instance;
 
-  private Drivetrain drivetrain  = Constants.SwerveConstants.createDrivetrain();
+  private final Drivetrain drivetrain  = Constants.SwerveConstants.createDrivetrain();
   private final SwerveRequest.RobotCentric robotCentricRequest = new SwerveRequest.RobotCentric();
   private Boolean run = false;
 
@@ -47,11 +49,24 @@ public class LimelightAlignment extends SubsystemBase {
   private final SwerveRequest.RobotCentric forwardStraight = new SwerveRequest.RobotCentric()
             .withDriveRequestType(DriveRequestType.OpenLoopVoltage);
 
+  private final SwerveRequest.FieldCentric start = new SwerveRequest.FieldCentric()
+            .withVelocityX(0)
+            .withVelocityY(0)
+            .withRotationalRate(0);
+
   /** Creates a new LimelightAlignment. */
-  public LimelightAlignment() {}
+  public LimelightAlignment() {
+  }
+
+  public static LimelightAlignment getInstance() {
+        if (instance == null) {
+            instance = new LimelightAlignment();
+        }
+        return instance;
+    }
 
   public Command LimelightAlign(Drivetrain drivetrain, boolean left, String name){
-    return run(() -> this.driveAtTag(drivetrain, left, name));
+    return runOnce(() -> this.driveAtTag(drivetrain, left, name));
   }
   
   public Command setYaw(double yaw){
@@ -60,6 +75,8 @@ public class LimelightAlignment extends SubsystemBase {
 
   // George Code
   private void driveAtTag(Drivetrain driveT, boolean left, String limelightname){
+      drivetrain.applyRequest(() -> start);
+
       Pose3d cameraPose_TargetSpace = LimelightHelpers.getCameraPose3d_TargetSpace(limelightname); // Camera's pose relative to tag (should use Robot's pose in the future)
    
       // when basing speed off offsets lets add an extra proportional term for each of these
